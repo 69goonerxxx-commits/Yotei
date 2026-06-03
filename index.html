@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Yotei</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#080d1a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Yotei">
+  <link rel="apple-touch-icon" href="./icon.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg:         #080d1a;
+      --surface:    #0d1425;
+      --card:       #111c30;
+      --card-h:     #172236;
+      --border:     #1b2a42;
+      --accent:     #3b82f6;
+      --accent-b:   #60a5fa;
+      --accent-dim: #1d4ed8;
+      --night:      #818cf8;
+      --night-dim:  #4f46e5;
+      --night-glow: rgba(129,140,248,.12);
+      --text:       #eef2ff;
+      --text-sec:   #64748b;
+      --text-ter:   #253347;
+      --success:    #22c55e;
+      --succ-dim:   rgba(34,197,94,.13);
+      --opt:        #f59e0b;
+      --warn:       #f97316;
+      --r:          16px;
+      --r-sm:       10px;
+      --hh:         60px;
+      --fh:         68px;
+      --t:          .2s ease;
+      --fd:         'Syne', sans-serif;
+      --fb:         'Manrope', sans-serif;
+    }
+    .light {
+      --bg:         #eef2ff;
+      --surface:    #f8faff;
+      --card:       #ffffff;
+      --card-h:     #f0f4ff;
+      --border:     #c7d2fe;
+      --accent:     #2563eb;
+      --accent-b:   #3b82f6;
+      --accent-dim: #1d4ed8;
+      --night:      #6366f1;
+      --night-dim:  #4338ca;
+      --night-glow: rgba(99,102,241,.09);
+      --text:       #0f172a;
+      --text-sec:   #475569;
+      --text-ter:   #94a3b8;
+      --success:    #16a34a;
+      --succ-dim:   rgba(22,163,74,.1);
+    }
+
+    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{height:100%;overflow:hidden}
+    body{font-family:'Manrope',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.5}
+
+    #app{
+      display:flex;flex-direction:column;height:100dvh;
+      max-width:430px;margin:0 auto;position:relative;overflow:hidden;
+      background:radial-gradient(ellipse 90% 40% at 50% 0%,rgba(59,130,246,.07) 0%,transparent 60%),var(--bg);
+    }
+
+    /* HEADER */
+    #app-header{height:var(--hh);display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0;border-bottom:1px solid var(--border);position:relative;z-index:10}
+    .h-left,.h-right{display:flex;align-items:center;gap:8px;min-width:44px}
+    .h-right{justify-content:flex-end}
+    .h-date{font-family:'Syne',sans-serif;font-size:13px;font-weight:600;color:var(--text-sec);letter-spacing:.3px}
+    .h-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--text)}
+    .icon-btn{width:36px;height:36px;border-radius:10px;border:none;background:var(--card);color:var(--text-sec);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--t)}
+    .icon-btn:active{background:var(--card-h);color:var(--text)}
+    .back-btn{display:flex;align-items:center;gap:5px;background:none;border:none;color:var(--accent-b);font-family:'Manrope',sans-serif;font-size:14px;font-weight:600;cursor:pointer;padding:4px 0}
+
+    /* MAIN */
+    #app-main{flex:1;overflow:hidden;position:relative}
+    .view{position:absolute;inset:0;overflow-y:auto;padding:20px 20px calc(var(--fh)+20px);opacity:0;pointer-events:none;transform:translateX(16px);transition:opacity .22s ease,transform .22s ease;-webkit-overflow-scrolling:touch}
+    .view::-webkit-scrollbar{display:none}
+    .view{-ms-overflow-style:none;scrollbar-width:none}
+    .view.active{opacity:1;pointer-events:all;transform:translateX(0)}
+    #view-routine{padding-bottom:32px}
+
+    /* FOOTER */
+    #app-nav{height:var(--fh);display:flex;align-items:center;justify-content:space-around;background:var(--surface);border-top:1px solid var(--border);flex-shrink:0;z-index:10;padding:0 10px;padding-bottom:env(safe-area-inset-bottom,0px)}
+    .nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:none;color:var(--text-ter);font-family:'Manrope',sans-serif;font-size:11px;font-weight:600;cursor:pointer;padding:8px 22px;border-radius:12px;transition:var(--t);letter-spacing:.3px}
+    .nav-item.active{color:var(--accent-b)}
+    .nav-item.active svg{filter:drop-shadow(0 0 5px var(--accent))}
+
+    /* HOME */
+    .home-greeting{margin-bottom:20px}
+    .home-greeting h1{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;line-height:1.15;color:var(--text);margin-bottom:3px}
+    .home-greeting p{font-size:13px;color:var(--text-sec);font-weight:500}
+    .streak-banner{display:flex;align-items:stretch;background:linear-gradient(135deg,rgba(59,130,246,.1),rgba(29,78,216,.06));border:1px solid rgba(59,130,246,.18);border-radius:var(--r);padding:14px 16px;margin-bottom:14px}
+    .streak-col{flex:1;display:flex;align-items:center;gap:10px}
+    .streak-col+.streak-col{border-left:1px solid var(--border);padding-left:14px;margin-left:4px}
+    .streak-emoji{font-size:20px;flex-shrink:0}
+    .streak-num{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;line-height:1}
+    .streak-num.m{color:var(--accent-b)}
+    .streak-num.n{color:var(--night)}
+    .streak-lbl{font-size:11px;color:var(--text-sec);font-weight:500;margin-top:2px}
+    .streak-best{font-size:10px;color:var(--text-ter);margin-top:1px}
+
+    /* ROUTINE CARDS */
+    .routine-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;cursor:pointer;transition:var(--t);position:relative;overflow:hidden;margin-bottom:12px}
+    .routine-card:last-child{margin-bottom:0}
+    .routine-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent-dim),var(--accent-b));opacity:.65}
+    .routine-card.night-card::before{background:linear-gradient(90deg,var(--night-dim),var(--night));opacity:.7}
+    .routine-card.r-done::before{background:linear-gradient(90deg,#15803d,#22c55e);opacity:.85}
+    .routine-card:active{background:var(--card-h);transform:scale(.99)}
+    .card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+    .card-name-row{display:flex;align-items:center;gap:8px}
+    .card-icon{font-size:17px}
+    .card-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--text);margin-bottom:3px}
+    .card-meta{font-size:12px;color:var(--text-sec);font-weight:500}
+    .card-badge{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:5px 10px;border-radius:20px;white-space:nowrap}
+    .badge-m{background:rgba(59,130,246,.1);color:var(--accent-b)}
+    .badge-n{background:var(--night-glow);color:var(--night)}
+    .badge-done{background:var(--succ-dim);color:var(--success)}
+    .badge-emerg{background:rgba(249,115,22,.1);color:var(--warn)}
+    .prog-wrap{margin-bottom:10px}
+    .prog-lbl{display:flex;justify-content:space-between;font-size:12px;color:var(--text-sec);margin-bottom:6px;font-weight:500}
+    .prog-track{height:6px;background:var(--border);border-radius:10px;overflow:hidden}
+    .prog-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--accent-dim),var(--accent-b));transition:width .4s cubic-bezier(.4,0,.2,1)}
+    .prog-fill.nf{background:linear-gradient(90deg,var(--night-dim),var(--night))}
+    .prog-fill.df{background:linear-gradient(90deg,#15803d,#22c55e)}
+    .card-hint{display:flex;align-items:center;justify-content:flex-end;gap:4px;font-size:12px;color:var(--text-sec);margin-top:12px}
+
+    /* ROUTINE VIEW */
+    .rv-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px}
+    .rv-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--text);margin-bottom:3px}
+    .rv-sub{font-size:13px;color:var(--text-sec);font-weight:500}
+    .emerg-btn{display:flex;align-items:center;gap:5px;flex-shrink:0;background:rgba(249,115,22,.09);border:1px solid rgba(249,115,22,.2);border-radius:8px;padding:7px 10px;font-family:'Manrope',sans-serif;font-size:12px;font-weight:700;color:var(--warn);cursor:pointer;transition:var(--t)}
+    .emerg-btn:active{background:rgba(249,115,22,.18)}
+    .emerg-banner{display:flex;align-items:center;gap:10px;background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.2);border-radius:var(--r);padding:12px 14px;margin-bottom:16px}
+    .eb-title{font-size:13px;font-weight:700;color:var(--warn)}
+    .eb-sub{font-size:11px;color:var(--text-sec);font-weight:400;margin-top:1px}
+
+    /* DAY TYPE */
+    .dts{display:flex;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:3px;margin-bottom:16px;gap:3px}
+    .dts-btn{flex:1;padding:8px 0;border:none;border-radius:7px;background:transparent;font-family:'Manrope',sans-serif;font-size:13px;font-weight:600;color:var(--text-sec);cursor:pointer;transition:var(--t)}
+    .dts-btn.on{background:var(--card);color:var(--night);box-shadow:0 1px 4px rgba(0,0,0,.2)}
+
+    /* PROGRESS BAR (routine view) */
+    .rv-prog{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:16px}
+    .rv-prog-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+    .rv-prog-steps{font-size:14px;font-weight:600;color:var(--text)}
+    .rv-prog-pct{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--accent-b)}
+    .rv-prog-pct.n{color:var(--night)}
+
+    /* COLLAPSIBLE PHASES */
+    .phase-sec{margin-bottom:12px}
+    .phase-hdr{
+      display:flex;justify-content:space-between;align-items:center;
+      margin-bottom:8px;padding:6px 4px;cursor:pointer;
+      border-radius:var(--r-sm);transition:var(--t);
+      -webkit-user-select:none;user-select:none;
+    }
+    .phase-hdr:active{background:rgba(255,255,255,.03)}
+    .phase-hdr-left{flex:1;min-width:0}
+    .phase-name{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--accent-b);text-transform:uppercase;letter-spacing:.9px}
+    .phase-name.n{color:var(--night)}
+    .phase-name.el{color:var(--warn)}
+    .phase-dur{font-size:11px;color:var(--text-sec);font-weight:500;margin-top:1px}
+    .phase-hdr-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+    .phase-count{font-size:11px;font-weight:600;color:var(--text-sec)}
+    .phase-count.done{color:var(--success)}
+    .phase-chevron{color:var(--text-sec);transition:transform .25s ease;flex-shrink:0}
+    .phase-chevron.flipped{transform:rotate(-90deg)}
+
+    /* Phase body — grid animation */
+    .phase-body{display:grid;grid-template-rows:1fr;transition:grid-template-rows .25s ease}
+    .phase-body.collapsed{grid-template-rows:0fr}
+    .phase-body>div{overflow:hidden}
+
+    .phase-steps{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+
+    /* STEPS */
+    .step-item{border-bottom:1px solid var(--border)}
+    .step-item:last-child{border-bottom:none}
+    .step-row{display:flex;align-items:center;gap:12px;padding:13px 16px}
+    .step-cb{width:22px;height:22px;border-radius:6px;border:2px solid var(--border);background:transparent;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s ease}
+    .step-cb.on{background:var(--accent);border-color:var(--accent)}
+    .step-cb.on.ncb{background:var(--night);border-color:var(--night)}
+    .step-cb.on::after{content:'';width:5px;height:9px;border:2px solid white;border-top:none;border-left:none;transform:rotate(45deg) translateY(-1px);display:block}
+    .step-content{flex:1;min-width:0}
+    .step-label{font-size:15px;font-weight:500;color:var(--text);transition:var(--t)}
+    .step-item.si-done .step-label{color:var(--text-sec);text-decoration:line-through;text-decoration-color:var(--text-ter)}
+    .step-sub{font-size:12px;color:var(--text-sec);margin-top:2px;font-weight:400}
+    .opt-tag{font-size:10px;font-weight:700;color:var(--opt);background:rgba(245,158,11,.1);padding:2px 6px;border-radius:4px;letter-spacing:.4px;flex-shrink:0}
+    .note-btn{width:30px;height:30px;border-radius:8px;border:none;background:transparent;color:var(--text-ter);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--t);flex-shrink:0;position:relative}
+    .note-btn:active{background:var(--card-h);color:var(--accent-b)}
+    .note-btn.hn{color:var(--accent-b)}
+    .note-btn.hn.nhn{color:var(--night)}
+    .note-btn.hn::after{content:'';width:5px;height:5px;background:var(--accent);border-radius:50%;position:absolute;top:4px;right:4px}
+    .note-btn.hn.nhn::after{background:var(--night)}
+    .note-area{padding:0 16px 12px;display:none}
+    .note-area.open{display:block}
+    .note-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;font-family:'Manrope',sans-serif;font-size:13px;color:var(--text);resize:none;min-height:68px;outline:none;transition:border-color .2s}
+    .note-input:focus{border-color:var(--accent)}
+    .note-input::placeholder{color:var(--text-ter)}
+
+    /* OPTIONAL SECTION */
+    .opt-section{margin-bottom:12px}
+    .opt-section-hdr{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--opt);text-transform:uppercase;letter-spacing:.9px;margin-bottom:8px;padding:0 4px}
+
+    /* DAY NOTE */
+    .day-note-wrap{margin-top:12px;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px}
+    .day-note-label{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--text-sec);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px}
+    .day-note-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px;font-family:'Manrope',sans-serif;font-size:14px;color:var(--text);resize:none;min-height:88px;outline:none;transition:border-color .2s;line-height:1.55}
+    .day-note-input:focus{border-color:var(--accent)}
+    .day-note-input::placeholder{color:var(--text-ter)}
+
+    /* HISTORY */
+    .v-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--text);margin-bottom:4px}
+    .v-sub{font-size:13px;color:var(--text-sec);font-weight:500;margin-bottom:20px}
+    .h-list{display:flex;flex-direction:column;gap:10px}
+    .h-item{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px}
+    .h-date-row{display:flex;align-items:center;margin-bottom:10px}
+    .h-date{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--text)}
+    .today-badge{font-size:10px;color:var(--accent-b);font-weight:700;background:rgba(59,130,246,.12);padding:2px 7px;border-radius:10px;margin-left:8px}
+    .h-pills{display:flex;gap:8px}
+    .h-pill{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:8px 10px}
+    .h-pill-top{display:flex;align-items:center;gap:5px;margin-bottom:3px}
+    .h-pill-icon{font-size:13px}
+    .h-pill-lbl{font-size:10px;font-weight:700;color:var(--text-sec);text-transform:uppercase;letter-spacing:.4px}
+    .h-pill-val{font-size:14px;font-weight:700;color:var(--text-sec)}
+    .h-pill-val.ok{color:var(--success)}
+    .h-pill-val.em{color:var(--warn)}
+    .h-note-prev{font-size:12px;color:var(--text-sec);margin-top:8px;font-style:italic;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .empty-state{text-align:center;padding:60px 20px;color:var(--text-sec)}
+    .empty-state .ei{font-size:40px;margin-bottom:12px}
+    .empty-state p{font-size:14px;font-weight:500;line-height:1.7}
+
+    /* STATS */
+    .stats-tabs{display:flex;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:3px;margin-bottom:16px;gap:3px}
+    .s-tab{flex:1;padding:8px 0;border:none;border-radius:7px;background:transparent;font-family:'Manrope',sans-serif;font-size:13px;font-weight:600;color:var(--text-sec);cursor:pointer;transition:var(--t)}
+    .s-tab.on{background:var(--card);color:var(--accent-b);box-shadow:0 1px 4px rgba(0,0,0,.2)}
+    .s-tab.on.nt{color:var(--night)}
+    .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .sc{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px}
+    .sc.wide{grid-column:1/-1}
+    .sc-lbl{font-size:11px;font-weight:700;color:var(--text-sec);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
+    .sc-val{font-family:'Syne',sans-serif;font-size:34px;font-weight:800;color:var(--text);line-height:1;margin-bottom:3px}
+    .sc-val.ac{color:var(--accent-b)}
+    .sc-val.nc{color:var(--night)}
+    .sc-val.gc{color:var(--success)}
+    .sc-sub{font-size:12px;color:var(--text-sec);font-weight:500}
+    .week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:12px}
+    .wd{display:flex;flex-direction:column;align-items:center;gap:4px}
+    .wd-lbl{font-size:10px;color:var(--text-sec);font-weight:600;text-transform:uppercase}
+    .wd-dot{width:34px;height:34px;border-radius:8px;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--text-sec)}
+    .wd-dot.md{background:var(--accent);color:#fff}
+    .wd-dot.nd{background:var(--night);color:#fff}
+    .wd-dot.td{border:2px solid var(--accent-b)}
+    .wd-dot.ntd{border-color:var(--night)}
+
+    /* SETTINGS */
+    #settings-overlay{position:fixed;inset:0;z-index:100;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .22s ease}
+    #settings-overlay.open{opacity:1;pointer-events:all}
+    .s-bg{position:absolute;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(4px)}
+    .s-sheet{
+      position:relative;z-index:1;width:100%;max-width:430px;margin:0 auto;
+      background:var(--surface);border-radius:24px 24px 0 0;
+      padding:24px 20px;border-top:1px solid var(--border);
+      max-height:85vh;overflow-y:auto;
+      padding-bottom:calc(env(safe-area-inset-bottom,0px) + 24px);
+      transform:translateY(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);
+    }
+    .s-sheet::-webkit-scrollbar{display:none}
+    #settings-overlay.open .s-sheet{transform:translateY(0)}
+    .s-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px;flex-shrink:0}
+    .s-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--text);margin-bottom:20px}
+    .s-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)}
+    .s-row:last-child{border-bottom:none}
+    .s-row-lbl{font-size:15px;font-weight:500;color:var(--text)}
+    .s-row-sub{font-size:12px;color:var(--text-sec);margin-top:1px}
+    .toggle{width:48px;height:26px;background:var(--border);border-radius:13px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;border:none}
+    .toggle.on{background:var(--accent)}
+    .toggle::after{content:'';position:absolute;width:20px;height:20px;background:#fff;border-radius:50%;top:3px;left:3px;transition:transform .2s cubic-bezier(.4,0,.2,1);box-shadow:0 1px 4px rgba(0,0,0,.2)}
+    .toggle.on::after{transform:translateX(22px)}
+
+    /* Settings section (stretch editor, data) */
+    .s-section{padding:16px 0;border-bottom:1px solid var(--border)}
+    .s-section:last-child{border-bottom:none}
+    .s-section-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--text-sec);text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px}
+    .s-action-btn{
+      width:100%;padding:11px 14px;border-radius:var(--r-sm);border:1px solid var(--border);
+      background:var(--card);color:var(--text);font-family:'Manrope',sans-serif;
+      font-size:14px;font-weight:600;cursor:pointer;transition:var(--t);
+      display:flex;align-items:center;gap:8px;margin-bottom:8px;
+    }
+    .s-action-btn:last-child{margin-bottom:0}
+    .s-action-btn:active{background:var(--card-h)}
+    .s-action-btn.warn{color:var(--warn);border-color:rgba(249,115,22,.2)}
+
+    /* Stretch editor */
+    .stretch-list{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+    .stretch-row{display:flex;align-items:center;gap:8px}
+    .stretch-input{
+      flex:1;background:var(--card);border:1px solid var(--border);
+      border-radius:var(--r-sm);padding:9px 12px;
+      font-family:'Manrope',sans-serif;font-size:14px;color:var(--text);
+      outline:none;transition:border-color .2s;
+    }
+    .stretch-input:focus{border-color:var(--accent)}
+    .stretch-del{
+      width:32px;height:32px;border-radius:8px;border:none;
+      background:rgba(249,115,22,.09);color:var(--warn);
+      display:flex;align-items:center;justify-content:center;
+      cursor:pointer;flex-shrink:0;font-size:16px;transition:var(--t);
+    }
+    .stretch-del:active{background:rgba(249,115,22,.18)}
+    .add-stretch-btn{
+      width:100%;padding:9px;border-radius:var(--r-sm);border:1px dashed var(--border);
+      background:transparent;color:var(--text-sec);font-family:'Manrope',sans-serif;
+      font-size:13px;font-weight:600;cursor:pointer;transition:var(--t);
+    }
+    .add-stretch-btn:active{background:var(--card)}
+
+    /* Hidden file input */
+    #import-file{display:none}
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <header id="app-header">
+    <div class="h-left" id="h-left"><span class="h-date" id="h-date"></span></div>
+    <div id="h-center"></div>
+    <div class="h-right">
+      <button class="icon-btn" onclick="openSettings()">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="app-main">
+
+    <div id="view-home" class="view active">
+      <div class="home-greeting">
+        <h1 id="greeting-text">Good morning.</h1>
+        <p>Here's your routine for today.</p>
+      </div>
+      <div class="streak-banner">
+        <div class="streak-col">
+          <div class="streak-emoji">🌅</div>
+          <div>
+            <div class="streak-num m" id="sc-m">0</div>
+            <div class="streak-lbl">morning streak</div>
+            <div class="streak-best" id="sb-m">Best: 0</div>
+          </div>
+        </div>
+        <div class="streak-col">
+          <div class="streak-emoji">🌙</div>
+          <div>
+            <div class="streak-num n" id="sc-n">0</div>
+            <div class="streak-lbl">night streak</div>
+            <div class="streak-best" id="sb-n">Best: 0</div>
+          </div>
+        </div>
+      </div>
+      <div id="home-cards"></div>
+    </div>
+
+    <div id="view-routine" class="view"></div>
+
+    <div id="view-history" class="view">
+      <div class="v-title">History</div>
+      <div class="v-sub" id="hist-sub">Your past routines</div>
+      <div class="h-list" id="hist-list"></div>
+    </div>
+
+    <div id="view-stats" class="view">
+      <div class="v-title">Stats</div>
+      <div class="v-sub">Your performance over time</div>
+      <div id="stats-content"></div>
+    </div>
+
+  </main>
+
+  <nav id="app-nav">
+    <button class="nav-item" data-view="history" onclick="navigate('history')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      History
+    </button>
+    <button class="nav-item active" data-view="home" onclick="navigate('home')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+      Home
+    </button>
+    <button class="nav-item" data-view="stats" onclick="navigate('stats')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Stats
+    </button>
+  </nav>
+
+  <div id="settings-overlay">
+    <div class="s-bg" onclick="closeSettings()"></div>
+    <div class="s-sheet">
+      <div class="s-handle"></div>
+      <div class="s-title">Settings</div>
+
+      <!-- Theme -->
+      <div class="s-row">
+        <div><div class="s-row-lbl">Light Mode</div><div class="s-row-sub">Switch to light theme</div></div>
+        <button class="toggle" id="theme-toggle" onclick="toggleTheme()"></button>
+      </div>
+
+      <!-- In-bed stretch editor -->
+      <div class="s-section">
+        <div class="s-section-title">In-Bed Stretches</div>
+        <div class="stretch-list" id="stretch-list"></div>
+        <button class="add-stretch-btn" onclick="addStretch()">+ Add stretch</button>
+      </div>
+
+      <!-- Data -->
+      <div class="s-section">
+        <div class="s-section-title">Data</div>
+        <button class="s-action-btn" onclick="exportData()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export backup
+        </button>
+        <button class="s-action-btn" onclick="triggerImport()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17,8 12,3 7,8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Import backup
+        </button>
+        <input type="file" id="import-file" accept=".json" onchange="importData(this.files[0])">
+      </div>
+
+    </div>
+  </div>
+
+</div>
+<script>
+// ═══════════════════════════════════════
+// STORAGE
+// ═══════════════════════════════════════
+const S = {
+  get:(k,d=null)=>{try{const v=localStorage.getItem('yotei_'+k);return v!==null?JSON.parse(v):d}catch{return d}},
+  set:(k,v)=>{try{localStorage.setItem('yotei_'+k,JSON.stringify(v));return true}catch{return false}}
+};
+
+// ═══════════════════════════════════════
+// STRETCHES (editable)
+// ═══════════════════════════════════════
+const DEFAULT_STRETCHES = ['Full-body stretch','Knee-to-chest stretch','Supine twist'];
+function getStretches(){ return S.get('m_stretches', DEFAULT_STRETCHES); }
+function saveStretches(arr){ S.set('m_stretches', arr); }
+
+// ═══════════════════════════════════════
+// ROUTINE DATA
+// ═══════════════════════════════════════
+// Morning steps — s4 = Make bed, s5 = Get out of bed (v1.2.2 order)
+const MORNING = {
+  id:'morning', icon:'🌅',
+  name:'Morning Routine', sub:'Golden Hour · Biological Activation',
+  phases:[
+    {
+      id:'mp1', name:'Phase 1 — Wake-Up Activation', dur:'~9 min',
+      steps:[
+        {id:'s1', label:'Wake up'},
+        {id:'s2', label:'In-bed stretching'}, // sub injected dynamically from getStretches()
+        {id:'s3', label:'Physiological sighs', sub:'3–5 repetitions'},
+        {id:'s4', label:'Make bed', sub:'Top bunk — done before getting down'},
+        {id:'s5', label:'Get out of bed'},
+      ]
+    },
+    {
+      id:'mp2', name:'Phase 2 — Biological Activation', dur:'~30–35 min',
+      steps:[
+        {id:'s6',  label:'Gargle'},
+        {id:'s7',  label:'Drink first glass of water', sub:'~500ml'},
+        {id:'s8',  label:'Brush teeth'},
+        {id:'s9',  label:'Wash face'},
+        {id:'s10', label:'Dead hangs', sub:'1–2 sets · 20–30 sec each · Doorway pull bar'},
+        {id:'s11', label:'Go to rooftop', sub:'3 flights of stairs — warm-up before stretching'},
+        {id:'s12', label:'Morning sunlight exposure'},
+        {id:'s13', label:'Stretching'},
+        {id:'s14', label:'Return downstairs'},
+        {id:'s15', label:'Drink second glass of water'},
+      ]
+    },
+    {
+      id:'mp3', name:'Phase 3 — Transition to Day Mode', dur:'~35–45 min',
+      steps:[
+        {id:'s16', label:'Shower', sub:'School days: non-negotiable · Non-school: conditional'},
+        {id:'s17', label:'Get dressed'},
+        {id:'s18', label:'Journal', sub:"5–10 min · What's on your mind · Intentions for today · One thing you're grateful for"},
+        {id:'s19', label:'Breakfast'},
+      ]
+    },
+  ],
+  optional:[
+    {id:'mo1', label:'Neighborhood walk', sub:'~20 min · Phase 2 or Phase 3 · Mood & crowd dependent'},
+    {id:'mo2', label:'Sweeping', sub:'Anywhere it fits · Reduces environmental clutter'},
+    {id:'mo3', label:'Meditation', sub:'5–10 min · Phase 1 · After making bed'},
+    {id:'mo4', label:'Light tidying', sub:'Phase 1 or Phase 3 · Extends bed-making energy'},
+    {id:'mo5', label:'Day preparation', sub:'Phase 3 · Bag, clothes, school items'},
+    {id:'mo6', label:'Cold face splash', sub:'Phase 2 · Adjacent to face wash · Needs container + ice'},
+  ]
+};
+
+const MORNING_EMERG = [
+  {id:'em1', label:'Wake up'},
+  {id:'em2', label:'In-bed stretching'},
+  {id:'em3', label:'Brush teeth'},
+  {id:'em4', label:'Morning sunlight exposure'},
+];
+
+const NIGHT = {
+  id:'night', icon:'🌙',
+  name:'Night Routine', sub:'Wind Down · Day Closure',
+  phases:[
+    {
+      id:'np1', name:'Phase 1 — Final Activation',
+      workoutSteps:[{id:'np1w', label:'Finish workout', sub:'Wrap up by 9 PM'}],
+      restSteps:   [{id:'np1r', label:'Rooftop visit', sub:'~9 PM · Starts the routine'}],
+    },
+    {
+      id:'np2', name:'Phase 2 — Day Closure',
+      workoutSteps:[
+        {id:'np2s', label:'Shower', sub:'Warm · Non-negotiable'},
+        {id:'np2t', label:'Brush teeth'},
+      ],
+      restSteps:[
+        {id:'np2h', label:'Shower or face wash', sub:'Shower if needed · Face wash if skipping'},
+        {id:'np2t', label:'Brush teeth'},
+      ],
+    },
+    {
+      id:'np3', name:'Phase 3 — Cognitive Shutdown',
+      steps:[{id:'np3j', label:'Journal', sub:'Hard cap 15 min · Reflections · Brain dump · Tomorrow capture'}],
+    },
+    {
+      id:'np4', name:'Phase 4 — Wind-Down',
+      steps:[
+        {id:'np4p', label:'Switch to Night Playlist', sub:'Transition cue — the switch signals the shift'},
+        {id:'np4r', label:'Light reading', sub:'Self-paced · No algorithm'},
+        {id:'np4s', label:'Sleep'},
+      ],
+    },
+  ],
+  optional:[
+    {id:'no1', label:'Evening walk', sub:'~20 min · Phase 1 · Crowd-dependent · Check from rooftop first'},
+  ]
+};
+
+const NIGHT_EMERG = [
+  {id:'en1', label:'Brush teeth'},
+  {id:'en2', label:'Quick journal entry'},
+  {id:'en3', label:'Sleep'},
+];
+
+// ═══════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════
+function phaseSteps(phase, dt){
+  if(phase.steps) return phase.steps;
+  return dt==='workout'?phase.workoutSteps:phase.restSteps;
+}
+function allMIds(){
+  const ids=MORNING.phases.flatMap(p=>p.steps).concat(MORNING.optional).map(s=>s.id);
+  MORNING_EMERG.forEach(s=>ids.push(s.id));
+  return [...new Set(ids)];
+}
+function allNIds(){
+  const ids=[];
+  NIGHT.phases.forEach(p=>['steps','workoutSteps','restSteps'].forEach(k=>{if(p[k])p[k].forEach(s=>ids.push(s.id))}));
+  NIGHT.optional.forEach(s=>ids.push(s.id));
+  NIGHT_EMERG.forEach(s=>ids.push(s.id));
+  return [...new Set(ids)];
+}
+function mReq()      { return MORNING.phases.flatMap(p=>p.steps); }
+function nReq(dt)    { return NIGHT.phases.flatMap(p=>phaseSteps(p,dt)); }
+function mEmergReq() { return MORNING_EMERG; }
+function nEmergReq() { return NIGHT_EMERG; }
+
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+let TODAY    = todayStr();
+let todayLog = null;
+let streaks  = {morning:{current:0,best:0},night:{current:0,best:0}};
+const collapsed = new Set(); // tracks collapsed phase IDs
+
+function todayStr(){ return new Date().toISOString().split('T')[0]; }
+
+// ═══════════════════════════════════════
+// LOG INIT & SAVE
+// ═══════════════════════════════════════
+function newMLog(){
+  const steps={};
+  allMIds().forEach(id=>steps[id]={completed:false,note:''});
+  return {steps,dayNote:'',completedAt:null,mode:'full'};
+}
+function newNLog(){
+  const steps={};
+  allNIds().forEach(id=>steps[id]={completed:false,note:''});
+  return {steps,dayNote:'',completedAt:null,mode:'full',dayType:'rest'};
+}
+
+function migrateOldLogs(){
+  const logs=S.get('logs',{});
+  let changed=false;
+  Object.keys(logs).forEach(date=>{
+    const log=logs[date];
+    if(log && log.steps && !log.morning && !log.night){
+      const mSteps={}; allMIds().forEach(id=>mSteps[id]=log.steps[id]||{completed:false,note:''});
+      logs[date]={
+        morning:{steps:mSteps,dayNote:log.dayNote||'',completedAt:log.completedAt||null,mode:'full'},
+        night:newNLog()
+      };
+      changed=true;
+    }
+  });
+  if(changed) S.set('logs',logs);
+}
+
+function initLog(){
+  const date=todayStr();
+  TODAY=date;
+  const logs=S.get('logs',{});
+  if(!logs[date]){
+    logs[date]={morning:newMLog(),night:newNLog()};
+  } else {
+    if(!logs[date].morning) logs[date].morning=newMLog();
+    if(!logs[date].night)   logs[date].night=newNLog();
+    // Ensure all step IDs exist (handles new steps added in updates)
+    allMIds().forEach(id=>{ if(!logs[date].morning.steps[id]) logs[date].morning.steps[id]={completed:false,note:''}; });
+    allNIds().forEach(id=>{ if(!logs[date].night.steps[id])   logs[date].night.steps[id]  ={completed:false,note:''}; });
+  }
+  S.set('logs',logs);
+  todayLog=logs[date];
+}
+
+function saveLog(){
+  const logs=S.get('logs',{});
+  logs[TODAY]=todayLog;
+  const ok=S.set('logs',logs);
+  if(!ok) console.warn('Yotei: localStorage save failed.');
+  return ok;
+}
+
+// ═══════════════════════════════════════
+// COMPLETION & STREAKS
+// ═══════════════════════════════════════
+function mDone(){  const l=todayLog?.morning; if(!l) return 0; const r=l.mode==='emergency'?mEmergReq():mReq(); return r.filter(s=>l.steps[s.id]?.completed).length; }
+function nDone(){  const l=todayLog?.night;   if(!l) return 0; const r=l.mode==='emergency'?nEmergReq():nReq(l.dayType||'rest'); return r.filter(s=>l.steps[s.id]?.completed).length; }
+function mTotal(){ const l=todayLog?.morning; if(!l) return mReq().length; return l.mode==='emergency'?mEmergReq().length:mReq().length; }
+function nTotal(){ const l=todayLog?.night;   if(!l) return nReq('rest').length; return l.mode==='emergency'?nEmergReq().length:nReq(l.dayType||'rest').length; }
+function mComplete(){ return mDone()===mTotal(); }
+function nComplete(){ return nDone()===nTotal(); }
+
+function logComplete(logs,date,type){
+  const log=logs[date]?.[type]; if(!log||!log.steps) return false;
+  const req=log.mode==='emergency'?(type==='morning'?mEmergReq():nEmergReq()):(type==='morning'?mReq():nReq(log.dayType||'rest'));
+  return req.every(s=>log.steps[s.id]?.completed);
+}
+
+function calcStreaks(){
+  const logs=S.get('logs',{});
+  ['morning','night'].forEach(type=>{
+    const isToday=type==='morning'?mComplete():nComplete();
+    let check=new Date(todayStr());
+    if(!isToday) check.setDate(check.getDate()-1);
+    let count=0;
+    for(let i=0;i<365;i++){
+      const ds=check.toISOString().split('T')[0];
+      if(logComplete(logs,ds,type)){count++;check.setDate(check.getDate()-1);}
+      else break;
+    }
+    const prev=streaks[type]?.best||0;
+    streaks[type]={current:count,best:Math.max(prev,count)};
+  });
+  S.set('streak',streaks);
+}
+
+// ═══════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════
+let curView='home';
+let activeRoutine='morning';
+
+function navigate(view){
+  if(view===curView&&view!=='routine') return;
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+view)?.classList.add('active');
+  curView=view;
+  updateHeader(view);
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.toggle('active',b.dataset.view===view));
+  document.getElementById('app-nav').style.display=['home','history','stats'].includes(view)?'flex':'none';
+  if(view==='home')    renderHome();
+  if(view==='routine') renderRoutine();
+  if(view==='history') renderHistory();
+  if(view==='stats')   renderStats();
+}
+
+function openRoutine(type){ activeRoutine=type; navigate('routine'); }
+
+function updateHeader(view){
+  const left=document.getElementById('h-left');
+  document.getElementById('h-center').innerHTML='';
+  if(view==='home'){
+    left.innerHTML=`<span class="h-date">${fmtDate()}</span>`;
+  } else if(view==='routine'){
+    left.innerHTML=`<button class="back-btn" onclick="navigate('home')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15,18 9,12 15,6"/></svg>Back</button>`;
+  } else {
+    left.innerHTML=`<span class="h-title">${{history:'History',stats:'Stats'}[view]||''}</span>`;
+  }
+}
+
+function fmtDate(){
+  const n=new Date();
+  return `${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][n.getDay()]}, ${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][n.getMonth()]} ${n.getDate()}`;
+}
+function greeting(){ const h=new Date().getHours(); return h<12?'Good morning.':h<17?'Good afternoon.':'Good evening.'; }
+
+// ═══════════════════════════════════════
+// HOME
+// ═══════════════════════════════════════
+function renderHome(){
+  document.getElementById('greeting-text').textContent=greeting();
+  document.getElementById('sc-m').textContent=streaks.morning.current;
+  document.getElementById('sc-n').textContent=streaks.night.current;
+  document.getElementById('sb-m').textContent='Best: '+streaks.morning.best;
+  document.getElementById('sb-n').textContent='Best: '+streaks.night.best;
+
+  function badge(complete,emerg,inProg,isNight){
+    if(complete)  return `<div class="card-badge badge-done"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20,6 9,17 4,12"/></svg>Completed</div>`;
+    if(emerg)     return `<div class="card-badge badge-emerg">⚡ Emergency</div>`;
+    const cls=isNight?'card-badge badge-n':'card-badge badge-m';
+    return `<div class="${cls}"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>${inProg>0?'In progress':'Not started'}</div>`;
+  }
+
+  const ml=todayLog.morning,nl=todayLog.night;
+  const mc=mComplete(),nc=nComplete();
+  const md=mDone(),mt=mTotal(),mp=mt?Math.round(md/mt*100):0;
+  const nd=nDone(),nt=nTotal(),np=nt?Math.round(nd/nt*100):0;
+  const me=ml.mode==='emergency',ne=nl.mode==='emergency';
+  const dt=nl.dayType||'rest';
+
+  document.getElementById('home-cards').innerHTML=`
+    <div class="routine-card${mc?' r-done':''}" onclick="openRoutine('morning')">
+      <div class="card-top">
+        <div><div class="card-name-row"><span class="card-icon">🌅</span><div class="card-title">Morning Routine</div></div><div class="card-meta">${me?'Emergency mode':'19 steps · 3 phases'}</div></div>
+        ${badge(mc,me,md,false)}
+      </div>
+      <div class="prog-wrap">
+        <div class="prog-lbl"><span>Progress</span><span>${md} / ${mt}</span></div>
+        <div class="prog-track"><div class="prog-fill${mc?' df':''}" style="width:${mp}%"></div></div>
+      </div>
+      <div class="card-hint"><span>Tap to open</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg></div>
+    </div>
+    <div class="routine-card night-card${nc?' r-done':''}" onclick="openRoutine('night')">
+      <div class="card-top">
+        <div><div class="card-name-row"><span class="card-icon">🌙</span><div class="card-title">Night Routine</div></div><div class="card-meta">${ne?'Emergency mode':'7 steps · 4 phases · '+(dt==='workout'?'Workout day':'Rest day')}</div></div>
+        ${badge(nc,ne,nd,true)}
+      </div>
+      <div class="prog-wrap">
+        <div class="prog-lbl"><span>Progress</span><span>${nd} / ${nt}</span></div>
+        <div class="prog-track"><div class="prog-fill nf${nc?' df':''}" style="width:${np}%"></div></div>
+      </div>
+      <div class="card-hint"><span>Tap to open</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg></div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════
+// ROUTINE RENDERING
+// ═══════════════════════════════════════
+const CHEVRON_SVG = `<svg class="phase-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,9 12,15 18,9"/></svg>`;
+
+function stepHtml(step, log, isNight){
+  const sub = step.id==='s2' ? getStretches().join(' · ') : step.sub;
+  const sd=log.steps?.[step.id]||{completed:false,note:''};
+  const on=sd.completed, hn=sd.note&&sd.note.trim().length>0;
+  return `
+    <div class="step-item${on?' si-done':''}" id="si-${step.id}">
+      <div class="step-row">
+        <div class="step-cb${on?' on':''}${on&&isNight?' ncb':''}" onclick="toggleStep('${step.id}')"></div>
+        <div class="step-content">
+          <div class="step-label">${step.label}</div>
+          ${sub?`<div class="step-sub">${esc(sub)}</div>`:''}
+        </div>
+        ${step.optional?`<span class="opt-tag">OPT</span>`:''}
+        <button class="note-btn${hn?' hn':''}${hn&&isNight?' nhn':''}" id="nb-${step.id}" onclick="toggleNote('${step.id}')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>
+      </div>
+      <div class="note-area" id="na-${step.id}">
+        <textarea class="note-input" placeholder="Add a note..." oninput="saveStepNote('${step.id}',this.value)">${esc(sd.note||'')}</textarea>
+      </div>
+    </div>`;
+}
+
+function phaseHtml(phase, log, isNight, steps){
+  const phaseDone=steps.filter(s=>log.steps?.[s.id]?.completed).length;
+  const phaseTotal=steps.length;
+  const allPhaseDone=phaseDone===phaseTotal;
+  const isColl=collapsed.has(phase.id);
+  const nameClass=`phase-name${isNight?' n':''}${phase.isEmerg?' el':''}`;
+  const chevronClass=`phase-chevron${isColl?' flipped':''}`;
+
+  return `
+    <div class="phase-sec">
+      <div class="phase-hdr" onclick="togglePhase('${phase.id}')">
+        <div class="phase-hdr-left">
+          <div class="${nameClass}">${phase.name}</div>
+          ${phase.dur?`<div class="phase-dur">${phase.dur}</div>`:''}
+        </div>
+        <div class="phase-hdr-right">
+          <span class="phase-count${allPhaseDone?' done':''}">${phaseDone}/${phaseTotal}</span>
+          <svg id="pc-${phase.id}" class="${chevronClass}" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,9 12,15 18,9"/></svg>
+        </div>
+      </div>
+      <div id="pb-${phase.id}" class="phase-body${isColl?' collapsed':''}">
+        <div>
+          <div class="phase-steps">
+            ${steps.map(s=>stepHtml(s,log,isNight)).join('')}
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function progBarHtml(done,total,isNight){
+  const pct=total?Math.round(done/total*100):0;
+  const complete=done===total;
+  return `<div class="rv-prog">
+    <div class="rv-prog-top">
+      <span class="rv-prog-steps">${done} of ${total} steps</span>
+      <span class="rv-prog-pct${isNight?' n':''}">${pct}%</span>
+    </div>
+    <div class="prog-track" style="height:8px">
+      <div class="prog-fill${isNight?' nf':''}${complete?' df':''}" style="width:${pct}%"></div>
+    </div>
+  </div>`;
+}
+
+function emergBanner(){
+  return `<div class="emerg-banner"><span style="font-size:18px">⚡</span><div><div class="eb-title">Emergency Mode</div><div class="eb-sub">Simplified steps · Continuity over perfection</div></div></div>`;
+}
+
+function renderRoutine(){
+  activeRoutine==='morning'?renderMorning():renderNight();
+}
+
+function renderMorning(){
+  const rv=document.getElementById('view-routine');
+  const st=rv.scrollTop;
+  const log=todayLog.morning, isEmerg=log.mode==='emergency';
+  const done=mDone(), total=mTotal();
+
+  let h=`<div class="rv-top">
+    <div><div class="rv-title">🌅 Morning Routine</div><div class="rv-sub">Golden Hour · Biological Activation</div></div>
+    <button class="emerg-btn" onclick="toggleEmerg('morning')">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13,2 3,14 12,14 11,22 21,10 12,10 13,2"/></svg>
+      ${isEmerg?'Full mode':'Emergency'}
+    </button>
+  </div>`;
+
+  if(isEmerg){
+    h+=emergBanner();
+    h+=progBarHtml(done,total,false);
+    h+=phaseHtml({id:'mp-emerg',name:'Emergency Steps',isEmerg:true}, log, false, MORNING_EMERG);
+  } else {
+    h+=progBarHtml(done,total,false);
+    MORNING.phases.forEach(p=>{
+      h+=phaseHtml(p, log, false, p.steps);
+    });
+    h+=`<div class="opt-section">
+      <div class="opt-section-hdr">Optional Additions</div>
+      ${phaseHtml({id:'mp-opt',name:'Optional',dur:''},log,false,MORNING.optional.map(s=>({...s,optional:true})))}
+    </div>`;
+  }
+
+  h+=`<div class="day-note-wrap"><div class="day-note-label">Day Note</div><textarea class="day-note-input" placeholder="How's the morning going? Any thoughts for the day..." oninput="saveDayNote('morning',this.value)">${esc(log.dayNote||'')}</textarea></div>`;
+  rv.innerHTML=h; rv.scrollTop=st;
+}
+
+function renderNight(){
+  const rv=document.getElementById('view-routine');
+  const st=rv.scrollTop;
+  const log=todayLog.night, isEmerg=log.mode==='emergency', dt=log.dayType||'rest';
+  const done=nDone(), total=nTotal();
+
+  let h=`<div class="rv-top">
+    <div><div class="rv-title">🌙 Night Routine</div><div class="rv-sub">Wind Down · Day Closure</div></div>
+    <button class="emerg-btn" onclick="toggleEmerg('night')">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13,2 3,14 12,14 11,22 21,10 12,10 13,2"/></svg>
+      ${isEmerg?'Full mode':'Emergency'}
+    </button>
+  </div>`;
+
+  if(!isEmerg){
+    h+=`<div class="dts">
+      <button class="dts-btn${dt==='rest'?' on':''}" onclick="setDayType('rest')">🛌 Rest Day</button>
+      <button class="dts-btn${dt==='workout'?' on':''}" onclick="setDayType('workout')">💪 Workout Day</button>
+    </div>`;
+  }
+
+  if(isEmerg){
+    h+=emergBanner();
+    h+=progBarHtml(done,total,true);
+    h+=phaseHtml({id:'np-emerg',name:'Emergency Steps',isEmerg:true}, log, true, NIGHT_EMERG);
+  } else {
+    h+=progBarHtml(done,total,true);
+    NIGHT.phases.forEach(p=>{
+      const steps=phaseSteps(p,dt);
+      h+=phaseHtml(p, log, true, steps);
+    });
+    h+=`<div class="opt-section">
+      <div class="opt-section-hdr">Optional Additions</div>
+      ${phaseHtml({id:'np-opt',name:'Optional',dur:''},log,true,NIGHT.optional.map(s=>({...s,optional:true})))}
+    </div>`;
+  }
+
+  h+=`<div class="day-note-wrap"><div class="day-note-label">Night Note</div><textarea class="day-note-input" placeholder="How did the day go? Any thoughts before sleeping..." oninput="saveDayNote('night',this.value)">${esc(log.dayNote||'')}</textarea></div>`;
+  rv.innerHTML=h; rv.scrollTop=st;
+}
+
+// ═══════════════════════════════════════
+// INTERACTIONS
+// ═══════════════════════════════════════
+function toggleStep(id){
+  const log=todayLog[activeRoutine];
+  if(!log||!log.steps[id]) return;
+  log.steps[id].completed=!log.steps[id].completed;
+  const done=activeRoutine==='morning'?mComplete():nComplete();
+  if(done&&!log.completedAt) log.completedAt=new Date().toISOString();
+  else if(!done) log.completedAt=null;
+  saveLog(); calcStreaks(); renderRoutine();
+}
+
+function togglePhase(id){
+  const body=document.getElementById('pb-'+id);
+  const chevron=document.getElementById('pc-'+id);
+  if(!body) return;
+  if(collapsed.has(id)){
+    collapsed.delete(id);
+    body.classList.remove('collapsed');
+    if(chevron) chevron.classList.remove('flipped');
+  } else {
+    collapsed.add(id);
+    body.classList.add('collapsed');
+    if(chevron) chevron.classList.add('flipped');
+  }
+}
+
+function setDayType(dt){ todayLog.night.dayType=dt; saveLog(); renderNight(); }
+
+function toggleEmerg(type){
+  todayLog[type].mode=todayLog[type].mode==='emergency'?'full':'emergency';
+  saveLog(); renderRoutine();
+}
+
+function toggleNote(id){
+  const area=document.getElementById('na-'+id);
+  if(!area) return;
+  area.classList.toggle('open');
+  if(area.classList.contains('open')) setTimeout(()=>area.querySelector('textarea')?.focus(),80);
+}
+
+function saveStepNote(id,val){
+  const log=todayLog[activeRoutine]; if(!log||!log.steps[id]) return;
+  log.steps[id].note=val; saveLog();
+  const btn=document.getElementById('nb-'+id);
+  if(btn){
+    const hn=val.trim().length>0;
+    btn.classList.toggle('hn',hn);
+    btn.classList.toggle('nhn',hn&&activeRoutine==='night');
+    if(!hn) btn.classList.remove('nhn');
+  }
+}
+
+function saveDayNote(type,val){ todayLog[type].dayNote=val; saveLog(); }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ═══════════════════════════════════════
+// HISTORY
+// ═══════════════════════════════════════
+function renderHistory(){
+  const logs=S.get('logs',{});
+  const dates=Object.keys(logs).sort().reverse();
+  const list=document.getElementById('hist-list');
+  document.getElementById('hist-sub').textContent=`${dates.length} ${dates.length===1?'day':'days'} recorded`;
+
+  if(!dates.length){
+    list.innerHTML=`<div class="empty-state"><div class="ei">📋</div><p>No history yet.<br>Complete your first routine to see it here.</p></div>`;
+    return;
+  }
+
+  const DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const MOS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  function pillStat(rlog, emR, reqFn){
+    if(!rlog||!rlog.steps) return {val:'—',cls:''};
+    const req=rlog.mode==='emergency'?emR:reqFn(rlog.dayType||'rest');
+    const done=req.filter(s=>rlog.steps[s.id]?.completed).length;
+    const full=done===req.length&&req.length>0;
+    if(rlog.mode==='emergency') return {val:`⚡ ${done}/${req.length}`,cls:'em'};
+    if(full) return {val:`✓ ${done}/${req.length}`,cls:'ok'};
+    return {val:`${done}/${req.length}`,cls:''};
+  }
+
+  list.innerHTML=dates.map(date=>{
+    const log=logs[date];
+    const d=new Date(date+'T00:00:00');
+    const label=`${DAYS[d.getDay()]}, ${MOS[d.getMonth()]} ${d.getDate()}`;
+    const isToday=date===TODAY;
+    const ms=pillStat(log?.morning, mEmergReq(), ()=>mReq());
+    const ns=pillStat(log?.night,   nEmergReq(), (dt)=>nReq(dt));
+    const note=(log?.morning?.dayNote||log?.night?.dayNote||'').trim();
+    return `<div class="h-item">
+      <div class="h-date-row">
+        <div class="h-date">${label}${isToday?`<span class="today-badge">Today</span>`:''}</div>
+      </div>
+      <div class="h-pills">
+        <div class="h-pill">
+          <div class="h-pill-top"><span class="h-pill-icon">🌅</span><span class="h-pill-lbl">Morning</span></div>
+          <div class="h-pill-val ${ms.cls}">${ms.val}</div>
+        </div>
+        <div class="h-pill">
+          <div class="h-pill-top"><span class="h-pill-icon">🌙</span><span class="h-pill-lbl">Night</span></div>
+          <div class="h-pill-val ${ns.cls}">${ns.val}</div>
+        </div>
+      </div>
+      ${note?`<div class="h-note-prev">"${note.substring(0,70)}${note.length>70?'…':''}"</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════
+// STATS
+// ═══════════════════════════════════════
+let statsTab='morning';
+
+function renderStats(){
+  document.getElementById('stats-content').innerHTML=`
+    <div class="stats-tabs">
+      <button class="s-tab${statsTab==='morning'?' on':''}" onclick="switchTab('morning')">🌅 Morning</button>
+      <button class="s-tab${statsTab==='night'?' on nt':''}" onclick="switchTab('night')">🌙 Night</button>
+    </div>
+    <div id="stats-inner"></div>`;
+  renderStatsInner();
+}
+
+function switchTab(tab){
+  statsTab=tab;
+  document.querySelectorAll('.s-tab').forEach(b=>{
+    const isMorn=b.textContent.includes('Morning');
+    b.classList.toggle('on',(tab==='morning')===isMorn);
+    b.classList.toggle('nt',tab==='night'&&!isMorn&&b.classList.contains('on'));
+  });
+  renderStatsInner();
+}
+
+function renderStatsInner(){
+  const logs=S.get('logs',{});
+  const isNight=statsTab==='night';
+  const emR=isNight?nEmergReq():mEmergReq();
+  const allDates=Object.keys(logs);
+  const completed=allDates.filter(d=>{
+    const log=logs[d]?.[statsTab]; if(!log||!log.steps) return false;
+    const req=log.mode==='emergency'?emR:(isNight?nReq(log.dayType||'rest'):mReq());
+    return req.length>0&&req.every(s=>log.steps[s.id]?.completed);
+  }).length;
+  const total=allDates.length;
+  const rate=total?Math.round(completed/total*100):0;
+  const streak=streaks[statsTab];
+  const ac=isNight?'nc':'ac';
+  const DL=['S','M','T','W','T','F','S'];
+  let wg='<div class="week-grid">';
+  for(let i=6;i>=0;i--){
+    const d=new Date(); d.setDate(d.getDate()-i);
+    const ds=d.toISOString().split('T')[0];
+    const isToday=i===0;
+    const log=logs[ds]?.[statsTab];
+    let done=false;
+    if(log&&log.steps){
+      const req=log.mode==='emergency'?emR:(isNight?nReq(log.dayType||'rest'):mReq());
+      done=req.length>0&&req.every(s=>log.steps[s.id]?.completed);
+    }
+    const dc=done?(isNight?' nd':' md'):'';
+    const tc=isToday?(isNight?' ntd':' td'):'';
+    wg+=`<div class="wd"><div class="wd-lbl">${DL[d.getDay()]}</div><div class="wd-dot${dc}${tc}">${d.getDate()}</div></div>`;
+  }
+  wg+='</div>';
+  document.getElementById('stats-inner').innerHTML=`
+    <div class="stats-grid">
+      <div class="sc"><div class="sc-lbl">Current Streak</div><div class="sc-val ${ac}">${streak.current}</div><div class="sc-sub">days in a row</div></div>
+      <div class="sc"><div class="sc-lbl">Best Streak</div><div class="sc-val">${streak.best}</div><div class="sc-sub">personal best</div></div>
+      <div class="sc"><div class="sc-lbl">Completion Rate</div><div class="sc-val${rate>=80?' gc':''}">${rate}%</div><div class="sc-sub">${completed} of ${total} days</div></div>
+      <div class="sc"><div class="sc-lbl">Total Done</div><div class="sc-val">${completed}</div><div class="sc-sub">full routines</div></div>
+      <div class="sc wide"><div class="sc-lbl">Last 7 Days</div>${wg}</div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════
+// STRETCH EDITOR
+// ═══════════════════════════════════════
+function renderStretchEditor(){
+  const stretches=getStretches();
+  const list=document.getElementById('stretch-list');
+  list.innerHTML=stretches.map((s,i)=>`
+    <div class="stretch-row">
+      <input class="stretch-input" value="${esc(s)}"
+        onblur="updateStretch(${i},this.value)"
+        onkeydown="if(event.key==='Enter')this.blur()">
+      <button class="stretch-del" onclick="deleteStretch(${i})" title="Remove">×</button>
+    </div>`).join('');
+}
+
+function addStretch(){
+  const stretches=getStretches();
+  stretches.push('New stretch');
+  saveStretches(stretches);
+  renderStretchEditor();
+  // Focus last input
+  setTimeout(()=>{
+    const inputs=document.querySelectorAll('.stretch-input');
+    const last=inputs[inputs.length-1];
+    if(last){last.select();last.focus();}
+  },50);
+}
+
+function deleteStretch(i){
+  const stretches=getStretches();
+  if(stretches.length<=1) return; // keep at least one
+  stretches.splice(i,1);
+  saveStretches(stretches);
+  renderStretchEditor();
+}
+
+function updateStretch(i,val){
+  const stretches=getStretches();
+  stretches[i]=val.trim()||stretches[i];
+  saveStretches(stretches);
+  renderStretchEditor();
+}
+
+// ═══════════════════════════════════════
+// EXPORT / IMPORT
+// ═══════════════════════════════════════
+function exportData(){
+  const data={
+    app:'Yotei', version:'1.1',
+    exportedAt:new Date().toISOString(),
+    logs:S.get('logs',{}),
+    streak:S.get('streak',{}),
+    theme:S.get('theme','dark'),
+    m_stretches:S.get('m_stretches',null),
+  };
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=`yotei-backup-${todayStr()}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function triggerImport(){
+  document.getElementById('import-file').click();
+}
+
+function importData(file){
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      if(!data.logs) throw new Error('Invalid backup');
+      if(!confirm('This will replace all current data. Continue?')) return;
+      if(data.logs)        S.set('logs',data.logs);
+      if(data.streak)      S.set('streak',data.streak);
+      if(data.theme)       S.set('theme',data.theme);
+      if(data.m_stretches) S.set('m_stretches',data.m_stretches);
+      location.reload();
+    } catch(err){
+      alert('Could not read backup file. Make sure it\'s a valid Yotei export.');
+    }
+  };
+  reader.readAsText(file);
+  // Reset input so same file can be re-imported if needed
+  document.getElementById('import-file').value='';
+}
+
+// ═══════════════════════════════════════
+// SETTINGS
+// ═══════════════════════════════════════
+function openSettings(){
+  document.getElementById('settings-overlay').classList.add('open');
+  document.getElementById('theme-toggle').classList.toggle('on',document.getElementById('app').classList.contains('light'));
+  renderStretchEditor();
+}
+function closeSettings(){ document.getElementById('settings-overlay').classList.remove('open'); }
+function toggleTheme(){
+  const light=document.getElementById('app').classList.toggle('light');
+  document.getElementById('theme-toggle').classList.toggle('on',light);
+  S.set('theme',light?'light':'dark');
+}
+
+// ═══════════════════════════════════════
+// PWA — SERVICE WORKER
+// ═══════════════════════════════════════
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('./sw.js')
+      .then(()=>console.log('Yotei SW registered'))
+      .catch(err=>console.warn('Yotei SW failed:',err));
+  });
+}
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+(function init(){
+  if(S.get('theme')==='light') document.getElementById('app').classList.add('light');
+  migrateOldLogs();
+  initLog();
+  const saved=S.get('streak');
+  if(saved) streaks=saved;
+  calcStreaks();
+  updateHeader('home');
+  renderHome();
+})();
+</script>
+</body>
+</html>
