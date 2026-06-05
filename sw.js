@@ -1,4 +1,4 @@
-const CACHE = 'yotei-v1.1';
+const CACHE = 'yotei-v1.2';
 const PRECACHE = ['./index.html', './manifest.json', './icon.svg'];
 
 // Install: precache app shell

@@ -99,7 +99,7 @@
 
     /* HOME */
     .home-greeting{margin-bottom:20px}
-    .home-greeting h1{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;line-height:1.15;color:var(--text);margin-bottom:3px}
+    .home-greeting h1{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;line-height:1.15;color:var(--text);margin-bottom:3px}
     .home-greeting p{font-size:13px;color:var(--text-sec);font-weight:500}
     .streak-banner{display:flex;align-items:stretch;background:linear-gradient(135deg,rgba(59,130,246,.1),rgba(29,78,216,.06));border:1px solid rgba(59,130,246,.18);border-radius:var(--r);padding:14px 16px;margin-bottom:14px}
     .streak-col{flex:1;display:flex;align-items:center;gap:10px}
@@ -117,6 +117,7 @@
     .routine-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent-dim),var(--accent-b));opacity:.65}
     .routine-card.night-card::before{background:linear-gradient(90deg,var(--night-dim),var(--night));opacity:.7}
     .routine-card.r-done::before{background:linear-gradient(90deg,#15803d,#22c55e);opacity:.85}
+    .routine-card.r-ge::before{background:linear-gradient(90deg,#92400e,#f59e0b);opacity:.7}
     .routine-card:active{background:var(--card-h);transform:scale(.99)}
     .card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
     .card-name-row{display:flex;align-items:center;gap:8px}
@@ -134,6 +135,7 @@
     .prog-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--accent-dim),var(--accent-b));transition:width .4s cubic-bezier(.4,0,.2,1)}
     .prog-fill.nf{background:linear-gradient(90deg,var(--night-dim),var(--night))}
     .prog-fill.df{background:linear-gradient(90deg,#15803d,#22c55e)}
+    .prog-fill.gef{background:linear-gradient(90deg,#92400e,#f59e0b)}
     .card-hint{display:flex;align-items:center;justify-content:flex-end;gap:4px;font-size:12px;color:var(--text-sec);margin-top:12px}
 
     /* ROUTINE VIEW */
@@ -206,6 +208,20 @@
     .note-btn.hn.nhn::after{background:var(--night)}
     .note-area{padding:0 16px 12px;display:none}
     .note-area.open{display:block}
+
+    /* INFO BUTTON */
+    .info-btn{width:30px;height:30px;border-radius:8px;border:none;background:transparent;color:var(--text-ter);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--t);flex-shrink:0;font-family:'Syne',sans-serif;font-size:13px;font-weight:700}
+    .info-btn:active{background:var(--card-h);color:var(--accent-b)}
+
+    /* INFO PANEL */
+    .info-panel{padding:0 16px 12px;display:none}
+    .info-panel.open{display:block}
+    .info-panel-inner{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:11px 13px;font-size:12px;color:var(--text-sec);line-height:1.65;font-weight:400}
+    .info-panel-inner strong{color:var(--text);font-weight:600}
+
+    /* GOOD ENOUGH BADGE */
+    .badge-ge{background:rgba(245,158,11,.1);color:var(--opt)}
+
     .note-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;font-family:'Manrope',sans-serif;font-size:13px;color:var(--text);resize:none;min-height:68px;outline:none;transition:border-color .2s}
     .note-input:focus{border-color:var(--accent)}
     .note-input::placeholder{color:var(--text-ter)}
@@ -221,12 +237,32 @@
     .day-note-input:focus{border-color:var(--accent)}
     .day-note-input::placeholder{color:var(--text-ter)}
 
-    /* HISTORY */
+    /* LOG VIEW (read-only history detail) */
+    .log-section{margin-bottom:20px}
+    .log-section-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text-sec);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;padding:0 2px;display:flex;align-items:center;gap:8px}
+    .log-section-title span{font-size:16px}
+    .log-step{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border)}
+    .log-step:last-child{border-bottom:none}
+    .log-cb{width:18px;height:18px;border-radius:5px;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center}
+    .log-cb.done{background:var(--accent)}
+    .log-cb.done.nc{background:var(--night)}
+    .log-cb.done::after{content:'';width:4px;height:7px;border:2px solid white;border-top:none;border-left:none;transform:rotate(45deg) translateY(-1px);display:block}
+    .log-cb.skip{background:var(--border)}
+    .log-step-body{flex:1;min-width:0}
+    .log-step-label{font-size:14px;font-weight:500;color:var(--text)}
+    .log-step.ls-skip .log-step-label{color:var(--text-sec);text-decoration:line-through;text-decoration-color:var(--text-ter)}
+    .log-step-sub{font-size:11px;color:var(--text-sec);margin-top:1px}
+    .log-step-note{margin-top:6px;background:var(--surface);border-left:2px solid var(--accent);border-radius:0 var(--r-sm) var(--r-sm) 0;padding:7px 10px;font-size:12px;color:var(--text-sec);line-height:1.6;font-style:italic}
+    .log-step-note.nn{border-left-color:var(--night)}
+    .log-day-note{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:12px}
+    .log-day-note-lbl{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--text-sec);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
+    .log-day-note-text{font-size:13px;color:var(--text-sec);line-height:1.65;font-style:italic}
+    .log-empty{font-size:13px;color:var(--text-ter);padding:10px 14px;font-style:italic}
     .v-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--text);margin-bottom:4px}
     .v-sub{font-size:13px;color:var(--text-sec);font-weight:500;margin-bottom:20px}
     .h-list{display:flex;flex-direction:column;gap:10px}
     .h-item{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px}
-    .h-date-row{display:flex;align-items:center;margin-bottom:10px}
+    .h-date-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
     .h-date{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--text)}
     .today-badge{font-size:10px;color:var(--accent-b);font-weight:700;background:rgba(59,130,246,.12);padding:2px 7px;border-radius:10px;margin-left:8px}
     .h-pills{display:flex;gap:8px}
@@ -378,6 +414,8 @@
 
     <div id="view-routine" class="view"></div>
 
+    <div id="view-log" class="view"></div>
+
     <div id="view-history" class="view">
       <div class="v-title">History</div>
       <div class="v-sub" id="hist-sub">Your past routines</div>
@@ -498,8 +536,9 @@ const MORNING = {
       steps:[
         {id:'s16', label:'Shower', sub:'School days: non-negotiable · Non-school: conditional'},
         {id:'s17', label:'Get dressed'},
-        {id:'s18', label:'Journal', sub:"5–10 min · What's on your mind · Intentions for today · One thing you're grateful for"},
-        {id:'s19', label:'Breakfast'},
+        {id:'s18', label:'Prepare breakfast', sub:'Start cooking before journaling'},
+        {id:'s19', label:'Journal', sub:"5–10 min · What's on your mind · Intentions for today · One thing you're grateful for · While breakfast cooks"},
+        {id:'s20', label:'Breakfast'},
       ]
     },
   ],
@@ -565,6 +604,51 @@ const NIGHT_EMERG = [
 ];
 
 // ═══════════════════════════════════════
+// STEP INFO (static, updated per version)
+// ═══════════════════════════════════════
+const STEP_INFO = {
+  s1:  'Your body completes sleep in cycles. Waking naturally — without an alarm — means you\'ve finished a cycle. The Cortisol Awakening Response (CAR) begins immediately at wake: a distinct cortisol peak over the next 30–45 min that drives biological activation for the day. <strong>Don\'t rush it.</strong>',
+  s2:  'The spine absorbs fluid overnight, making discs slightly thicker and stiffer in the morning. These passive stretches take advantage of that hydration — mobilizing the spine before you load it vertically. Done in bed: zero friction, no warm-up needed.',
+  s3:  'Physiological sighs (cyclic sighing): double inhale through the nose, long slow exhale through the mouth. The second inhale re-inflates collapsed alveoli; the extended exhale activates the parasympathetic branch via pulmonary stretch receptors. Balban et al. (2023) found this outperformed box breathing and mindfulness for reducing real-time anxiety.',
+  s4:  'Making your bed before getting down is a top-bunk constraint turned into a behavioral win. It activates the "completion bias" — finishing a task immediately after waking primes you for follow-through on the rest of the routine.',
+  s5:  'Deliberate orientation toward the window as you get up gives your ipRGCs (the photoreceptors that drive circadian entrainment) their first light signal. Even indirect morning light through a window starts the process.',
+  s6:  'No strong physiological requirement here. Retained because it improves subjective oral cleanliness and adds negligible friction. Clearing the overnight bacterial load before the first glass of water is the practical reasoning.',
+  s7:  'You lose ~500ml of water overnight through respiration and passive sweating, more if your room is warm. Rehydration first thing supports blood pressure regulation and cognitive function before any stimulant or food.',
+  s8:  'Oral bacteria peak overnight. Brushing removes the biofilm before it can influence your gut microbiome via swallowing — a secondary reason beyond hygiene.',
+  s9:  'Face washing removes sebum and overnight bacterial accumulation. The tactile stimulus also contributes to alertness — mild sensory activation without the thermal intervention of cold water.',
+  s10: 'Dead hangs provide passive spinal traction — gravity decompress the lumbar and thoracic vertebrae after overnight disc swelling. 1–2 sets, 20–30 sec each on the doorway pull bar. Urban & Roberts (2003) support spinal decompression as a morning mobility intervention.',
+  s11: '3 flights of stairs functions as the warm-up for rooftop stretching. Cold connective tissue loaded with static stretches before adequate circulation is a risk — the stair climb solves that. Never do the rooftop stretches without it.',
+  s12: 'Light is the dominant zeitgeber (time-giver) for the SCN master clock. Morning sunlight — ideally within the first hour of waking — drives the phase advance that determines when you feel sleepy at night. Czeisler & Wright (2000). Overcast days reduce the signal but don\'t eliminate it.',
+  s13: 'All rooftop stretches are passive holds — no active reps, no counting. Current list: Standing Forward Fold (soft knees, no flexed feet), Chest Opener, Lateral Neck Flexion, Chin-to-Chest, Cross-body Stretch, Hip Flexor Stretch. Full circumduction removed — cervical compression risk (Puentedura et al., 2012).',
+  s14: 'Returning downstairs ends the outdoor activation phase. The transition back into the house is an implicit environmental cue shift — from activation to transition.',
+  s15: 'Post-exertion rehydration. Movement and sun exposure accelerate fluid loss. Second glass replaces what the rooftop phase cost. Sawka et al. (2007).',
+  s16: 'School days: non-negotiable. The shower functions as a behavioral transition cue — the context shift between physical and cognitive phases (Wood & Neal, 2007). Non-school days: conditional based on workout status and plans. Duration: ~5–10 min. Soap: key zones. Shampoo: not daily unless needed.',
+  s17: 'Getting dressed after the shower completes the transition to day mode. Staying in sleep clothes extends the psychological framing of the sleep state.',
+  s18: 'Starting breakfast before journaling means the cognitive phase runs in parallel with cooking — no dead time waiting for food. The routine ends when you eat, not when the food is ready.',
+  s19: 'Journal while breakfast cooks. Three prompts: (1) brain dump — cognitive offloading reduces intrusive thought frequency (Risko & Gilbert, 2016); (2) intentions for the day with when/where context — if-then framing increases follow-through (Gollwitzer, 1999); (3) one thing you\'re grateful for — linked to improved well-being and sleep quality (Emmons & McCullough, 2003). 5–10 min total.',
+  s20: 'Target: protein + complex carb. Practical: 2–3 eggs + rice + milk + banana (~20–25g protein). Whole egg recommended — yolk contains choline, fat-soluble vitamins, healthy fats. Supports muscle protein synthesis and sustained cognitive function (Morton et al., 2018). Avoid high-sugar options — mid-morning glucose crash undermines the whole activation window.',
+  // Night steps
+  np1w:'Wrapping up workout by 9 PM gives the body ~2–3 hours for core temperature to begin dropping before sleep. Exercise raises core temp and cortisol — both need to clear before sleep onset becomes easy.',
+  np1r:'The rooftop visit at ~9 PM is the routine\'s opening cue. Outdoor light at this hour is now low enough to stop suppressing melatonin, and the brief movement primes the wind-down sequence.',
+  np2s:'Warm shower in the evening works via a different mechanism than the morning one: vasodilation brings heat to the skin surface, which is then lost to the environment. The resulting drop in core temperature is a sleep-onset signal (Krauchi et al., 1999).',
+  np2t:'Same as morning — oral hygiene. Also serves as a behavioral anchor: brushing teeth at night is a near-universal wind-down cue even without conscious intent.',
+  np2h:'If no shower: a face wash achieves the hygiene baseline and provides a lighter version of the transition cue without the full thermal intervention.',
+  np3j:'Hard cap 15 min. Three purposes: reflection on the day (closes open loops), brain dump (clears working memory before sleep — reduces sleep-onset rumination), and tomorrow capture (externalizes next-day concerns so the brain stops rehearsing them). Risko & Gilbert (2016).',
+  np4p:'The playlist switch is a deliberate transition cue — the audio environment shifts from daytime to wind-down mode. Context cues reliably trigger associated behavioral states (Wood & Neal, 2007).',
+  np4r:'Self-paced reading with no algorithmic feed. The key distinction: you control pacing and stopping, not an algorithm optimizing for engagement. Passive content consumption keeps the arousal system active.',
+  np4s:'The last step. Sleep quality is largely determined by what happened in the hours before this — the routine exists to make this easier, not harder.',
+  // Optional morning
+  mo1: 'Flexible placement: after rooftop (Phase 2) or after breakfast (Phase 3). Mood and crowd conditions are legitimate decision factors — this is correctly classified as optional. Additional light and low-intensity movement extend the activation benefit.',
+  mo2: 'Sweeping is a low-cognitive physical task. Environmental order reduces background mental noise — a minor but real effect on subsequent focus. Fits anywhere in the routine where there\'s a natural pause.',
+  mo3: 'Placement: Phase 1, after making bed. Morning meditation is timed after CAR has peaked and the mind is alert but not yet reactive. 5–10 min is sufficient for the cognitive benefit without over-extending Phase 1.',
+  mo4: 'Same mechanism as sweeping — environmental order. Phase 1 placement extends the bed-making behavioral momentum; Phase 3 placement functions as a pre-leave sweep.',
+  mo5: 'Reduces decision fatigue before the day starts. Especially relevant on school days. Laying out bag, clothes, and items removes a cluster of micro-decisions from the morning pressure window.',
+  mo6: 'Brief cold exposure activates the sympathetic nervous system — mild alertness boost. Requires a container and ice cubes. Factor in prep time before making this a regular addition.',
+  // Optional night
+  no1: 'Evening walk, ~20 min, Phase 1. Low-intensity outdoor movement at this hour is parasympathetic-compatible — unlike vigorous exercise. Check crowd conditions from the rooftop first before committing.',
+};
+
+// ═══════════════════════════════════════
 // HELPERS
 // ═══════════════════════════════════════
 function phaseSteps(phase, dt){
@@ -596,7 +680,12 @@ let todayLog = null;
 let streaks  = {morning:{current:0,best:0},night:{current:0,best:0}};
 const collapsed = new Set(); // tracks collapsed phase IDs
 
-function todayStr(){ return new Date().toISOString().split('T')[0]; }
+function todayStr(){
+  const now=new Date();
+  // Before 4 AM → treat as previous calendar day (night grace period)
+  if(now.getHours()<4){ now.setDate(now.getDate()-1); }
+  return now.toISOString().split('T')[0];
+}
 
 // ═══════════════════════════════════════
 // LOG INIT & SAVE
@@ -664,6 +753,33 @@ function nTotal(){ const l=todayLog?.night;   if(!l) return nReq('rest').length;
 function mComplete(){ return mDone()===mTotal(); }
 function nComplete(){ return nDone()===nTotal(); }
 
+// Good Enough: at least 2 phases have ≥1 step completed (mirrors Morning Routine v1.2.5 operating rule)
+function mGoodEnough(){
+  const l=todayLog?.morning; if(!l||l.mode==='emergency') return false;
+  if(mComplete()) return false; // full completion supersedes
+  const touched=MORNING.phases.filter(p=>p.steps.some(s=>l.steps[s.id]?.completed)).length;
+  return touched>=2;
+}
+function nGoodEnough(){
+  const l=todayLog?.night; if(!l||l.mode==='emergency') return false;
+  if(nComplete()) return false;
+  const dt=l.dayType||'rest';
+  const touched=NIGHT.phases.filter(p=>phaseSteps(p,dt).some(s=>l.steps[s.id]?.completed)).length;
+  return touched>=2;
+}
+
+// Sleep auto-complete: on open, if Sleep step unticked but night routine is good enough → auto-tick Sleep
+function maybeSleepAutoComplete(){
+  const l=todayLog?.night; if(!l) return;
+  const sleepId='np4s';
+  if(l.steps[sleepId]?.completed) return; // already ticked
+  if(nGoodEnough()){
+    l.steps[sleepId].completed=true;
+    if(!l.completedAt&&nComplete()) l.completedAt=new Date().toISOString();
+    saveLog(); calcStreaks();
+  }
+}
+
 function logComplete(logs,date,type){
   const log=logs[date]?.[type]; if(!log||!log.steps) return false;
   const req=log.mode==='emergency'?(type==='morning'?mEmergReq():nEmergReq()):(type==='morning'?mReq():nReq(log.dayType||'rest'));
@@ -695,7 +811,7 @@ let curView='home';
 let activeRoutine='morning';
 
 function navigate(view){
-  if(view===curView&&view!=='routine') return;
+  if(view===curView&&view!=='routine'&&view!=='log') return;
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('view-'+view)?.classList.add('active');
   curView=view;
@@ -717,6 +833,9 @@ function updateHeader(view){
     left.innerHTML=`<span class="h-date">${fmtDate()}</span>`;
   } else if(view==='routine'){
     left.innerHTML=`<button class="back-btn" onclick="navigate('home')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15,18 9,12 15,6"/></svg>Back</button>`;
+  } else if(view==='log'){
+    left.innerHTML=`<button class="back-btn" onclick="navigate('history')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15,18 9,12 15,6"/></svg>Back</button>`;
+    document.getElementById('h-center').innerHTML=`<span class="h-title" id="log-header-date"></span>`;
   } else {
     left.innerHTML=`<span class="h-title">${{history:'History',stats:'Stats'}[view]||''}</span>`;
   }
@@ -738,40 +857,42 @@ function renderHome(){
   document.getElementById('sb-m').textContent='Best: '+streaks.morning.best;
   document.getElementById('sb-n').textContent='Best: '+streaks.night.best;
 
-  function badge(complete,emerg,inProg,isNight){
-    if(complete)  return `<div class="card-badge badge-done"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20,6 9,17 4,12"/></svg>Completed</div>`;
-    if(emerg)     return `<div class="card-badge badge-emerg">⚡ Emergency</div>`;
+  function badge(complete,goodEnough,emerg,inProg,isNight){
+    if(complete)    return `<div class="card-badge badge-done"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20,6 9,17 4,12"/></svg>Completed</div>`;
+    if(goodEnough)  return `<div class="card-badge badge-ge">~ Good Enough</div>`;
+    if(emerg)       return `<div class="card-badge badge-emerg">⚡ Emergency</div>`;
     const cls=isNight?'card-badge badge-n':'card-badge badge-m';
     return `<div class="${cls}"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>${inProg>0?'In progress':'Not started'}</div>`;
   }
 
   const ml=todayLog.morning,nl=todayLog.night;
   const mc=mComplete(),nc=nComplete();
+  const mge=mGoodEnough(),nge=nGoodEnough();
   const md=mDone(),mt=mTotal(),mp=mt?Math.round(md/mt*100):0;
   const nd=nDone(),nt=nTotal(),np=nt?Math.round(nd/nt*100):0;
   const me=ml.mode==='emergency',ne=nl.mode==='emergency';
   const dt=nl.dayType||'rest';
 
   document.getElementById('home-cards').innerHTML=`
-    <div class="routine-card${mc?' r-done':''}" onclick="openRoutine('morning')">
+    <div class="routine-card${mc?' r-done':mge?' r-ge':''}" onclick="openRoutine('morning')">
       <div class="card-top">
-        <div><div class="card-name-row"><span class="card-icon">🌅</span><div class="card-title">Morning Routine</div></div><div class="card-meta">${me?'Emergency mode':'19 steps · 3 phases'}</div></div>
-        ${badge(mc,me,md,false)}
+        <div><div class="card-name-row"><span class="card-icon">🌅</span><div class="card-title">Morning Routine</div></div><div class="card-meta">${me?'Emergency mode':'20 steps · 3 phases'}</div></div>
+        ${badge(mc,mge,me,md,false)}
       </div>
       <div class="prog-wrap">
         <div class="prog-lbl"><span>Progress</span><span>${md} / ${mt}</span></div>
-        <div class="prog-track"><div class="prog-fill${mc?' df':''}" style="width:${mp}%"></div></div>
+        <div class="prog-track"><div class="prog-fill${mc?' df':mge?' gef':''}" style="width:${mp}%"></div></div>
       </div>
       <div class="card-hint"><span>Tap to open</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg></div>
     </div>
-    <div class="routine-card night-card${nc?' r-done':''}" onclick="openRoutine('night')">
+    <div class="routine-card night-card${nc?' r-done':nge?' r-ge':''}" onclick="openRoutine('night')">
       <div class="card-top">
         <div><div class="card-name-row"><span class="card-icon">🌙</span><div class="card-title">Night Routine</div></div><div class="card-meta">${ne?'Emergency mode':'7 steps · 4 phases · '+(dt==='workout'?'Workout day':'Rest day')}</div></div>
-        ${badge(nc,ne,nd,true)}
+        ${badge(nc,nge,ne,nd,true)}
       </div>
       <div class="prog-wrap">
         <div class="prog-lbl"><span>Progress</span><span>${nd} / ${nt}</span></div>
-        <div class="prog-track"><div class="prog-fill nf${nc?' df':''}" style="width:${np}%"></div></div>
+        <div class="prog-track"><div class="prog-fill nf${nc?' df':nge?' gef':''}" style="width:${np}%"></div></div>
       </div>
       <div class="card-hint"><span>Tap to open</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg></div>
     </div>`;
@@ -786,6 +907,7 @@ function stepHtml(step, log, isNight){
   const sub = step.id==='s2' ? getStretches().join(' · ') : step.sub;
   const sd=log.steps?.[step.id]||{completed:false,note:''};
   const on=sd.completed, hn=sd.note&&sd.note.trim().length>0;
+  const hasInfo=!!STEP_INFO[step.id];
   return `
     <div class="step-item${on?' si-done':''}" id="si-${step.id}">
       <div class="step-row">
@@ -795,10 +917,12 @@ function stepHtml(step, log, isNight){
           ${sub?`<div class="step-sub">${esc(sub)}</div>`:''}
         </div>
         ${step.optional?`<span class="opt-tag">OPT</span>`:''}
+        ${hasInfo?`<button class="info-btn${isNight?' ni':''}" onclick="toggleInfo('${step.id}')">!</button>`:''}
         <button class="note-btn${hn?' hn':''}${hn&&isNight?' nhn':''}" id="nb-${step.id}" onclick="toggleNote('${step.id}')">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         </button>
       </div>
+      ${hasInfo?`<div class="info-panel" id="ip-${step.id}"><div class="info-panel-inner">${STEP_INFO[step.id]}</div></div>`:''}
       <div class="note-area" id="na-${step.id}">
         <textarea class="note-input" placeholder="Add a note..." oninput="saveStepNote('${step.id}',this.value)">${esc(sd.note||'')}</textarea>
       </div>
@@ -973,6 +1097,12 @@ function toggleNote(id){
   if(area.classList.contains('open')) setTimeout(()=>area.querySelector('textarea')?.focus(),80);
 }
 
+function toggleInfo(id){
+  const panel=document.getElementById('ip-'+id);
+  if(!panel) return;
+  panel.classList.toggle('open');
+}
+
 function saveStepNote(id,val){
   const log=todayLog[activeRoutine]; if(!log||!log.steps[id]) return;
   log.steps[id].note=val; saveLog();
@@ -1023,9 +1153,10 @@ function renderHistory(){
     const ms=pillStat(log?.morning, mEmergReq(), ()=>mReq());
     const ns=pillStat(log?.night,   nEmergReq(), (dt)=>nReq(dt));
     const note=(log?.morning?.dayNote||log?.night?.dayNote||'').trim();
-    return `<div class="h-item">
+    return `<div class="h-item" onclick="openLog('${date}')" style="cursor:pointer">
       <div class="h-date-row">
         <div class="h-date">${label}${isToday?`<span class="today-badge">Today</span>`:''}</div>
+        <svg style="color:var(--text-ter);flex-shrink:0;margin-left:auto" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg>
       </div>
       <div class="h-pills">
         <div class="h-pill">
@@ -1042,8 +1173,108 @@ function renderHistory(){
   }).join('');
 }
 
-// ═══════════════════════════════════════
-// STATS
+let activeLogDate = null;
+
+function openLog(date){
+  activeLogDate = date;
+  navigate('log');
+  renderLog();
+}
+
+function renderLog(){
+  const DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const MOS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const logs=S.get('logs',{});
+  const log=logs[activeLogDate];
+  const d=new Date(activeLogDate+'T00:00:00');
+  const label=`${DAYS[d.getDay()]}, ${MOS[d.getMonth()]} ${d.getDate()}`;
+
+  // Set header date
+  const hd=document.getElementById('log-header-date');
+  if(hd) hd.textContent=label;
+
+  if(!log){ document.getElementById('view-log').innerHTML=`<div class="empty-state"><p>No data for this day.</p></div>`; return; }
+
+  function logStepHtml(step, rlog, isNight){
+    if(!step||!rlog) return '';
+    const sd=rlog.steps?.[step.id];
+    const done=sd?.completed||false;
+    const note=sd?.note?.trim()||'';
+    const sub=step.id==='s2'?(S.get('m_stretches',['Full-body stretch','Knee-to-chest stretch','Supine twist']).join(' · ')):step.sub;
+    return `<div class="log-step${done?'':' ls-skip'}">
+      <div class="log-cb ${done?(isNight?'done nc':'done'):'skip'}"></div>
+      <div class="log-step-body">
+        <div class="log-step-label">${step.label}</div>
+        ${sub?`<div class="log-step-sub">${esc(sub)}</div>`:''}
+        ${note?`<div class="log-step-note${isNight?' nn':''}">${esc(note)}</div>`:''}
+      </div>
+    </div>`;
+  }
+
+  function logSectionHtml(title, icon, rlog, steps, isNight){
+    if(!steps||!steps.length) return '';
+    const hasAnyData=steps.some(s=>rlog?.steps?.[s.id]?.completed||rlog?.steps?.[s.id]?.note?.trim());
+    return `<div class="log-section">
+      <div class="log-section-title"><span>${icon}</span>${title}</div>
+      <div class="phase-steps">
+        ${steps.map(s=>logStepHtml(s,rlog,isNight)).join('')}
+      </div>
+    </div>`;
+  }
+
+  let h='';
+
+  // ── MORNING ──
+  const ml=log.morning;
+  if(ml){
+    const mIsEmerg=ml.mode==='emergency';
+    const mSteps=mIsEmerg?MORNING_EMERG:MORNING.phases.flatMap(p=>p.steps);
+    const mOptDone=MORNING.optional.filter(s=>ml.steps?.[s.id]?.completed||ml.steps?.[s.id]?.note?.trim());
+
+    if(ml.dayNote?.trim()){
+      h+=`<div class="log-day-note"><div class="log-day-note-lbl">Morning Note</div><div class="log-day-note-text">${esc(ml.dayNote)}</div></div>`;
+    }
+
+    if(mIsEmerg){
+      h+=logSectionHtml('Emergency Steps','⚡',ml,MORNING_EMERG,false);
+    } else {
+      MORNING.phases.forEach(p=>{
+        h+=logSectionHtml(p.name,'🌅',ml,p.steps,false);
+      });
+      if(mOptDone.length){
+        h+=logSectionHtml('Optional','✨',ml,mOptDone,false);
+      }
+    }
+  }
+
+  // ── NIGHT ──
+  const nl=log.night;
+  if(nl){
+    const nIsEmerg=nl.mode==='emergency';
+    const dt=nl.dayType||'rest';
+    const nOptDone=NIGHT.optional.filter(s=>nl.steps?.[s.id]?.completed||nl.steps?.[s.id]?.note?.trim());
+
+    if(nl.dayNote?.trim()){
+      h+=`<div class="log-day-note"><div class="log-day-note-lbl">Night Note</div><div class="log-day-note-text">${esc(nl.dayNote)}</div></div>`;
+    }
+
+    if(nIsEmerg){
+      h+=logSectionHtml('Emergency Steps','⚡',nl,NIGHT_EMERG,true);
+    } else {
+      NIGHT.phases.forEach(p=>{
+        const steps=phaseSteps(p,dt);
+        h+=logSectionHtml(p.name,'🌙',nl,steps,true);
+      });
+      if(nOptDone.length){
+        h+=logSectionHtml('Optional','✨',nl,nOptDone,true);
+      }
+    }
+  }
+
+  if(!h) h=`<div class="empty-state"><p>Nothing recorded for this day.</p></div>`;
+
+  document.getElementById('view-log').innerHTML=h;
+}
 // ═══════════════════════════════════════
 let statsTab='morning';
 
@@ -1233,6 +1464,7 @@ if('serviceWorker' in navigator){
   if(S.get('theme')==='light') document.getElementById('app').classList.add('light');
   migrateOldLogs();
   initLog();
+  maybeSleepAutoComplete();
   const saved=S.get('streak');
   if(saved) streaks=saved;
   calcStreaks();
