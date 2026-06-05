@@ -89,7 +89,9 @@
     .view::-webkit-scrollbar{display:none}
     .view{-ms-overflow-style:none;scrollbar-width:none}
     .view.active{opacity:1;pointer-events:all;transform:translateX(0)}
-    #view-routine{padding-bottom:32px}
+    .view-inner{padding:20px 20px 0}
+    #view-routine{padding-bottom:32px;padding-left:20px;padding-right:20px;padding-top:20px}
+    #view-log{padding:20px}
 
     /* FOOTER */
     #app-nav{height:var(--fh);display:flex;align-items:center;justify-content:space-around;background:var(--surface);border-top:1px solid var(--border);flex-shrink:0;z-index:10;padding:0 10px;padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -99,7 +101,7 @@
 
     /* HOME */
     .home-greeting{margin-bottom:20px}
-    .home-greeting h1{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;line-height:1.15;color:var(--text);margin-bottom:3px}
+    .home-greeting h1{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;line-height:1.15;color:var(--text);margin-bottom:3px}
     .home-greeting p{font-size:13px;color:var(--text-sec);font-weight:500}
     .streak-banner{display:flex;align-items:stretch;background:linear-gradient(135deg,rgba(59,130,246,.1),rgba(29,78,216,.06));border:1px solid rgba(59,130,246,.18);border-radius:var(--r);padding:14px 16px;margin-bottom:14px}
     .streak-col{flex:1;display:flex;align-items:center;gap:10px}
@@ -387,6 +389,7 @@
   <main id="app-main">
 
     <div id="view-home" class="view active">
+      <div class="view-inner">
       <div class="home-greeting">
         <h1 id="greeting-text">Good morning.</h1>
         <p>Here's your routine for today.</p>
@@ -410,6 +413,7 @@
         </div>
       </div>
       <div id="home-cards"></div>
+      </div>
     </div>
 
     <div id="view-routine" class="view"></div>
@@ -417,15 +421,19 @@
     <div id="view-log" class="view"></div>
 
     <div id="view-history" class="view">
+      <div class="view-inner">
       <div class="v-title">History</div>
       <div class="v-sub" id="hist-sub">Your past routines</div>
       <div class="h-list" id="hist-list"></div>
+      </div>
     </div>
 
     <div id="view-stats" class="view">
+      <div class="view-inner">
       <div class="v-title">Stats</div>
       <div class="v-sub">Your performance over time</div>
       <div id="stats-content"></div>
+      </div>
     </div>
 
   </main>
