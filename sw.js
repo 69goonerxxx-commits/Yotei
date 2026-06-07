@@ -1,4 +1,4 @@
-const CACHE = 'yotei-v1.2';
+const CACHE = 'yotei-v1.5';
 const PRECACHE = ['./index.html', './manifest.json', './icon.svg'];
 
 // Install: precache app shell
@@ -19,28 +19,26 @@ self.addEventListener('activate', e => {
   self.clients.claim();
 });
 
-// Fetch: cache-first for same-origin, stale-while-revalidate for fonts
+// Fetch: network-first for same-origin (picks up new deployments),
+//        cache-first for fonts (avoids unnecessary external requests)
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
 
-  // Same-origin: cache first, fallback to network + cache update
+  // Same-origin: try network first, fall back to cache for offline
   if (url.origin === location.origin) {
     e.respondWith(
-      caches.match(e.request).then(cached => {
-        if (cached) return cached;
-        return fetch(e.request).then(resp => {
-          if (resp && resp.status === 200) {
-            const clone = resp.clone();
-            caches.open(CACHE).then(c => c.put(e.request, clone));
-          }
-          return resp;
-        });
-      })
+      fetch(e.request).then(resp => {
+        if (resp && resp.status === 200) {
+          const clone = resp.clone();
+          caches.open(CACHE).then(c => c.put(e.request, clone));
+        }
+        return resp;
+      }).catch(() => caches.match(e.request))
     );
     return;
   }
 
-  // External (Google Fonts etc): cache then network
+  // External (Google Fonts etc): cache first, fallback to network
   if (url.hostname.includes('fonts.googleapis.com') || url.hostname.includes('fonts.gstatic.com')) {
     e.respondWith(
       caches.match(e.request).then(cached => {

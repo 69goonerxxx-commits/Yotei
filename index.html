@@ -519,7 +519,6 @@ const MORNING = {
       steps:[
         {id:'s1', label:'Wake up'},
         {id:'s2', label:'In-bed stretching'}, // sub injected dynamically from getStretches()
-        {id:'s3', label:'Physiological sighs', sub:'3–5 repetitions'},
         {id:'s4', label:'Make bed', sub:'Top bunk — done before getting down'},
         {id:'s5', label:'Get out of bed'},
       ]
@@ -531,9 +530,9 @@ const MORNING = {
         {id:'s7',  label:'Drink first glass of water', sub:'~500ml'},
         {id:'s8',  label:'Brush teeth'},
         {id:'s9',  label:'Wash face'},
-        {id:'s10', label:'Dead hangs', sub:'1–2 sets · 20–30 sec each · Doorway pull bar'},
-        {id:'s11', label:'Go to rooftop', sub:'3 flights of stairs — warm-up before stretching'},
-        {id:'s12', label:'Morning sunlight exposure'},
+        {id:'s10', label:'Dead hangs', sub:'1 set · 60 sec · Doorway pull bar'},
+        {id:'s11', label:'Go to rooftop', sub:'4 flights of stairs — warm-up before stretching'},
+        {id:'s12', label:'Morning sunlight exposure', sub:'Sunny day: ~10 min · Cloudy day: ~15–20 min'},
         {id:'s13', label:'Stretching'},
         {id:'s14', label:'Return downstairs'},
         {id:'s15', label:'Drink second glass of water'},
@@ -544,8 +543,9 @@ const MORNING = {
       steps:[
         {id:'s16', label:'Shower', sub:'School days: non-negotiable · Non-school: conditional'},
         {id:'s17', label:'Get dressed'},
-        {id:'s18', label:'Prepare breakfast', sub:'Start cooking before journaling'},
-        {id:'s19', label:'Journal', sub:"5–10 min · What's on your mind · Intentions for today · One thing you're grateful for · While breakfast cooks"},
+        {id:'s3',  label:'Physiological sighs', sub:'3–5 repetitions · Transition into cognitive phase'},
+        {id:'s18', label:'Breakfast prep', sub:'Conditional — skip if already ready'},
+        {id:'s19', label:'Journal', sub:"5–10 min · What's on your mind · Intentions for today · One thing you're grateful for · While breakfast cooks if you prepped it; before eating if already ready"},
         {id:'s20', label:'Breakfast'},
       ]
     },
@@ -563,6 +563,7 @@ const MORNING = {
 const MORNING_EMERG = [
   {id:'em1', label:'Wake up'},
   {id:'em2', label:'In-bed stretching'},
+  {id:'em3d',label:'Drink', sub:'~500ml'},
   {id:'em3', label:'Brush teeth'},
   {id:'em4', label:'Morning sunlight exposure'},
 ];
@@ -598,10 +599,9 @@ const NIGHT = {
       steps:[{id:'np3j', label:'Journal', sub:'15 min default · 20-min ceiling · Reflections · Brain dump · Tomorrow capture'}],
     },
     {
-      id:'np4', name:'Phase 4 — Wind-Down',
+      id:'np4', name:'Phase 4 — Sleep',
       steps:[
-        {id:'np4r', label:'Light reading', sub:'Self-paced · No algorithm'},
-        {id:'np4s', label:'Sleep'},
+        {id:'np4s', label:'Sleep', sub:'Optional: light reading first — one-chapter cap on nights you read'},
       ],
     },
   ],
@@ -610,13 +610,18 @@ const NIGHT = {
     {id:'no2', label:'Skincare', sub:'Phase 2 · Post-shower · Skin barrier restoration'},
     {id:'no3', label:'Tomorrow prep', sub:'Post-journal · 5 min max · Closes behavioral loop'},
     {id:'no4', label:'Breathwork (4-7-8)', sub:'Between Phase 3 and 4 · As needed · 2–3 cycles · ~2 min'},
-    {id:'no5', label:'Static stretching', sub:'Rest days · Targeted holds · No ProTrain cooldown on rest days'},
   ]
 };
 
-const NIGHT_EMERG = [
+const NIGHT_EMERG_WORKOUT = [
+  {id:'enw', label:'Shower', sub:'Post-workout · Warm'},
   {id:'en1', label:'Brush teeth'},
-  {id:'en2', label:'Quick journal entry'},
+  {id:'en2', label:'Quick journal', sub:'Few sentences · 5 min max'},
+  {id:'en3', label:'Sleep'},
+];
+const NIGHT_EMERG_REST = [
+  {id:'en1', label:'Brush teeth'},
+  {id:'en2', label:'Quick journal', sub:'Few sentences · 5 min max'},
   {id:'en3', label:'Sleep'},
 ];
 
@@ -626,23 +631,23 @@ const NIGHT_EMERG = [
 const STEP_INFO = {
   s1:  'Your body completes sleep in cycles. Waking naturally — without an alarm — means you\'ve finished a cycle. The Cortisol Awakening Response (CAR) begins immediately at wake: a distinct cortisol peak over the next 30–45 min that drives biological activation for the day. <strong>Don\'t rush it.</strong>',
   s2:  'The spine absorbs fluid overnight, making discs slightly thicker and stiffer in the morning. These passive stretches take advantage of that hydration — mobilizing the spine before you load it vertically. Done in bed: zero friction, no warm-up needed.',
-  s3:  'Physiological sighs (cyclic sighing): double inhale through the nose, long slow exhale through the mouth. The second inhale re-inflates collapsed alveoli; the extended exhale activates the parasympathetic branch via pulmonary stretch receptors. Balban et al. (2023) found this outperformed box breathing and mindfulness for reducing real-time anxiety.',
+  s3:  'Physiological sighs (cyclic sighing): double inhale through the nose, long slow exhale through the mouth. The second inhale re-inflates collapsed alveoli; the extended exhale activates the parasympathetic branch via pulmonary stretch receptors. Balban et al. (2023) found this outperformed box breathing and mindfulness for reducing real-time anxiety. <strong>Placement:</strong> after getting dressed, before journaling — functions as a transition cue from the physical preparation phase into the cognitive phase.',
   s4:  'Making your bed before getting down is a top-bunk constraint turned into a behavioral win. It activates the "completion bias" — finishing a task immediately after waking primes you for follow-through on the rest of the routine.',
   s5:  'Deliberate orientation toward the window as you get up gives your ipRGCs (the photoreceptors that drive circadian entrainment) their first light signal. Even indirect morning light through a window starts the process.',
   s6:  'No strong physiological requirement here. Retained because it improves subjective oral cleanliness and adds negligible friction. Clearing the overnight bacterial load before the first glass of water is the practical reasoning.',
   s7:  'You lose ~500ml of water overnight through respiration and passive sweating, more if your room is warm. Rehydration first thing supports blood pressure regulation and cognitive function before any stimulant or food.',
   s8:  'Oral bacteria peak overnight. Brushing removes the biofilm before it can influence your gut microbiome via swallowing — a secondary reason beyond hygiene.',
   s9:  'Face washing removes sebum and overnight bacterial accumulation. The tactile stimulus also contributes to alertness — mild sensory activation without the thermal intervention of cold water.',
-  s10: 'Dead hangs provide passive spinal traction — gravity decompress the lumbar and thoracic vertebrae after overnight disc swelling. 1–2 sets, 20–30 sec each on the doorway pull bar. Urban & Roberts (2003) support spinal decompression as a morning mobility intervention.',
-  s11: '3 flights of stairs functions as the warm-up for rooftop stretching. Cold connective tissue loaded with static stretches before adequate circulation is a risk — the stair climb solves that. Never do the rooftop stretches without it.',
+  s10: 'Dead hangs provide passive spinal traction — gravity decompresses the lumbar and thoracic vertebrae after overnight disc swelling. 1 set, 60 sec on the doorway pull bar. Urban & Roberts (2003) support spinal decompression as a morning mobility intervention.',
+  s11: '4 flights of stairs functions as the warm-up for rooftop stretching. Cold connective tissue loaded with static stretches before adequate circulation is a risk — the stair climb solves that. Never do the rooftop stretches without it.',
   s12: 'Light is the dominant zeitgeber (time-giver) for the SCN master clock. Morning sunlight — ideally within the first hour of waking — drives the phase advance that determines when you feel sleepy at night. Czeisler & Wright (2000). Overcast days reduce the signal but don\'t eliminate it.',
   s13: 'All rooftop stretches are passive holds — no active reps, no counting. Current list: Standing Forward Fold (soft knees, no flexed feet), Chest Opener, Lateral Neck Flexion, Chin-to-Chest, Cross-body Stretch, Hip Flexor Stretch. Full circumduction removed — cervical compression risk (Puentedura et al., 2012).',
   s14: 'Returning downstairs ends the outdoor activation phase. The transition back into the house is an implicit environmental cue shift — from activation to transition.',
   s15: 'Post-exertion rehydration. Movement and sun exposure accelerate fluid loss. Second glass replaces what the rooftop phase cost. Sawka et al. (2007).',
   s16: 'School days: non-negotiable. The shower functions as a behavioral transition cue — the context shift between physical and cognitive phases (Wood & Neal, 2007). Non-school days: conditional based on workout status and plans. Duration: ~5–10 min. Soap: key zones. Shampoo: not daily unless needed.',
   s17: 'Getting dressed after the shower completes the transition to day mode. Staying in sleep clothes extends the psychological framing of the sleep state.',
-  s18: 'Starting breakfast before journaling means the cognitive phase runs in parallel with cooking — no dead time waiting for food. The routine ends when you eat, not when the food is ready.',
-  s19: 'Journal while breakfast cooks. Three prompts: (1) brain dump — cognitive offloading reduces intrusive thought frequency (Risko & Gilbert, 2016); (2) intentions for the day with when/where context — if-then framing increases follow-through (Gollwitzer, 1999); (3) one thing you\'re grateful for — linked to improved well-being and sleep quality (Emmons & McCullough, 2003). 5–10 min total.',
+  s18: 'Conditional step — skip if breakfast is already ready. If you prep: start cooking, then journal while it cooks. If it\'s already ready: journal first, then eat. The journal is not conditional — only the prep step is.',
+  s19: 'Journal while breakfast cooks (if you prepped it), or before eating (if it was already ready). Three prompts: (1) brain dump — cognitive offloading reduces intrusive thought frequency (Risko & Gilbert, 2016); (2) intentions for the day with when/where context — if-then framing increases follow-through (Gollwitzer, 1999); (3) one thing you\'re grateful for — linked to improved well-being and sleep quality (Emmons & McCullough, 2003). 5–10 min total.',
   s20: 'Target: protein + complex carb. Practical: 2–3 eggs + rice + milk + banana (~20–25g protein). Whole egg recommended — yolk contains choline, fat-soluble vitamins, healthy fats. Supports muscle protein synthesis and sustained cognitive function (Morton et al., 2018). Avoid high-sugar options — mid-morning glucose crash undermines the whole activation window.',
   // Night steps
   np1w:'Push days (D1/D4): start by 6:30 PM, finish by ~8–8:30 PM. Pull/Legs days (D2/D3/D5): start by 6:00 PM, finish by ~7:45–8:15 PM. The earlier start on high-demand days preserves the post-exercise cortisol normalization buffer — Hackney (2006) puts this at 2+ hours before sleep onset. On high-demand days, the realistic sleep window skews toward 10:30–11 PM, not 10 PM sharp.',
@@ -654,7 +659,7 @@ const STEP_INFO = {
   np3j:'15 minutes default, 20-minute ceiling. Three purposes: reflection on the day (closes open loops), brain dump (clears working memory before sleep — reduces sleep-onset rumination), and tomorrow capture (externalizes next-day concerns so the brain stops rehearsing them). Risko & Gilbert (2016). Body check-in: note only if something feels off — prevents rote entries.',
   np4p:'The playlist switch is a deliberate transition cue — the audio environment shifts from daytime to wind-down mode. Context cues reliably trigger associated behavioral states (Wood & Neal, 2007).',
   np4r:'Self-paced reading with no algorithmic feed. The key distinction: you control pacing and stopping, not an algorithm optimizing for engagement. Passive content consumption keeps the arousal system active.',
-  np4s:'The last step. Sleep quality is largely determined by what happened in the hours before this — the routine exists to make this easier, not harder.',
+  np4s:'The last step. Sleep quality is largely determined by what happened in the hours before this — the routine exists to make this easier, not harder. <strong>Optional reading before sleep:</strong> one-chapter cap on nights you read; non-fiction is out for Phase 4 (cognitively activating). 11 PM is the hard ceiling regardless.',
   // Optional morning
   mo1: 'Flexible placement: after rooftop (Phase 2) or after breakfast (Phase 3). Mood and crowd conditions are legitimate decision factors — this is correctly classified as optional. Additional light and low-intensity movement extend the activation benefit.',
   mo2: 'Sweeping is a low-cognitive physical task. Environmental order reduces background mental noise — a minor but real effect on subsequent focus. Fits anywhere in the routine where there\'s a natural pause.',
@@ -667,7 +672,6 @@ const STEP_INFO = {
   no2: 'Post-shower skincare. Showering strips the skin\'s natural lipid barrier — applying a basic moisturizer or routine restores it. Especially relevant in a tropical climate where heat and humidity increase transepidermal water loss. Secondary function: the tactile, routine nature of skincare reinforces the wind-down behavioral sequence.',
   no3: 'Post-journal, 5-minute cap. Write out tomorrow\'s key tasks, items to bring, or things that need to happen. The Zeigarnik effect (Zeigarnik, 1927) — the brain keeps rehearsing incomplete tasks. Externalizing them onto paper stops the loop. Works alongside the journal\'s cognitive capture to fully close the day\'s behavioral loop.',
   no4: 'Between Phase 3 and Phase 4, as needed. The 4-7-8 technique: inhale for 4 counts, hold for 7, exhale for 8. The extended exhale activates the vagus nerve and promotes a parasympathetic shift — directly reducing arousal before sleep. 2–3 cycles, approximately 2 minutes. Use when the mind is still active after journaling.',
-  no5: 'Rest days only. On workout days, ProTrain\'s cool-down already includes targeted static stretching per session — no gap to fill. On rest days, there\'s no equivalent coverage. Targeted passive holds: 20–30 sec each, no bouncing. Focus on whatever feels tight. Low-intensity, floor-based.',
 };
 
 // ═══════════════════════════════════════
@@ -686,13 +690,14 @@ function allNIds(){
   const ids=[];
   NIGHT.phases.forEach(p=>['steps','workoutSteps','restSteps'].forEach(k=>{if(p[k])p[k].forEach(s=>ids.push(s.id))}));
   NIGHT.optional.forEach(s=>ids.push(s.id));
-  NIGHT_EMERG.forEach(s=>ids.push(s.id));
+  NIGHT_EMERG_WORKOUT.forEach(s=>ids.push(s.id));
+  NIGHT_EMERG_REST.forEach(s=>ids.push(s.id));
   return [...new Set(ids)];
 }
 function mReq()      { return MORNING.phases.flatMap(p=>p.steps); }
 function nReq(dt)    { return NIGHT.phases.flatMap(p=>phaseSteps(p,dt)); }
 function mEmergReq() { return MORNING_EMERG; }
-function nEmergReq() { return NIGHT_EMERG; }
+function nEmergReq(dt)  { return (dt||'workout')==='workout' ? NIGHT_EMERG_WORKOUT : NIGHT_EMERG_REST; }
 
 // ═══════════════════════════════════════
 // STATE
@@ -701,12 +706,15 @@ let TODAY    = todayStr();
 let todayLog = null;
 let streaks  = {morning:{current:0,best:0},night:{current:0,best:0}};
 const collapsed = new Set(); // tracks collapsed phase IDs
+const openNotes = new Set();   // tracks open note areas
+const openInfos = new Set();   // tracks open info panels
 
+function dateStr(d){ const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${dd}`; }
 function todayStr(){
   const now=new Date();
   // Before 4 AM → treat as previous calendar day (night grace period)
   if(now.getHours()<4){ now.setDate(now.getDate()-1); }
-  return now.toISOString().split('T')[0];
+  return dateStr(now);
 }
 
 // ═══════════════════════════════════════
@@ -769,9 +777,9 @@ function saveLog(){
 // COMPLETION & STREAKS
 // ═══════════════════════════════════════
 function mDone(){  const l=todayLog?.morning; if(!l) return 0; const r=l.mode==='emergency'?mEmergReq():mReq(); return r.filter(s=>l.steps[s.id]?.completed).length; }
-function nDone(){  const l=todayLog?.night;   if(!l) return 0; const r=l.mode==='emergency'?nEmergReq():nReq(l.dayType||'workout'); return r.filter(s=>l.steps[s.id]?.completed).length; }
+function nDone(){  const l=todayLog?.night;   if(!l) return 0; const r=l.mode==='emergency'?nEmergReq(l.dayType||'workout'):nReq(l.dayType||'workout'); return r.filter(s=>l.steps[s.id]?.completed).length; }
 function mTotal(){ const l=todayLog?.morning; if(!l) return mReq().length; return l.mode==='emergency'?mEmergReq().length:mReq().length; }
-function nTotal(){ const l=todayLog?.night;   if(!l) return nReq('workout').length; return l.mode==='emergency'?nEmergReq().length:nReq(l.dayType||'workout').length; }
+function nTotal(){ const l=todayLog?.night;   if(!l) return nReq('workout').length; return l.mode==='emergency'?nEmergReq(l.dayType||'workout').length:nReq(l.dayType||'workout').length; }
 function mComplete(){ return mDone()===mTotal(); }
 function nComplete(){ return nDone()===nTotal(); }
 
@@ -804,7 +812,7 @@ function maybeSleepAutoComplete(){
 
 function logComplete(logs,date,type){
   const log=logs[date]?.[type]; if(!log||!log.steps) return false;
-  const req=log.mode==='emergency'?(type==='morning'?mEmergReq():nEmergReq()):(type==='morning'?mReq():nReq(log.dayType||'workout'));
+  const req=log.mode==='emergency'?(type==='morning'?mEmergReq():nEmergReq(log.dayType||'workout')):(type==='morning'?mReq():nReq(log.dayType||'workout'));
   return req.every(s=>log.steps[s.id]?.completed);
 }
 
@@ -812,11 +820,11 @@ function calcStreaks(){
   const logs=S.get('logs',{});
   ['morning','night'].forEach(type=>{
     const isToday=type==='morning'?mComplete():nComplete();
-    let check=new Date(todayStr());
+    let check=new Date(todayStr()+'T12:00:00');
     if(!isToday) check.setDate(check.getDate()-1);
     let count=0;
     for(let i=0;i<365;i++){
-      const ds=check.toISOString().split('T')[0];
+      const ds=dateStr(check);
       if(logComplete(logs,ds,type)){count++;check.setDate(check.getDate()-1);}
       else break;
     }
@@ -909,7 +917,7 @@ function renderHome(){
     </div>
     <div class="routine-card night-card${nc?' r-done':nge?' r-ge':''}" onclick="openRoutine('night')">
       <div class="card-top">
-        <div><div class="card-name-row"><span class="card-icon">🌙</span><div class="card-title">Night Routine</div></div><div class="card-meta">${ne?'Emergency mode':'7 steps · 4 phases · '+(dt==='workout'?'Workout day':'Rest day')}</div></div>
+        <div><div class="card-name-row"><span class="card-icon">🌙</span><div class="card-title">Night Routine</div></div><div class="card-meta">${ne?'Emergency mode':'6 steps · 4 phases · '+(dt==='workout'?'Workout day':'Rest day')}</div></div>
         ${badge(nc,nge,ne,nd,true)}
       </div>
       <div class="prog-wrap">
@@ -923,8 +931,6 @@ function renderHome(){
 // ═══════════════════════════════════════
 // ROUTINE RENDERING
 // ═══════════════════════════════════════
-const CHEVRON_SVG = `<svg class="phase-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,9 12,15 18,9"/></svg>`;
-
 function stepHtml(step, log, isNight){
   const sub = step.id==='s2' ? getStretches().join(' · ') : step.sub;
   const sd=log.steps?.[step.id]||{completed:false,note:''};
@@ -944,8 +950,8 @@ function stepHtml(step, log, isNight){
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         </button>
       </div>
-      ${hasInfo?`<div class="info-panel" id="ip-${step.id}"><div class="info-panel-inner">${STEP_INFO[step.id]}</div></div>`:''}
-      <div class="note-area" id="na-${step.id}">
+      ${hasInfo?`<div class="info-panel${openInfos.has(step.id)?' open':''}" id="ip-${step.id}"><div class="info-panel-inner">${STEP_INFO[step.id]}</div></div>`:''}
+      <div class="note-area${openNotes.has(step.id)?' open':''}" id="na-${step.id}">
         <textarea class="note-input" placeholder="Add a note..." oninput="saveStepNote('${step.id}',this.value)">${esc(sd.note||'')}</textarea>
       </div>
     </div>`;
@@ -963,7 +969,7 @@ function phaseHtml(phase, log, isNight, steps){
     <div class="phase-sec">
       <div class="phase-hdr" onclick="togglePhase('${phase.id}')">
         <div class="phase-hdr-left">
-          <div class="${nameClass}">${phase.name}</div>
+          ${phase.name?`<div class="${nameClass}">${phase.name}</div>`:''}
           ${phase.dur?`<div class="phase-dur">${phase.dur}</div>`:''}
         </div>
         <div class="phase-hdr-right">
@@ -1028,7 +1034,7 @@ function renderMorning(){
     });
     h+=`<div class="opt-section">
       <div class="opt-section-hdr">Optional Additions</div>
-      ${phaseHtml({id:'mp-opt',name:'Optional',dur:''},log,false,MORNING.optional.map(s=>({...s,optional:true})))}
+      ${phaseHtml({id:'mp-opt',name:'',dur:''},log,false,MORNING.optional.map(s=>({...s,optional:true})))}
     </div>`;
   }
 
@@ -1060,7 +1066,7 @@ function renderNight(){
   if(isEmerg){
     h+=emergBanner();
     h+=progBarHtml(done,total,true);
-    h+=phaseHtml({id:'np-emerg',name:'Emergency Steps',isEmerg:true}, log, true, NIGHT_EMERG);
+    h+=phaseHtml({id:'np-emerg',name:'Emergency Steps',isEmerg:true}, log, true, nEmergReq(dt));
   } else {
     h+=progBarHtml(done,total,true);
     NIGHT.phases.forEach(p=>{
@@ -1069,7 +1075,7 @@ function renderNight(){
     });
     h+=`<div class="opt-section">
       <div class="opt-section-hdr">Optional Additions</div>
-      ${phaseHtml({id:'np-opt',name:'Optional',dur:''},log,true,NIGHT.optional.map(s=>({...s,optional:true})))}
+      ${phaseHtml({id:'np-opt',name:'',dur:''},log,true,NIGHT.optional.map(s=>({...s,optional:true})))}
     </div>`;
   }
 
@@ -1115,6 +1121,7 @@ function toggleEmerg(type){
 function toggleNote(id){
   const area=document.getElementById('na-'+id);
   if(!area) return;
+  if(openNotes.has(id)){ openNotes.delete(id); } else { openNotes.add(id); }
   area.classList.toggle('open');
   if(area.classList.contains('open')) setTimeout(()=>area.querySelector('textarea')?.focus(),80);
 }
@@ -1122,6 +1129,7 @@ function toggleNote(id){
 function toggleInfo(id){
   const panel=document.getElementById('ip-'+id);
   if(!panel) return;
+  if(openInfos.has(id)){ openInfos.delete(id); } else { openInfos.add(id); }
   panel.classList.toggle('open');
 }
 
@@ -1173,7 +1181,7 @@ function renderHistory(){
     const label=`${DAYS[d.getDay()]}, ${MOS[d.getMonth()]} ${d.getDate()}`;
     const isToday=date===TODAY;
     const ms=pillStat(log?.morning, mEmergReq(), ()=>mReq());
-    const ns=pillStat(log?.night,   nEmergReq(), (dt)=>nReq(dt));
+    const ns=pillStat(log?.night,   nEmergReq(log?.night?.dayType||'workout'), (dt)=>nReq(dt));
     const note=(log?.morning?.dayNote||log?.night?.dayNote||'').trim();
     return `<div class="h-item" onclick="openLog('${date}')" style="cursor:pointer">
       <div class="h-date-row">
@@ -1190,7 +1198,7 @@ function renderHistory(){
           <div class="h-pill-val ${ns.cls}">${ns.val}</div>
         </div>
       </div>
-      ${note?`<div class="h-note-prev">"${note.substring(0,70)}${note.length>70?'…':''}"</div>`:''}
+      ${note?`<div class="h-note-prev">"${esc(note.substring(0,70))}${note.length>70?'…':''}"</div>`:''}
     </div>`;
   }).join('');
 }
@@ -1250,7 +1258,6 @@ function renderLog(){
   const ml=log.morning;
   if(ml){
     const mIsEmerg=ml.mode==='emergency';
-    const mSteps=mIsEmerg?MORNING_EMERG:MORNING.phases.flatMap(p=>p.steps);
     const mOptDone=MORNING.optional.filter(s=>ml.steps?.[s.id]?.completed||ml.steps?.[s.id]?.note?.trim());
 
     if(ml.dayNote?.trim()){
@@ -1281,7 +1288,7 @@ function renderLog(){
     }
 
     if(nIsEmerg){
-      h+=logSectionHtml('Emergency Steps','⚡',nl,NIGHT_EMERG,true);
+      h+=logSectionHtml('Emergency Steps','⚡',nl,nEmergReq(dt),true);
     } else {
       NIGHT.phases.forEach(p=>{
         const steps=phaseSteps(p,dt);
@@ -1323,10 +1330,10 @@ function switchTab(tab){
 function renderStatsInner(){
   const logs=S.get('logs',{});
   const isNight=statsTab==='night';
-  const emR=isNight?nEmergReq():mEmergReq();
   const allDates=Object.keys(logs);
   const completed=allDates.filter(d=>{
     const log=logs[d]?.[statsTab]; if(!log||!log.steps) return false;
+    const emR=isNight?nEmergReq(log.dayType||'workout'):mEmergReq();
     const req=log.mode==='emergency'?emR:(isNight?nReq(log.dayType||'workout'):mReq());
     return req.length>0&&req.every(s=>log.steps[s.id]?.completed);
   }).length;
@@ -1338,11 +1345,12 @@ function renderStatsInner(){
   let wg='<div class="week-grid">';
   for(let i=6;i>=0;i--){
     const d=new Date(); d.setDate(d.getDate()-i);
-    const ds=d.toISOString().split('T')[0];
+    const ds=dateStr(d);
     const isToday=i===0;
     const log=logs[ds]?.[statsTab];
     let done=false;
     if(log&&log.steps){
+      const emR=isNight?nEmergReq(log.dayType||'workout'):mEmergReq();
       const req=log.mode==='emergency'?emR:(isNight?nReq(log.dayType||'workout'):mReq());
       done=req.length>0&&req.every(s=>log.steps[s.id]?.completed);
     }
@@ -1409,7 +1417,7 @@ function updateStretch(i,val){
 // ═══════════════════════════════════════
 function exportData(){
   const data={
-    app:'Yotei', version:'1.1',
+    app:'Yotei', version:'1.5',
     exportedAt:new Date().toISOString(),
     logs:S.get('logs',{}),
     streak:S.get('streak',{}),
@@ -1469,6 +1477,23 @@ function toggleTheme(){
 }
 
 // ═══════════════════════════════════════
+// DATE-CHANGE DETECTION
+// ═══════════════════════════════════════
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState!=='visible') return;
+  const newDate=todayStr();
+  if(newDate!==TODAY){
+    initLog();
+    const s2=S.get('streak');
+    if(s2) streaks=s2;
+    calcStreaks();
+    if(curView==='home') renderHome();
+    else if(curView==='routine') renderRoutine();
+    else if(curView==='stats') renderStats();
+  }
+});
+
+// ═══════════════════════════════════════
 // PWA — SERVICE WORKER
 // ═══════════════════════════════════════
 if('serviceWorker' in navigator){
@@ -1486,9 +1511,9 @@ if('serviceWorker' in navigator){
   if(S.get('theme')==='light') document.getElementById('app').classList.add('light');
   migrateOldLogs();
   initLog();
-  maybeSleepAutoComplete();
   const saved=S.get('streak');
   if(saved) streaks=saved;
+  maybeSleepAutoComplete();
   calcStreaks();
   updateHeader('home');
   renderHome();
