@@ -224,7 +224,7 @@
     /* GOOD ENOUGH BADGE */
     .badge-ge{background:rgba(245,158,11,.1);color:var(--opt)}
 
-    .note-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;font-family:'Manrope',sans-serif;font-size:13px;color:var(--text);resize:none;min-height:68px;outline:none;transition:border-color .2s}
+    .note-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;font-family:'Manrope',sans-serif;font-size:13px;color:var(--text);resize:none;min-height:44px;overflow:hidden;outline:none;transition:border-color .2s}
     .note-input:focus{border-color:var(--accent)}
     .note-input::placeholder{color:var(--text-ter)}
 
@@ -235,7 +235,7 @@
     /* DAY NOTE */
     .day-note-wrap{margin-top:12px;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px}
     .day-note-label{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--text-sec);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px}
-    .day-note-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px;font-family:'Manrope',sans-serif;font-size:14px;color:var(--text);resize:none;min-height:88px;outline:none;transition:border-color .2s;line-height:1.55}
+    .day-note-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px;font-family:'Manrope',sans-serif;font-size:14px;color:var(--text);resize:none;min-height:60px;overflow:hidden;outline:none;transition:border-color .2s;line-height:1.55}
     .day-note-input:focus{border-color:var(--accent)}
     .day-note-input::placeholder{color:var(--text-ter)}
 
@@ -368,6 +368,48 @@
 
     /* Hidden file input */
     #import-file{display:none}
+
+    /* ── IMPROVEMENTS ─────────────────────────────────────────────────────── */
+    .rv-ge-chip{font-size:10px;font-weight:700;color:var(--opt);background:rgba(245,158,11,.1);padding:3px 8px;border-radius:10px;letter-spacing:.3px}
+    .completion-banner{display:flex;align-items:center;gap:10px;border:1px solid;border-radius:var(--r);padding:12px 14px;margin-bottom:16px}
+    .cb-title{font-size:13px;font-weight:700}
+    .cb-sub{font-size:11px;color:var(--text-sec);font-weight:400;margin-top:1px}
+    .card-next{font-size:12px;color:var(--text-sec);margin-top:6px;font-weight:500}
+    .card-next span{color:var(--text);font-weight:600}
+    .cal-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-top:12px}
+    .cal-header{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px;text-align:center;letter-spacing:.3px}
+    .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+    .cal-day-lbl{text-align:center;font-size:10px;font-weight:700;color:var(--text-ter);padding:2px 0 6px;font-family:'Syne',sans-serif}
+    .cal-cell{aspect-ratio:1;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--text-ter);background:var(--surface)}
+    .cal-cell.empty{background:transparent}
+    .cal-cell.today{outline:2px solid var(--accent);outline-offset:-2px;color:var(--text)}
+    .cal-cell.done.m{background:rgba(59,130,246,.22);color:var(--accent-b)}
+    .cal-cell.done.n{background:rgba(129,140,248,.22);color:var(--night)}
+    .cal-cell.ge{background:rgba(245,158,11,.16);color:var(--opt)}
+    .cal-cell.partial{background:rgba(100,116,139,.14);color:var(--text-sec)}
+    .cal-legend{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;justify-content:center}
+    .cal-leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-sec);font-weight:500}
+    .cal-leg-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+    .cal-leg-dot.done.m{background:rgba(59,130,246,.4)}
+    .cal-leg-dot.done.n{background:rgba(129,140,248,.4)}
+    .cal-leg-dot.ge{background:rgba(245,158,11,.35)}
+    .cal-leg-dot.partial{background:rgba(100,116,139,.3)}
+    .cal-leg-dot.empty{background:var(--surface);border:1px solid var(--border)}
+    .hist-filters{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none}
+    .hist-filters::-webkit-scrollbar{display:none}
+    .hist-filter{flex-shrink:0;padding:6px 12px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text-sec);font-family:'Manrope',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:var(--t)}
+    .hist-filter.on{background:var(--card);color:var(--accent-b);border-color:rgba(59,130,246,.4)}
+    .log-completed-time{font-size:12px;font-weight:600;color:var(--success);padding:4px 2px;margin-bottom:10px}
+    .log-completed-time.night{color:var(--night)}
+    .log-routine-header{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+    .log-routine-divider{display:flex;align-items:center;gap:10px;margin:20px 0 16px}
+    .log-rd-line{flex:1;height:1px;background:var(--border)}
+    .log-rd-label{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--text-sec);text-transform:uppercase;letter-spacing:.6px;white-space:nowrap}
+    .log-edit-row{display:flex;justify-content:flex-end;margin-bottom:12px}
+    .log-edit-btn{padding:7px 14px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text-sec);font-family:'Manrope',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:var(--t)}
+    .log-edit-btn.active{background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.3);color:var(--accent-b)}
+    .s-action-btn.s-danger-btn{color:var(--warn)}
+    .s-action-btn.s-danger-btn svg{stroke:var(--warn)}
   </style>
 </head>
 <body>
@@ -424,6 +466,7 @@
       <div class="view-inner">
       <div class="v-title">History</div>
       <div class="v-sub" id="hist-sub">Your past routines</div>
+      <div id="hist-filters-wrap"></div>
       <div class="h-list" id="hist-list"></div>
       </div>
     </div>
@@ -484,6 +527,19 @@
           Import backup
         </button>
         <input type="file" id="import-file" accept=".json" onchange="importData(this.files[0])">
+      </div>
+
+      <!-- Reset Today -->
+      <div class="s-section">
+        <div class="s-section-title">Reset Today</div>
+        <button class="s-action-btn s-danger-btn" onclick="resetToday('morning')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,4 1,10 7,10"/><path d="M3.51 15a9 9 0 1 0 .49-3.71"/></svg>
+          Reset morning progress
+        </button>
+        <button class="s-action-btn s-danger-btn" onclick="resetToday('night')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,4 1,10 7,10"/><path d="M3.51 15a9 9 0 1 0 .49-3.71"/></svg>
+          Reset night progress
+        </button>
       </div>
 
     </div>
@@ -708,6 +764,9 @@ let streaks  = {morning:{current:0,best:0},night:{current:0,best:0}};
 const collapsed = new Set(); // tracks collapsed phase IDs
 const openNotes = new Set();   // tracks open note areas
 const openInfos = new Set();   // tracks open info panels
+let historyFilter='all';
+let logEditMode=false;
+let histLog=null;
 
 function dateStr(d){ const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${dd}`; }
 function todayStr(){
@@ -753,10 +812,11 @@ function initLog(){
   TODAY=date;
   const logs=S.get('logs',{});
   if(!logs[date]){
-    logs[date]={morning:newMLog(),night:newNLog()};
+    const nl=newNLog(); nl.dayType=getLastNightDayType(date,logs);
+    logs[date]={morning:newMLog(),night:nl};
   } else {
     if(!logs[date].morning) logs[date].morning=newMLog();
-    if(!logs[date].night)   logs[date].night=newNLog();
+    if(!logs[date].night){const nl=newNLog(); nl.dayType=getLastNightDayType(date,logs); logs[date].night=nl;}
     // Ensure all step IDs exist (handles new steps added in updates)
     allMIds().forEach(id=>{ if(!logs[date].morning.steps[id]) logs[date].morning.steps[id]={completed:false,note:''}; });
     allNIds().forEach(id=>{ if(!logs[date].night.steps[id])   logs[date].night.steps[id]  ={completed:false,note:''}; });
@@ -901,6 +961,8 @@ function renderHome(){
   const md=mDone(),mt=mTotal(),mp=mt?Math.round(md/mt*100):0;
   const nd=nDone(),nt=nTotal(),np=nt?Math.round(nd/nt*100):0;
   const me=ml.mode==='emergency',ne=nl.mode==='emergency';
+  const mNext=!mc&&!me?nextStep('morning'):null;
+  const nNext=!nc&&!ne?nextStep('night'):null;
   const dt=nl.dayType||'workout';
 
   document.getElementById('home-cards').innerHTML=`
@@ -913,6 +975,7 @@ function renderHome(){
         <div class="prog-lbl"><span>Progress</span><span>${md} / ${mt}</span></div>
         <div class="prog-track"><div class="prog-fill${mc?' df':mge?' gef':''}" style="width:${mp}%"></div></div>
       </div>
+      ${mNext?`<div class="card-next">Next: <span>${esc(mNext)}</span></div>`:''}
       <div class="card-hint"><span>Tap to open</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg></div>
     </div>
     <div class="routine-card night-card${nc?' r-done':nge?' r-ge':''}" onclick="openRoutine('night')">
@@ -924,6 +987,7 @@ function renderHome(){
         <div class="prog-lbl"><span>Progress</span><span>${nd} / ${nt}</span></div>
         <div class="prog-track"><div class="prog-fill nf${nc?' df':nge?' gef':''}" style="width:${np}%"></div></div>
       </div>
+      ${nNext?`<div class="card-next">Next: <span>${esc(nNext)}</span></div>`:''}
       <div class="card-hint"><span>Tap to open</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg></div>
     </div>`;
 }
@@ -952,7 +1016,7 @@ function stepHtml(step, log, isNight){
       </div>
       ${hasInfo?`<div class="info-panel${openInfos.has(step.id)?' open':''}" id="ip-${step.id}"><div class="info-panel-inner">${STEP_INFO[step.id]}</div></div>`:''}
       <div class="note-area${openNotes.has(step.id)?' open':''}" id="na-${step.id}">
-        <textarea class="note-input" placeholder="Add a note..." oninput="saveStepNote('${step.id}',this.value)">${esc(sd.note||'')}</textarea>
+        <textarea class="note-input" placeholder="Add a note..." oninput="saveStepNote('${step.id}',this.value);autoGrow(this)">${esc(sd.note||'')}</textarea>
       </div>
     </div>`;
 }
@@ -987,13 +1051,16 @@ function phaseHtml(phase, log, isNight, steps){
     </div>`;
 }
 
-function progBarHtml(done,total,isNight){
+function progBarHtml(done,total,isNight,ge){
   const pct=total?Math.round(done/total*100):0;
   const complete=done===total;
   return `<div class="rv-prog">
     <div class="rv-prog-top">
       <span class="rv-prog-steps">${done} of ${total} steps</span>
-      <span class="rv-prog-pct${isNight?' n':''}">${pct}%</span>
+      <div style="display:flex;align-items:center;gap:8px">
+        ${ge&&!complete?'<span class="rv-ge-chip">~ Good Enough</span>':''}
+        <span class="rv-prog-pct${isNight?' n':''}">${pct}%</span>
+      </div>
     </div>
     <div class="prog-track" style="height:8px">
       <div class="prog-fill${isNight?' nf':''}${complete?' df':''}" style="width:${pct}%"></div>
@@ -1025,10 +1092,11 @@ function renderMorning(){
 
   if(isEmerg){
     h+=emergBanner();
-    h+=progBarHtml(done,total,false);
+    h+=progBarHtml(done,total,false,false);
     h+=phaseHtml({id:'mp-emerg',name:'Emergency Steps',isEmerg:true}, log, false, MORNING_EMERG);
   } else {
-    h+=progBarHtml(done,total,false);
+    h+=progBarHtml(done,total,false,mGoodEnough());
+    if(done===total) h+=completionBanner(false);
     MORNING.phases.forEach(p=>{
       h+=phaseHtml(p, log, false, p.steps);
     });
@@ -1038,8 +1106,10 @@ function renderMorning(){
     </div>`;
   }
 
-  h+=`<div class="day-note-wrap"><div class="day-note-label">Day Note</div><textarea class="day-note-input" placeholder="How's the morning going? Any thoughts for the day..." oninput="saveDayNote('morning',this.value)">${esc(log.dayNote||'')}</textarea></div>`;
-  rv.innerHTML=h; rv.scrollTop=st;
+  h+=`<div class="day-note-wrap"><div class="day-note-label">Day Note</div><textarea class="day-note-input" placeholder="How's the morning going? Any thoughts for the day..." oninput="saveDayNote('morning',this.value);autoGrow(this)">${esc(log.dayNote||'')}</textarea></div>`;
+  rv.innerHTML=h;
+  rv.querySelectorAll('textarea').forEach(t=>autoGrow(t));
+  rv.scrollTop=st;
 }
 
 function renderNight(){
@@ -1065,10 +1135,11 @@ function renderNight(){
 
   if(isEmerg){
     h+=emergBanner();
-    h+=progBarHtml(done,total,true);
+    h+=progBarHtml(done,total,true,false);
     h+=phaseHtml({id:'np-emerg',name:'Emergency Steps',isEmerg:true}, log, true, nEmergReq(dt));
   } else {
-    h+=progBarHtml(done,total,true);
+    h+=progBarHtml(done,total,true,nGoodEnough());
+    if(done===total) h+=completionBanner(true);
     NIGHT.phases.forEach(p=>{
       const steps=phaseSteps(p,dt);
       h+=phaseHtml(p, log, true, steps);
@@ -1079,8 +1150,10 @@ function renderNight(){
     </div>`;
   }
 
-  h+=`<div class="day-note-wrap"><div class="day-note-label">Night Note</div><textarea class="day-note-input" placeholder="How did the day go? Any thoughts before sleeping..." oninput="saveDayNote('night',this.value)">${esc(log.dayNote||'')}</textarea></div>`;
-  rv.innerHTML=h; rv.scrollTop=st;
+  h+=`<div class="day-note-wrap"><div class="day-note-label">Night Note</div><textarea class="day-note-input" placeholder="How did the day go? Any thoughts before sleeping..." oninput="saveDayNote('night',this.value);autoGrow(this)">${esc(log.dayNote||'')}</textarea></div>`;
+  rv.innerHTML=h;
+  rv.querySelectorAll('textarea').forEach(t=>autoGrow(t));
+  rv.scrollTop=st;
 }
 
 // ═══════════════════════════════════════
@@ -1090,6 +1163,19 @@ function toggleStep(id){
   const log=todayLog[activeRoutine];
   if(!log||!log.steps[id]) return;
   log.steps[id].completed=!log.steps[id].completed;
+  if('vibrate' in navigator) navigator.vibrate(log.steps[id].completed?40:15);
+  if(log.steps[id].completed){
+    const phId=getPhaseForStep(id);
+    if(phId){
+      const phases=activeRoutine==='morning'?MORNING.phases:NIGHT.phases;
+      const ph=phases.find(p=>p.id===phId);
+      if(ph){
+        const dt=todayLog[activeRoutine]?.dayType||'workout';
+        const pSteps=activeRoutine==='morning'?ph.steps:phaseSteps(ph,dt);
+        if(pSteps&&pSteps.every(s=>log.steps[s.id]?.completed)) collapsed.add(phId);
+      }
+    }
+  }
   const done=activeRoutine==='morning'?mComplete():nComplete();
   if(done&&!log.completedAt) log.completedAt=new Date().toISOString();
   else if(!done) log.completedAt=null;
@@ -1153,12 +1239,29 @@ function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').rep
 // ═══════════════════════════════════════
 function renderHistory(){
   const logs=S.get('logs',{});
-  const dates=Object.keys(logs).sort().reverse();
+  const allDates=Object.keys(logs).sort().reverse();
   const list=document.getElementById('hist-list');
-  document.getElementById('hist-sub').textContent=`${dates.length} ${dates.length===1?'day':'days'} recorded`;
+  const filtersEl=document.getElementById('hist-filters-wrap');
+  const filterLabels={all:'All',done:'Done',ge:'Good Enough',partial:'Partial'};
+  if(filtersEl) filtersEl.innerHTML=`<div class="hist-filters">${Object.keys(filterLabels).map(f=>`<button class="hist-filter${historyFilter===f?' on':''}" onclick="setHistFilter('${f}')">${filterLabels[f]}</button>`).join('')}</div>`;
 
-  if(!dates.length){
+  const dates=allDates.filter(date=>{
+    if(historyFilter==='all') return true;
+    const st=dayStatus(logs[date]);
+    if(historyFilter==='done')    return st===3;
+    if(historyFilter==='ge')      return st===2;
+    if(historyFilter==='partial') return st<=1&&st>0;
+    return true;
+  });
+
+  document.getElementById('hist-sub').textContent=`${allDates.length} ${allDates.length===1?'day':'days'} recorded`;
+
+  if(!allDates.length){
     list.innerHTML=`<div class="empty-state"><div class="ei">📋</div><p>No history yet.<br>Complete your first routine to see it here.</p></div>`;
+    return;
+  }
+  if(!dates.length){
+    list.innerHTML=`<div class="empty-state"><div class="ei">🔍</div><p>No entries match this filter.</p></div>`;
     return;
   }
 
@@ -1206,7 +1309,10 @@ function renderHistory(){
 let activeLogDate = null;
 
 function openLog(date){
-  activeLogDate = date;
+  activeLogDate=date;
+  logEditMode=false;
+  const logs=S.get('logs',{});
+  histLog=JSON.parse(JSON.stringify(logs[date]||null));
   navigate('log');
   renderLog();
 }
@@ -1214,18 +1320,14 @@ function openLog(date){
 function renderLog(){
   const DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   const MOS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const logs=S.get('logs',{});
-  const log=logs[activeLogDate];
+  const log=histLog;
   const d=new Date(activeLogDate+'T00:00:00');
   const label=`${DAYS[d.getDay()]}, ${MOS[d.getMonth()]} ${d.getDate()}`;
-
-  // Set header date
   const hd=document.getElementById('log-header-date');
   if(hd) hd.textContent=label;
-
   if(!log){ document.getElementById('view-log').innerHTML=`<div class="empty-state"><p>No data for this day.</p></div>`; return; }
 
-  function logStepHtml(step, rlog, isNight){
+  function logStepHtml(step,rlog,isNight){
     if(!step||!rlog) return '';
     const sd=rlog.steps?.[step.id];
     const done=sd?.completed||false;
@@ -1241,68 +1343,83 @@ function renderLog(){
     </div>`;
   }
 
-  function logSectionHtml(title, icon, rlog, steps, isNight){
+  function logSectionHtml(title,icon,rlog,steps,isNight){
     if(!steps||!steps.length) return '';
-    const hasAnyData=steps.some(s=>rlog?.steps?.[s.id]?.completed||rlog?.steps?.[s.id]?.note?.trim());
     return `<div class="log-section">
       <div class="log-section-title"><span>${icon}</span>${title}</div>
       <div class="phase-steps">
-        ${steps.map(s=>logStepHtml(s,rlog,isNight)).join('')}
+        ${steps.map(s=>logEditMode?editLogStepHtml(s,rlog,isNight):logStepHtml(s,rlog,isNight)).join('')}
       </div>
     </div>`;
   }
 
-  let h='';
+  const editBtn=`<button class="log-edit-btn${logEditMode?' active':''}" onclick="toggleLogEdit()">${logEditMode?'Done':'Edit'}</button>`;
+  let h=`<div class="log-edit-row">${editBtn}</div>`;
+
+  const ml=log.morning;
+  const nl=log.night;
 
   // ── MORNING ──
-  const ml=log.morning;
   if(ml){
     const mIsEmerg=ml.mode==='emergency';
     const mOptDone=MORNING.optional.filter(s=>ml.steps?.[s.id]?.completed||ml.steps?.[s.id]?.note?.trim());
-
-    if(ml.dayNote?.trim()){
-      h+=`<div class="log-day-note"><div class="log-day-note-lbl">Morning Note</div><div class="log-day-note-text">${esc(ml.dayNote)}</div></div>`;
+    h+=`<div class="log-routine-header"><span>🌅</span>Morning Routine</div>`;
+    if(ml.completedAt){
+      const ct=new Date(ml.completedAt);
+      h+=`<div class="log-completed-time">✓ Completed at ${ct.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div>`;
     }
-
+    if(ml.dayNote?.trim()){
+      if(logEditMode){
+        h+=`<div class="day-note-wrap" style="margin-bottom:12px"><div class="day-note-label">Morning Note</div><textarea class="day-note-input" placeholder="Morning note..." oninput="saveHistDayNote('morning',this.value);autoGrow(this)">${esc(ml.dayNote)}</textarea></div>`;
+      } else {
+        h+=`<div class="log-day-note"><div class="log-day-note-lbl">Morning Note</div><div class="log-day-note-text">${esc(ml.dayNote)}</div></div>`;
+      }
+    } else if(logEditMode){
+      h+=`<div class="day-note-wrap" style="margin-bottom:12px"><div class="day-note-label">Morning Note</div><textarea class="day-note-input" placeholder="Morning note..." oninput="saveHistDayNote('morning',this.value);autoGrow(this)"></textarea></div>`;
+    }
     if(mIsEmerg){
       h+=logSectionHtml('Emergency Steps','⚡',ml,MORNING_EMERG,false);
     } else {
-      MORNING.phases.forEach(p=>{
-        h+=logSectionHtml(p.name,'🌅',ml,p.steps,false);
-      });
-      if(mOptDone.length){
-        h+=logSectionHtml('Optional','✨',ml,mOptDone,false);
-      }
+      MORNING.phases.forEach(p=>{ h+=logSectionHtml(p.name,'🌅',ml,p.steps,false); });
+      const optSteps=logEditMode?MORNING.optional:mOptDone;
+      if(optSteps.length) h+=logSectionHtml('Optional','✨',ml,optSteps,false);
     }
   }
 
+  // ── SEPARATOR ──
+  if(ml&&nl) h+=`<div class="log-routine-divider"><div class="log-rd-line"></div><span class="log-rd-label">🌙 Night Routine</span><div class="log-rd-line"></div></div>`;
+
   // ── NIGHT ──
-  const nl=log.night;
   if(nl){
     const nIsEmerg=nl.mode==='emergency';
     const dt=nl.dayType||'workout';
     const nOptDone=NIGHT.optional.filter(s=>nl.steps?.[s.id]?.completed||nl.steps?.[s.id]?.note?.trim());
-
-    if(nl.dayNote?.trim()){
-      h+=`<div class="log-day-note"><div class="log-day-note-lbl">Night Note</div><div class="log-day-note-text">${esc(nl.dayNote)}</div></div>`;
+    if(!ml) h+=`<div class="log-routine-header"><span>🌙</span>Night Routine</div>`;
+    if(nl.completedAt){
+      const ct=new Date(nl.completedAt);
+      h+=`<div class="log-completed-time night">✓ Completed at ${ct.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div>`;
     }
-
+    if(nl.dayNote?.trim()){
+      if(logEditMode){
+        h+=`<div class="day-note-wrap" style="margin-bottom:12px"><div class="day-note-label">Night Note</div><textarea class="day-note-input" placeholder="Night note..." oninput="saveHistDayNote('night',this.value);autoGrow(this)">${esc(nl.dayNote)}</textarea></div>`;
+      } else {
+        h+=`<div class="log-day-note"><div class="log-day-note-lbl">Night Note</div><div class="log-day-note-text">${esc(nl.dayNote)}</div></div>`;
+      }
+    } else if(logEditMode){
+      h+=`<div class="day-note-wrap" style="margin-bottom:12px"><div class="day-note-label">Night Note</div><textarea class="day-note-input" placeholder="Night note..." oninput="saveHistDayNote('night',this.value);autoGrow(this)"></textarea></div>`;
+    }
     if(nIsEmerg){
       h+=logSectionHtml('Emergency Steps','⚡',nl,nEmergReq(dt),true);
     } else {
-      NIGHT.phases.forEach(p=>{
-        const steps=phaseSteps(p,dt);
-        h+=logSectionHtml(p.name,'🌙',nl,steps,true);
-      });
-      if(nOptDone.length){
-        h+=logSectionHtml('Optional','✨',nl,nOptDone,true);
-      }
+      NIGHT.phases.forEach(p=>{ const steps=phaseSteps(p,dt); h+=logSectionHtml(p.name,'🌙',nl,steps,true); });
+      const optSteps=logEditMode?NIGHT.optional:nOptDone;
+      if(optSteps.length) h+=logSectionHtml('Optional','✨',nl,optSteps,true);
     }
   }
 
-  if(!h) h=`<div class="empty-state"><p>Nothing recorded for this day.</p></div>`;
-
+  if(!ml&&!nl) h=`<div class="empty-state"><p>Nothing recorded for this day.</p></div>`;
   document.getElementById('view-log').innerHTML=h;
+  if(logEditMode) document.querySelectorAll('#view-log textarea').forEach(t=>autoGrow(t));
 }
 // ═══════════════════════════════════════
 let statsTab='morning';
@@ -1366,7 +1483,8 @@ function renderStatsInner(){
       <div class="sc"><div class="sc-lbl">Completion Rate</div><div class="sc-val${rate>=80?' gc':''}">${rate}%</div><div class="sc-sub">${completed} of ${total} days</div></div>
       <div class="sc"><div class="sc-lbl">Total Done</div><div class="sc-val">${completed}</div><div class="sc-sub">full routines</div></div>
       <div class="sc wide"><div class="sc-lbl">Last 7 Days</div>${wg}</div>
-    </div>`;
+    </div>
+    ${renderCalendar(logs,isNight)}`;
 }
 
 // ═══════════════════════════════════════
@@ -1474,6 +1592,186 @@ function toggleTheme(){
   const light=document.getElementById('app').classList.toggle('light');
   document.getElementById('theme-toggle').classList.toggle('on',light);
   S.set('theme',light?'light':'dark');
+}
+
+
+// ═══════════════════════════════════════
+// NEW FEATURES
+// ═══════════════════════════════════════
+function autoGrow(el){el.style.height='auto';el.style.height=el.scrollHeight+'px';}
+
+function getPhaseForStep(id){
+  const phases=activeRoutine==='morning'?MORNING.phases:NIGHT.phases;
+  const dt=todayLog[activeRoutine]?.dayType||'workout';
+  for(const p of phases){
+    const steps=activeRoutine==='morning'?p.steps:phaseSteps(p,dt);
+    if(steps&&steps.some(s=>s.id===id)) return p.id;
+  }
+  return null;
+}
+
+function nextStep(routineType){
+  const log=todayLog[routineType]; if(!log) return null;
+  const req=routineType==='morning'?(log.mode==='emergency'?mEmergReq():mReq()):(log.mode==='emergency'?nEmergReq(log.dayType||'workout'):nReq(log.dayType||'workout'));
+  return (req.find(s=>!log.steps[s.id]?.completed)||null)?.label||null;
+}
+
+function getLastNightDayType(currentDate,logs){
+  const dates=Object.keys(logs).sort();
+  for(let i=dates.length-1;i>=0;i--){
+    if(dates[i]<currentDate&&logs[dates[i]]?.night?.dayType) return logs[dates[i]].night.dayType;
+  }
+  return 'workout';
+}
+
+function completionBanner(isNight){
+  const clr=isNight?'var(--night)':'var(--accent-b)';
+  const bg=isNight?'rgba(129,140,248,.08)':'rgba(59,130,246,.08)';
+  const bc=isNight?'rgba(129,140,248,.2)':'rgba(59,130,246,.2)';
+  return `<div class="completion-banner" style="background:${bg};border-color:${bc}"><span style="font-size:20px">✓</span><div><div class="cb-title" style="color:${clr}">Routine Complete</div><div class="cb-sub">All steps done for today.</div></div></div>`;
+}
+
+function saveHistLog(){
+  const logs=S.get('logs',{});
+  logs[activeLogDate]=histLog;
+  S.set('logs',logs);
+  if(activeLogDate===TODAY){ todayLog=histLog; calcStreaks(); }
+}
+
+function toggleHistStep(type,id){
+  if(!histLog?.[type]?.steps?.[id]) return;
+  histLog[type].steps[id].completed=!histLog[type].steps[id].completed;
+  const req=type==='morning'?(histLog[type].mode==='emergency'?mEmergReq():mReq()):(histLog[type].mode==='emergency'?nEmergReq(histLog[type].dayType||'workout'):nReq(histLog[type].dayType||'workout'));
+  const done=req.filter(s=>histLog[type].steps[s.id]?.completed).length;
+  if(done===req.length&&req.length>0&&!histLog[type].completedAt) histLog[type].completedAt=new Date().toISOString();
+  else if(done<req.length) histLog[type].completedAt=null;
+  saveHistLog(); renderLog();
+}
+
+function saveHistStepNote(type,id,val){
+  if(!histLog?.[type]?.steps?.[id]) return;
+  histLog[type].steps[id].note=val;
+  saveHistLog();
+  const btn=document.getElementById('nb-'+id);
+  if(btn){
+    const hn=val.trim().length>0;
+    btn.classList.toggle('hn',hn);
+    btn.classList.toggle('nhn',hn&&type==='night');
+    if(!hn) btn.classList.remove('nhn');
+  }
+}
+
+function saveHistDayNote(type,val){
+  if(!histLog?.[type]) return;
+  histLog[type].dayNote=val;
+  saveHistLog();
+}
+
+function toggleHistNote(type,id){ toggleNote(id); }
+
+function toggleLogEdit(){
+  logEditMode=!logEditMode;
+  openNotes.clear();
+  renderLog();
+}
+
+function setHistFilter(f){
+  historyFilter=f;
+  renderHistory();
+}
+
+function resetToday(type){
+  const label=type==='morning'?'morning routine':'night routine';
+  if(!confirm("Reset today's "+label+"? This clears all step progress.")) return;
+  if(type==='morning'){
+    todayLog.morning=newMLog();
+  } else {
+    const dt=todayLog.night?.dayType||'workout';
+    todayLog.night=newNLog();
+    todayLog.night.dayType=dt;
+  }
+  saveLog(); calcStreaks();
+  openNotes.clear(); openInfos.clear();
+  if(curView==='routine') renderRoutine();
+  renderHome();
+  closeSettings();
+}
+
+function dayStatus(log){
+  function rs(rlog,type){
+    if(!rlog||!rlog.steps) return 0;
+    const emR=type==='night'?nEmergReq(rlog.dayType||'workout'):mEmergReq();
+    const req=rlog.mode==='emergency'?emR:(type==='night'?nReq(rlog.dayType||'workout'):mReq());
+    const done=req.filter(s=>rlog.steps[s.id]?.completed).length;
+    if(done===req.length&&req.length>0) return 3;
+    const phases=type==='night'?NIGHT.phases:MORNING.phases;
+    const dt=rlog.dayType||'workout';
+    const touched=phases.filter(p=>{const steps=type==='night'?phaseSteps(p,dt):p.steps;return steps&&steps.some(s=>rlog.steps[s.id]?.completed);}).length;
+    if(touched>=2) return 2;
+    if(done>0) return 1;
+    return 0;
+  }
+  return Math.max(rs(log?.morning,'morning'),rs(log?.night,'night'));
+}
+
+function editLogStepHtml(step,rlog,isNight){
+  if(!step||!rlog) return '';
+  const sd=rlog.steps?.[step.id]||{completed:false,note:''};
+  const on=sd.completed, hn=!!(sd.note&&sd.note.trim());
+  const type=isNight?'night':'morning';
+  const sub=step.id==='s2'?(S.get('m_stretches',['Full-body stretch','Knee-to-chest stretch','Supine twist']).join(' · ')):step.sub;
+  return `<div class="step-item${on?' si-done':''}" id="esi-${step.id}">
+    <div class="step-row">
+      <div class="step-cb${on?' on':''}${on&&isNight?' ncb':''}" onclick="toggleHistStep('${type}','${step.id}')"></div>
+      <div class="step-content">
+        <div class="step-label">${step.label}</div>
+        ${sub?`<div class="step-sub">${esc(sub)}</div>`:''}
+      </div>
+      <button class="note-btn${hn?' hn':''}${hn&&isNight?' nhn':''}" id="nb-${step.id}" onclick="toggleHistNote('${type}','${step.id}')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </button>
+    </div>
+    <div class="note-area${openNotes.has(step.id)?' open':''}" id="na-${step.id}">
+      <textarea class="note-input" placeholder="Add a note..." oninput="saveHistStepNote('${type}','${step.id}',this.value);autoGrow(this)">${esc(sd.note||'')}</textarea>
+    </div>
+  </div>`;
+}
+
+function renderCalendar(logs,isNight){
+  const now=new Date(), y=now.getFullYear(), mo=now.getMonth();
+  const dim=new Date(y,mo+1,0).getDate(), fd=new Date(y,mo,1).getDay();
+  const MN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const ac=isNight?'n':'m';
+  let h=`<div class="cal-wrap"><div class="cal-header">${MN[mo]} ${y}</div><div class="cal-grid">`;
+  ['S','M','T','W','T','F','S'].forEach(dl=>h+=`<div class="cal-day-lbl">${dl}</div>`);
+  for(let i=0;i<fd;i++) h+=`<div class="cal-cell empty"></div>`;
+  for(let day=1;day<=dim;day++){
+    const ds=`${y}-${String(mo+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    const rlog=logs[ds]?.[isNight?'night':'morning'];
+    const isToday=ds===TODAY;
+    let status='none';
+    if(rlog&&rlog.steps){
+      const emR=isNight?nEmergReq(rlog.dayType||'workout'):mEmergReq();
+      const req=rlog.mode==='emergency'?emR:(isNight?nReq(rlog.dayType||'workout'):mReq());
+      const done=req.filter(s=>rlog.steps[s.id]?.completed).length;
+      if(done===req.length&&req.length>0){ status='done'; }
+      else if(done>0){
+        const phases=isNight?NIGHT.phases:MORNING.phases;
+        const dt=rlog.dayType||'workout';
+        const touched=phases.filter(p=>{const steps=isNight?phaseSteps(p,dt):p.steps;return steps&&steps.some(s=>rlog.steps[s.id]?.completed);}).length;
+        status=touched>=2?'ge':'partial';
+      }
+    }
+    const dc=status==='done'?` done ${ac}`:status!=='none'?` ${status}`:'';
+    h+=`<div class="cal-cell${dc}${isToday?' today':''}"><span>${day}</span></div>`;
+  }
+  h+=`</div><div class="cal-legend">`;
+  h+=`<div class="cal-leg-item"><div class="cal-leg-dot done ${ac}"></div><span>Done</span></div>`;
+  h+=`<div class="cal-leg-item"><div class="cal-leg-dot ge"></div><span>Good enough</span></div>`;
+  h+=`<div class="cal-leg-item"><div class="cal-leg-dot partial"></div><span>Partial</span></div>`;
+  h+=`<div class="cal-leg-item"><div class="cal-leg-dot empty"></div><span>None</span></div>`;
+  h+=`</div></div>`;
+  return h;
 }
 
 // ═══════════════════════════════════════
