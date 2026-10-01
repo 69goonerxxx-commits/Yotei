@@ -1,1635 +1,1381 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Yotei</title>
-
-  <!-- PWA -->
-  <link rel="manifest" href="./manifest.json">
-  <meta name="theme-color" content="#080d1a">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Yotei">
-  <link rel="apple-touch-icon" href="./icon.svg">
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --bg:         #080d1a;
-      --surface:    #0d1425;
-      --card:       #111c30;
-      --card-h:     #172236;
-      --border:     #1b2a42;
-      --accent:     #3b82f6;
-      --accent-b:   #60a5fa;
-      --accent-dim: #1d4ed8;
-      --night:      #818cf8;
-      --night-dim:  #4f46e5;
-      --night-glow: rgba(129,140,248,.12);
-      --text:       #eef2ff;
-      --text-sec:   #64748b;
-      --text-ter:   #253347;
-      --success:    #22c55e;
-      --succ-dim:   rgba(34,197,94,.13);
-      --opt:        #f59e0b;
-      --warn:       #f97316;
-      --r:          16px;
-      --r-sm:       10px;
-      --hh:         60px;
-      --fh:         68px;
-      --t:          .2s ease;
-      --fd:         'Syne', sans-serif;
-      --fb:         'Manrope', sans-serif;
-    }
-    .light {
-      --bg:         #eef2ff;
-      --surface:    #f8faff;
-      --card:       #ffffff;
-      --card-h:     #f0f4ff;
-      --border:     #c7d2fe;
-      --accent:     #2563eb;
-      --accent-b:   #3b82f6;
-      --accent-dim: #1d4ed8;
-      --night:      #6366f1;
-      --night-dim:  #4338ca;
-      --night-glow: rgba(99,102,241,.09);
-      --text:       #0f172a;
-      --text-sec:   #475569;
-      --text-ter:   #94a3b8;
-      --success:    #16a34a;
-      --succ-dim:   rgba(22,163,74,.1);
-    }
-
-    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-    html,body{height:100%;overflow:hidden}
-    body{font-family:'Manrope',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.5}
-
-    #app{
-      display:flex;flex-direction:column;height:100dvh;
-      max-width:430px;margin:0 auto;position:relative;overflow:hidden;
-      background:radial-gradient(ellipse 90% 40% at 50% 0%,rgba(59,130,246,.07) 0%,transparent 60%),var(--bg);
-    }
-
-    /* HEADER */
-    #app-header{height:var(--hh);display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0;border-bottom:1px solid var(--border);position:relative;z-index:10}
-    .h-left,.h-right{display:flex;align-items:center;gap:8px;min-width:44px}
-    .h-right{justify-content:flex-end}
-    .h-date{font-family:'Syne',sans-serif;font-size:13px;font-weight:600;color:var(--text-sec);letter-spacing:.3px}
-    .h-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--text)}
-    .icon-btn{width:36px;height:36px;border-radius:10px;border:none;background:var(--card);color:var(--text-sec);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--t)}
-    .icon-btn:active{background:var(--card-h);color:var(--text)}
-    .back-btn{display:flex;align-items:center;gap:5px;background:none;border:none;color:var(--accent-b);font-family:'Manrope',sans-serif;font-size:14px;font-weight:600;cursor:pointer;padding:4px 0}
-
-    /* MAIN */
-    #app-main{flex:1;overflow:hidden;position:relative}
-    .view{position:absolute;inset:0;overflow-y:auto;padding:20px 20px calc(var(--fh)+20px);opacity:0;pointer-events:none;transform:translateX(16px);transition:opacity .22s ease,transform .22s ease;-webkit-overflow-scrolling:touch}
-    .view::-webkit-scrollbar{display:none}
-    .view{-ms-overflow-style:none;scrollbar-width:none}
-    .view.active{opacity:1;pointer-events:all;transform:translateX(0)}
-    .view-inner{padding:20px 20px 0}
-    #view-routine{padding-bottom:32px;padding-left:20px;padding-right:20px;padding-top:20px}
-    #view-log{padding:20px}
-
-    /* FOOTER */
-    #app-nav{height:var(--fh);display:flex;align-items:center;justify-content:space-around;background:var(--surface);border-top:1px solid var(--border);flex-shrink:0;z-index:10;padding:0 10px;padding-bottom:env(safe-area-inset-bottom,0px)}
-    .nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:none;color:var(--text-ter);font-family:'Manrope',sans-serif;font-size:11px;font-weight:600;cursor:pointer;padding:8px 22px;border-radius:12px;transition:var(--t);letter-spacing:.3px}
-    .nav-item.active{color:var(--accent-b)}
-    .nav-item.active svg{filter:drop-shadow(0 0 5px var(--accent))}
-
-    /* HOME */
-    .home-greeting{margin-bottom:20px}
-    .home-greeting h1{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;line-height:1.15;color:var(--text);margin-bottom:3px}
-    .home-greeting p{font-size:13px;color:var(--text-sec);font-weight:500}
-    .streak-banner{display:flex;align-items:stretch;background:linear-gradient(135deg,rgba(59,130,246,.1),rgba(29,78,216,.06));border:1px solid rgba(59,130,246,.18);border-radius:var(--r);padding:14px 16px;margin-bottom:14px}
-    .streak-col{flex:1;display:flex;align-items:center;gap:10px}
-    .streak-col+.streak-col{border-left:1px solid var(--border);padding-left:14px;margin-left:4px}
-    .streak-emoji{font-size:20px;flex-shrink:0}
-    .streak-num{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;line-height:1}
-    .streak-num.m{color:var(--accent-b)}
-    .streak-num.n{color:var(--night)}
-    .streak-lbl{font-size:11px;color:var(--text-sec);font-weight:500;margin-top:2px}
-    .streak-best{font-size:10px;color:var(--text-ter);margin-top:1px}
-
-    /* ROUTINE CARDS */
-    .routine-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;cursor:pointer;transition:var(--t);position:relative;overflow:hidden;margin-bottom:12px}
-    .routine-card:last-child{margin-bottom:0}
-    .routine-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent-dim),var(--accent-b));opacity:.65}
-    .routine-card.night-card::before{background:linear-gradient(90deg,var(--night-dim),var(--night));opacity:.7}
-    .routine-card.r-done::before{background:linear-gradient(90deg,#15803d,#22c55e);opacity:.85}
-    .routine-card.r-ge::before{background:linear-gradient(90deg,#92400e,#f59e0b);opacity:.7}
-    .routine-card:active{background:var(--card-h);transform:scale(.99)}
-    .card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
-    .card-name-row{display:flex;align-items:center;gap:8px}
-    .card-icon{font-size:17px}
-    .card-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--text);margin-bottom:3px}
-    .card-meta{font-size:12px;color:var(--text-sec);font-weight:500}
-    .card-badge{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:5px 10px;border-radius:20px;white-space:nowrap}
-    .badge-m{background:rgba(59,130,246,.1);color:var(--accent-b)}
-    .badge-n{background:var(--night-glow);color:var(--night)}
-    .badge-done{background:var(--succ-dim);color:var(--success)}
-    .badge-emerg{background:rgba(249,115,22,.1);color:var(--warn)}
-    .prog-wrap{margin-bottom:10px}
-    .prog-lbl{display:flex;justify-content:space-between;font-size:12px;color:var(--text-sec);margin-bottom:6px;font-weight:500}
-    .prog-track{height:6px;background:var(--border);border-radius:10px;overflow:hidden}
-    .prog-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--accent-dim),var(--accent-b));transition:width .4s cubic-bezier(.4,0,.2,1)}
-    .prog-fill.nf{background:linear-gradient(90deg,var(--night-dim),var(--night))}
-    .prog-fill.df{background:linear-gradient(90deg,#15803d,#22c55e)}
-    .prog-fill.gef{background:linear-gradient(90deg,#92400e,#f59e0b)}
-    .card-hint{display:flex;align-items:center;justify-content:flex-end;gap:4px;font-size:12px;color:var(--text-sec);margin-top:12px}
-
-    /* ROUTINE VIEW */
-    .rv-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px}
-    .rv-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--text);margin-bottom:3px}
-    .rv-sub{font-size:13px;color:var(--text-sec);font-weight:500}
-    .emerg-btn{display:flex;align-items:center;gap:5px;flex-shrink:0;background:rgba(249,115,22,.09);border:1px solid rgba(249,115,22,.2);border-radius:8px;padding:7px 10px;font-family:'Manrope',sans-serif;font-size:12px;font-weight:700;color:var(--warn);cursor:pointer;transition:var(--t)}
-    .emerg-btn:active{background:rgba(249,115,22,.18)}
-    .emerg-banner{display:flex;align-items:center;gap:10px;background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.2);border-radius:var(--r);padding:12px 14px;margin-bottom:16px}
-    .eb-title{font-size:13px;font-weight:700;color:var(--warn)}
-    .eb-sub{font-size:11px;color:var(--text-sec);font-weight:400;margin-top:1px}
-
-    /* DAY TYPE */
-    .dts{display:flex;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:3px;margin-bottom:16px;gap:3px}
-    .dts-btn{flex:1;padding:8px 0;border:none;border-radius:7px;background:transparent;font-family:'Manrope',sans-serif;font-size:13px;font-weight:600;color:var(--text-sec);cursor:pointer;transition:var(--t)}
-    .dts-btn.on{background:var(--card);color:var(--night);box-shadow:0 1px 4px rgba(0,0,0,.2)}
-    .dts.m .dts-btn.on{color:var(--accent-b)}
-
-    /* PROGRESS BAR (routine view) */
-    .rv-prog{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:16px}
-    .rv-prog-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
-    .rv-prog-steps{font-size:14px;font-weight:600;color:var(--text)}
-    .rv-prog-pct{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--accent-b)}
-    .rv-prog-pct.n{color:var(--night)}
-
-    /* COLLAPSIBLE PHASES */
-    .phase-sec{margin-bottom:12px}
-    .phase-hdr{
-      display:flex;justify-content:space-between;align-items:center;
-      margin-bottom:8px;padding:6px 4px;cursor:pointer;
-      border-radius:var(--r-sm);transition:var(--t);
-      -webkit-user-select:none;user-select:none;
-    }
-    .phase-hdr:active{background:rgba(255,255,255,.03)}
-    .phase-hdr-left{flex:1;min-width:0}
-    .phase-name{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--accent-b);text-transform:uppercase;letter-spacing:.9px}
-    .phase-name.n{color:var(--night)}
-    .phase-name.el{color:var(--warn)}
-    .phase-dur{font-size:11px;color:var(--text-sec);font-weight:500;margin-top:1px}
-    .phase-hdr-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
-    .phase-count{font-size:11px;font-weight:600;color:var(--text-sec)}
-    .phase-count.done{color:var(--success)}
-    .phase-chevron{color:var(--text-sec);transition:transform .25s ease;flex-shrink:0}
-    .phase-chevron.flipped{transform:rotate(-90deg)}
-
-    /* Phase body — grid animation */
-    .phase-body{display:grid;grid-template-rows:1fr;transition:grid-template-rows .25s ease}
-    .phase-body.collapsed{grid-template-rows:0fr}
-    .phase-body>div{overflow:hidden}
-
-    .phase-steps{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
-
-    /* STEPS */
-    .step-item{border-bottom:1px solid var(--border)}
-    .step-item:last-child{border-bottom:none}
-    .step-row{display:flex;align-items:center;gap:12px;padding:13px 16px}
-    .step-cb{width:22px;height:22px;border-radius:6px;border:2px solid var(--border);background:transparent;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s ease;position:relative}
-    .step-cb::before{content:'';position:absolute;inset:-11px}
-    .step-cb.on{background:var(--accent);border-color:var(--accent)}
-    .step-cb.on.ncb{background:var(--night);border-color:var(--night)}
-    .step-cb.on::after{content:'';width:5px;height:9px;border:2px solid white;border-top:none;border-left:none;transform:rotate(45deg) translateY(-1px);display:block}
-    .step-content{flex:1;min-width:0}
-    .step-label{font-size:15px;font-weight:500;color:var(--text);transition:var(--t)}
-    .step-item.si-done .step-label{color:var(--text-sec);text-decoration:line-through;text-decoration-color:var(--text-ter)}
-    .step-sub{font-size:12px;color:var(--text-sec);margin-top:2px;font-weight:400}
-    .opt-tag{font-size:10px;font-weight:700;color:var(--opt);background:rgba(245,158,11,.1);padding:2px 6px;border-radius:4px;letter-spacing:.4px;flex-shrink:0}
-    .note-btn{width:30px;height:30px;border-radius:8px;border:none;background:transparent;color:var(--text-ter);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--t);flex-shrink:0;position:relative}
-    .note-btn::before{content:'';position:absolute;inset:-7px}
-    .note-btn:active{background:var(--card-h);color:var(--accent-b)}
-    .note-btn.hn{color:var(--accent-b)}
-    .note-btn.hn.nhn{color:var(--night)}
-    .note-btn.hn::after{content:'';width:5px;height:5px;background:var(--accent);border-radius:50%;position:absolute;top:4px;right:4px}
-    .note-btn.hn.nhn::after{background:var(--night)}
-    .note-area{padding:0 16px 12px;display:none}
-    .note-area.open{display:block}
-
-    /* INFO BUTTON */
-    .info-btn{width:30px;height:30px;border-radius:8px;border:none;background:transparent;color:var(--text-ter);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--t);flex-shrink:0;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;position:relative}
-    .info-btn::before{content:'';position:absolute;inset:-7px}
-    .info-btn:active{background:var(--card-h);color:var(--accent-b)}
-
-    /* INFO PANEL */
-    .info-panel{padding:0 16px 12px;display:none}
-    .info-panel.open{display:block}
-    .info-panel-inner{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:11px 13px;font-size:12px;color:var(--text-sec);line-height:1.65;font-weight:400}
-    .info-panel-inner strong{color:var(--text);font-weight:600}
-
-    /* HOW-TO BUTTON */
-    .howto-btn{width:30px;height:30px;border-radius:8px;border:none;background:transparent;color:var(--text-ter);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--t);flex-shrink:0;position:relative}
-    .howto-btn::before{content:'';position:absolute;inset:-7px}
-    .howto-btn:active{background:var(--card-h);color:var(--accent-b)}
-
-    /* HOW-TO PANEL */
-    .howto-panel{padding:0 16px 12px;display:none}
-    .howto-panel.open{display:block}
-    .howto-panel-inner{background:var(--surface);border:1px solid var(--border);border-left:2px solid var(--accent);border-radius:var(--r-sm);padding:11px 13px;font-size:12px;color:var(--text-sec);line-height:1.65;font-weight:400}
-    .howto-panel-inner strong{color:var(--text);font-weight:600}
-
-    /* GOOD ENOUGH BADGE */
-    .badge-ge{background:rgba(245,158,11,.1);color:var(--opt)}
-
-    .note-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;font-family:'Manrope',sans-serif;font-size:13px;color:var(--text);resize:none;min-height:68px;outline:none;transition:border-color .2s}
-    .note-input:focus{border-color:var(--accent)}
-    .note-input::placeholder{color:var(--text-ter)}
-
-    /* OPTIONAL SECTION */
-    .opt-section{margin-bottom:12px}
-    .opt-section-hdr{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--opt);text-transform:uppercase;letter-spacing:.9px;margin-bottom:8px;padding:0 4px}
-
-    /* DAY NOTE */
-    .day-note-wrap{margin-top:12px;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px}
-    .day-note-label{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--text-sec);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px}
-    .day-note-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px;font-family:'Manrope',sans-serif;font-size:14px;color:var(--text);resize:none;min-height:88px;outline:none;transition:border-color .2s;line-height:1.55}
-    .day-note-input:focus{border-color:var(--accent)}
-    .day-note-input::placeholder{color:var(--text-ter)}
-
-    /* LOG VIEW (read-only history detail) */
-    .log-section{margin-bottom:20px}
-    .log-section-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text-sec);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;padding:0 2px;display:flex;align-items:center;gap:8px}
-    .log-section-title span{font-size:16px}
-    .log-step{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border)}
-    .log-step:last-child{border-bottom:none}
-    .log-cb{width:18px;height:18px;border-radius:5px;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center}
-    .log-cb.done{background:var(--accent)}
-    .log-cb.done.nc{background:var(--night)}
-    .log-cb.done::after{content:'';width:4px;height:7px;border:2px solid white;border-top:none;border-left:none;transform:rotate(45deg) translateY(-1px);display:block}
-    .log-cb.skip{background:var(--border)}
-    .log-step-body{flex:1;min-width:0}
-    .log-step-label{font-size:14px;font-weight:500;color:var(--text)}
-    .log-step.ls-skip .log-step-label{color:var(--text-sec);text-decoration:line-through;text-decoration-color:var(--text-ter)}
-    .log-step-sub{font-size:11px;color:var(--text-sec);margin-top:1px}
-    .log-step-note{margin-top:6px;background:var(--surface);border-left:2px solid var(--accent);border-radius:0 var(--r-sm) var(--r-sm) 0;padding:7px 10px;font-size:12px;color:var(--text-sec);line-height:1.6;font-style:italic}
-    .log-step-note.nn{border-left-color:var(--night)}
-    .log-day-note{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:12px}
-    .log-day-note-lbl{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--text-sec);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
-    .log-day-note-text{font-size:13px;color:var(--text-sec);line-height:1.65;font-style:italic}
-    .log-empty{font-size:13px;color:var(--text-ter);padding:10px 14px;font-style:italic}
-    .v-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--text);margin-bottom:4px}
-    .v-sub{font-size:13px;color:var(--text-sec);font-weight:500;margin-bottom:20px}
-    .h-list{display:flex;flex-direction:column;gap:10px}
-    .h-item{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px}
-    .h-date-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-    .h-date{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--text)}
-    .today-badge{font-size:10px;color:var(--accent-b);font-weight:700;background:rgba(59,130,246,.12);padding:2px 7px;border-radius:10px;margin-left:8px}
-    .h-pills{display:flex;gap:8px}
-    .h-pill{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:8px 10px}
-    .h-pill-top{display:flex;align-items:center;gap:5px;margin-bottom:3px}
-    .h-pill-icon{font-size:13px}
-    .h-pill-lbl{font-size:10px;font-weight:700;color:var(--text-sec);text-transform:uppercase;letter-spacing:.4px}
-    .h-pill-val{font-size:14px;font-weight:700;color:var(--text-sec)}
-    .h-pill-val.ok{color:var(--success)}
-    .h-pill-val.em{color:var(--warn)}
-    .h-note-prev{font-size:12px;color:var(--text-sec);margin-top:8px;font-style:italic;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-    .empty-state{text-align:center;padding:60px 20px;color:var(--text-sec)}
-    .empty-state .ei{font-size:40px;margin-bottom:12px}
-    .empty-state p{font-size:14px;font-weight:500;line-height:1.7}
-
-    /* STATS */
-    .stats-tabs{display:flex;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:3px;margin-bottom:16px;gap:3px}
-    .s-tab{flex:1;padding:8px 0;border:none;border-radius:7px;background:transparent;font-family:'Manrope',sans-serif;font-size:13px;font-weight:600;color:var(--text-sec);cursor:pointer;transition:var(--t)}
-    .s-tab.on{background:var(--card);color:var(--accent-b);box-shadow:0 1px 4px rgba(0,0,0,.2)}
-    .s-tab.on.nt{color:var(--night)}
-    .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .sc{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px}
-    .sc.wide{grid-column:1/-1}
-    .sc-lbl{font-size:11px;font-weight:700;color:var(--text-sec);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
-    .sc-val{font-family:'Syne',sans-serif;font-size:34px;font-weight:800;color:var(--text);line-height:1;margin-bottom:3px}
-    .sc-val.ac{color:var(--accent-b)}
-    .sc-val.nc{color:var(--night)}
-    .sc-val.gc{color:var(--success)}
-    .sc-sub{font-size:12px;color:var(--text-sec);font-weight:500}
-    .week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:12px}
-    .wd{display:flex;flex-direction:column;align-items:center;gap:4px}
-    .wd-lbl{font-size:10px;color:var(--text-sec);font-weight:600;text-transform:uppercase}
-    .wd-dot{width:34px;height:34px;border-radius:8px;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--text-sec)}
-    .wd-dot.md{background:var(--accent);color:#fff}
-    .wd-dot.nd{background:var(--night);color:#fff}
-    .wd-dot.td{border:2px solid var(--accent-b)}
-    .wd-dot.ntd{border-color:var(--night)}
-
-    /* SETTINGS */
-    #settings-overlay{position:fixed;inset:0;z-index:100;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .22s ease}
-    #settings-overlay.open{opacity:1;pointer-events:all}
-    .s-bg{position:absolute;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(4px)}
-    .s-sheet{
-      position:relative;z-index:1;width:100%;max-width:430px;margin:0 auto;
-      background:var(--surface);border-radius:24px 24px 0 0;
-      padding:24px 20px;border-top:1px solid var(--border);
-      max-height:85vh;overflow-y:auto;
-      padding-bottom:calc(env(safe-area-inset-bottom,0px) + 24px);
-      transform:translateY(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);
-    }
-    .s-sheet::-webkit-scrollbar{display:none}
-    #settings-overlay.open .s-sheet{transform:translateY(0)}
-    .s-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px;flex-shrink:0}
-    .s-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--text);margin-bottom:20px}
-    .s-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)}
-    .s-row:last-child{border-bottom:none}
-    .s-row-lbl{font-size:15px;font-weight:500;color:var(--text)}
-    .s-row-sub{font-size:12px;color:var(--text-sec);margin-top:1px}
-    .toggle{width:48px;height:26px;background:var(--border);border-radius:13px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;border:none}
-    .toggle.on{background:var(--accent)}
-    .toggle::after{content:'';position:absolute;width:20px;height:20px;background:#fff;border-radius:50%;top:3px;left:3px;transition:transform .2s cubic-bezier(.4,0,.2,1);box-shadow:0 1px 4px rgba(0,0,0,.2)}
-    .toggle.on::after{transform:translateX(22px)}
-
-    /* Settings section (stretch editor, data) */
-    .s-section{padding:16px 0;border-bottom:1px solid var(--border)}
-    .s-section:last-child{border-bottom:none}
-    .s-section-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--text-sec);text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px}
-    .s-action-btn{
-      width:100%;padding:11px 14px;border-radius:var(--r-sm);border:1px solid var(--border);
-      background:var(--card);color:var(--text);font-family:'Manrope',sans-serif;
-      font-size:14px;font-weight:600;cursor:pointer;transition:var(--t);
-      display:flex;align-items:center;gap:8px;margin-bottom:8px;
-    }
-    .s-action-btn:last-child{margin-bottom:0}
-    .s-action-btn:active{background:var(--card-h)}
-    .s-action-btn.warn{color:var(--warn);border-color:rgba(249,115,22,.2)}
-
-    /* Stretch editor */
-    .stretch-list{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
-    .stretch-row{display:flex;align-items:center;gap:8px}
-    .stretch-input{
-      flex:1;background:var(--card);border:1px solid var(--border);
-      border-radius:var(--r-sm);padding:9px 12px;
-      font-family:'Manrope',sans-serif;font-size:14px;color:var(--text);
-      outline:none;transition:border-color .2s;
-    }
-    .stretch-input:focus{border-color:var(--accent)}
-    .stretch-del{
-      width:32px;height:32px;border-radius:8px;border:none;
-      background:rgba(249,115,22,.09);color:var(--warn);
-      display:flex;align-items:center;justify-content:center;
-      cursor:pointer;flex-shrink:0;font-size:16px;transition:var(--t);
-    }
-    .stretch-del:active{background:rgba(249,115,22,.18)}
-    .add-stretch-btn{
-      width:100%;padding:9px;border-radius:var(--r-sm);border:1px dashed var(--border);
-      background:transparent;color:var(--text-sec);font-family:'Manrope',sans-serif;
-      font-size:13px;font-weight:600;cursor:pointer;transition:var(--t);
-    }
-    .add-stretch-btn:active{background:var(--card)}
-
-    /* Hidden file input */
-    #import-file{display:none}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Yotei</title>
+<meta name="theme-color" content="#080d1a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Yotei">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="./icon.svg">
+<link rel="apple-touch-icon" href="./icons/icon-180.png">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080d1a;--card:#111c30;--card2:#172236;--line:#1b2a42;--accent:#4d8ef7;--text:#eef2ff;--sec:#7c8aa5;--ok:#22c55e;--warn:#f59e0b;--bad:#f97316;--graydot:#334155;--shadow:0 8px 24px rgba(0,0,0,.35)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:radial-gradient(ellipse 520px 280px at 50% -40px, rgba(77,142,247,.14), transparent 70%), var(--bg);color:var(--text);font:15px/1.5 'Manrope',system-ui,sans-serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+.app{max-width:430px;margin:0 auto;padding:24px 20px 56px}
+h1{font:800 26px/1.1 'Syne',sans-serif}
+.date{color:var(--sec);font-size:13px;margin:2px 0 20px}
+.date b{display:block;font:700 22px 'Syne',sans-serif;color:var(--text)}
+.date .dacc{color:var(--accent);font-weight:700}
+button.date{display:block;width:100%;background:none;border:0;padding:0;text-align:left;font:inherit;cursor:pointer}
+.weekstrip{display:flex;gap:6px;margin-bottom:14px;touch-action:pan-y}
+.wd{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--sec);font:inherit;cursor:pointer;box-shadow:var(--shadow)}
+.wd .wdn{font-size:11px;text-transform:uppercase;letter-spacing:.03em}
+.wd .wdd{font:700 15px 'Syne',sans-serif;color:var(--text)}
+.wd.today{border-color:var(--accent)}
+.wd.on{background:var(--accent)}
+.wd.on .wdn,.wd.on .wdd{color:#06121f}
+.modeWrap{position:relative;margin:20px 0 26px}
+.mode{display:flex;gap:3px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:3px;margin:0;position:relative;z-index:1}
+.mode button{flex:1;border:0;border-radius:9px;background:none;color:var(--sec);font:600 14px 'Manrope',sans-serif;padding:9px 0;cursor:pointer}
+.mode button.on{background:var(--card2);color:var(--accent)}
+.wakerow{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.wakerow label{font-size:13px;color:var(--sec)}
+.wakerow input{font:600 15px 'Manrope',sans-serif;color:var(--text);background:var(--card);border:1px solid var(--line);border-radius:9px;padding:7px 10px;color-scheme:dark}
+.wakerow button{margin-left:auto;background:none;border:0;color:var(--sec);text-decoration:underline;font:500 13px 'Manrope',sans-serif;padding:8px 2px;cursor:pointer}
+input:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.msg{font-size:13px;border-left:3px solid var(--ok);padding:2px 0 2px 10px;margin-bottom:6px;color:var(--text)}
+.msg.warn{border-color:var(--warn)}.msg.bad{border-color:var(--bad)}
+.prog{font-size:12px;color:var(--sec);margin:0 0 12px 13px;min-height:18px}
+#tl{display:flex;flex-direction:column;gap:8px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:16px}
+.box summary{list-style:none;cursor:pointer;position:relative;padding:14px 44px 14px 16px}
+.box summary::-webkit-details-marker{display:none}
+.box summary::after{content:'';position:absolute;right:18px;top:50%;width:8px;height:8px;border:solid var(--sec);border-width:0 2px 2px 0;transform:translateY(-70%) rotate(45deg);transition:transform .15s}
+.box[open] summary::after{transform:translateY(-30%) rotate(-135deg)}
+.box summary:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;border-radius:16px}
+.bt{display:block;font:700 16px 'Syne',sans-serif}
+.bm{display:block;font-size:12px;color:var(--sec)}
+.rows{display:flex;flex-direction:column;gap:8px;padding:0 10px 12px}
+.box .row{background:var(--card2)}
+@media (prefers-reduced-motion:reduce){.box summary::after{transition:none}}
+.wn{font-size:12px;color:var(--sec);margin:-4px 0 2px;position:relative;z-index:1}
+.box .row.open,.box .row.sug{background:transparent;border-style:dashed}
+.top{display:flex;justify-content:space-between;align-items:center}
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:10;display:flex;gap:3px;max-width:430px;margin:0 auto;background:rgba(17,28,48,.72);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--line);padding:8px calc(20px + env(safe-area-inset-left,0px)) calc(8px + env(safe-area-inset-bottom,0px)) calc(20px + env(safe-area-inset-right,0px))}
+.tabs button{flex:1;border:0;border-radius:9px;background:none;color:var(--sec);font:600 13px 'Manrope',sans-serif;padding:9px 0;cursor:pointer}
+.tabs button.on{background:var(--card2);color:var(--accent)}
+.tab[hidden]{display:none}
+.app{padding-bottom:calc(72px + env(safe-area-inset-bottom,0px))}
+#settingsBtn{width:38px;height:38px;flex:0 0 38px;background:var(--card);border:1px solid var(--line);border-radius:10px;color:var(--text);font-size:18px;line-height:1;cursor:pointer}
+#settingsBtn.on{background:var(--accent);border-color:var(--accent);color:#06121f}
+.dlgSec{margin-bottom:16px}
+.dlgSec h2{font:700 15px 'Syne',sans-serif;margin-bottom:8px}
+#awayBtn{width:100%;margin-bottom:14px}
+#awayBtn.on{background:var(--accent);color:#06121f;border-style:solid}
+.noteBtn{display:block;margin:2px 0 0 120px;background:none;border:0;color:var(--accent);font:600 12px 'Manrope',sans-serif;padding:4px 0;cursor:pointer}
+.noteEdit{margin:4px 0 0 120px;display:flex;flex-direction:column;gap:6px}
+.noteEdit textarea{font:500 14px 'Manrope',sans-serif;color:var(--text);background:var(--card2);border:1px solid var(--line);border-radius:9px;padding:8px 10px;resize:vertical;color-scheme:dark}
+.blk{display:flex;flex-direction:column;gap:4px;position:relative;z-index:1}
+.tlwrap{position:relative;padding:4px 0}
+.tlspine{position:absolute;left:82px;width:3px;z-index:0;pointer-events:none}
+.tlhead{display:flex;align-items:center;gap:10px;margin:26px 0 10px;position:relative;z-index:1;-webkit-touch-callout:none;user-select:none}
+.tlhead:first-child{margin-top:2px}
+.tlspacer{flex:0 0 44px}
+.tldot{width:56px;min-height:56px;border-radius:28px;display:flex;align-items:center;justify-content:center;font-size:26px;background:var(--dot,var(--accent));color:#fff;position:relative;z-index:1;flex:0 0 56px;transition:transform .12s ease;overflow:hidden}
+.tldot>svg:not(.dotwave){width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.dotwave{position:absolute;inset:0;width:100%;height:100%}
+.waveDrift{animation:waveDrift 2.6s linear infinite}
+.waveDrift path{transition:transform 1s ease}
+@keyframes waveDrift{from{transform:translateX(0)}to{transform:translateX(-32px)}}
+@media (prefers-reduced-motion:reduce){.waveDrift{animation:none!important}}
+.tlrow:active .tldot{transform:scale(.94)}
+@media (prefers-reduced-motion:reduce){.tlrow:active .tldot{transform:none}.tldot{transition:none}}
+.tlheadtext{display:flex;flex-direction:column;gap:1px;min-width:0}
+.tlheadtext b{font:700 15px 'Syne',sans-serif}
+.tlmeta{font-size:12px;color:var(--sec)}
+.tlrow{display:grid;-webkit-touch-callout:none;user-select:none;grid-template-columns:44px 56px 1fr 26px;column-gap:10px;align-items:center;width:100%;background:none;border:0;color:var(--text);font:inherit;text-align:left;cursor:pointer;padding:7px 0;position:relative;z-index:1}
+.tltime{font-size:12px;color:var(--sec);text-align:right;white-space:nowrap}
+.tlrow.now .tldot{box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--ok)}
+.tlrow.cut{opacity:.5}
+.tlrow.cut .tldot,.tlrow.sug .tldot{opacity:.5}
+.tlbody{display:flex;flex-direction:column;min-width:0}
+.tlrow.done .ttl{text-decoration:line-through;color:var(--sec)}
+.tlcheck{width:26px;height:26px;border-radius:50%;border:2px solid var(--dot,var(--line));position:relative;justify-self:center;transition:background .2s ease}
+.tlrow.done .tlcheck{background:var(--dot,var(--accent))}
+.tlrow.done .tlcheck::after{content:'';position:absolute;left:8px;top:4px;width:6px;height:12px;border:solid #06121f;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.dotIconWrap{position:relative;display:inline-block;width:28px;height:28px;flex:0 0 auto}
+.dotIconTop,.dotIconBot{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.dotIconTop{color:var(--dot,#fff)}
+.dotIconBot{color:#fff}
+.dotIconTop svg,.dotIconBot svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.dotIconPlain{position:relative;color:#fff}
+.stepcount{margin-left:6px;font-size:12px;color:var(--sec);font-weight:600}
+.stepsBtn{background:none;border:none;color:var(--sec);padding:2px 4px;cursor:pointer;vertical-align:middle;position:relative}
+.stepsBtn::before{content:'';position:absolute;inset:-13px}
+.stepsBtn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.gap{display:flex;align-items:center;gap:8px;margin:6px 0 6px 120px;position:relative;z-index:1}
+.gap .gaptxt{font-size:12px;color:var(--sec)}
+.gap .add{padding:5px 10px;font-size:12px;margin-left:auto}
+.stp{display:flex;align-items:center;gap:14px;width:100%;padding:14px 4px;background:none;border:none;border-bottom:1px solid var(--line);color:var(--text);font:500 15px 'Manrope',sans-serif;text-align:left;cursor:pointer}
+.stp:last-child{border-bottom:none}
+.ssCheck{flex:0 0 22px;width:22px;height:22px;border:2px solid var(--dot,var(--accent));border-radius:6px}
+.stp.done .ssCheck{background:var(--dot,var(--accent))}
+.stp.done{color:var(--sec);text-decoration:line-through}
+.add{background:none;border:1px dashed var(--accent);border-radius:12px;color:var(--accent);font:600 14px 'Manrope',sans-serif;padding:10px;cursor:pointer;position:relative;z-index:1}
+dialog{background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:16px;padding:16px;width:min(92vw,400px);margin:auto;box-shadow:var(--shadow)}
+dialog::backdrop{background:rgba(0,0,0,.6)}
+.ef{display:flex;flex-direction:column;gap:10px}
+.ef label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--sec)}
+.ef input,.ef select,.ef textarea{font:500 15px 'Manrope',sans-serif;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:8px 10px;color-scheme:dark}
+.er{display:flex;gap:8px}.er label{flex:1;min-width:0}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{padding:8px 12px;border-radius:20px;border:1px solid var(--line);background:var(--card2);color:var(--text);font:600 13px 'Manrope',sans-serif;cursor:pointer}
+.chips button.on{background:var(--accent);color:#06121f;border-color:var(--accent)}
+.ipRow button{display:flex;align-items:center;justify-content:center;width:40px;height:40px;padding:0}
+.ipRow button svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.taskRow{display:flex;gap:8px;align-items:center}
+.taskRow input{flex:1;min-width:0}
+.iconPreview{flex:0 0 40px;width:40px;height:40px;border-radius:10px;background:var(--bg);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--text);cursor:pointer;padding:0}
+.iconPreview svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ipGroup{margin-bottom:10px}
+.ipGroup:last-child{margin-bottom:0}
+.colorSwatch,.colorAuto{width:32px;height:32px;padding:0;border-radius:50%;border:2px solid var(--line);cursor:pointer}
+.colorSwatch.on,.colorAuto.on{border-color:var(--text)}
+.colorAuto{background:var(--card2);color:var(--sec);font-size:9px;display:flex;align-items:center;justify-content:center}
+#e_colorCustom{width:32px;height:32px;padding:0;border:2px solid var(--line);border-radius:50%;background:none;cursor:pointer}
+.tsHead{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+.tsIcon{width:44px;height:44px;border-radius:50%;flex:0 0 44px;display:flex;align-items:center;justify-content:center;background:var(--dot,var(--accent));color:#fff}
+.tsIcon svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tsHead b{font:700 17px 'Syne',sans-serif;display:block}
+#ts_details{font-size:14px;color:var(--text);line-height:1.4;margin:-4px 0 4px}
+.days{display:flex;gap:4px}
+.days button{flex:1;padding:8px 0;background:var(--bg);border:1px solid var(--line);border-radius:8px;color:var(--sec);font:600 12px 'Manrope',sans-serif;cursor:pointer}
+.days button.on{background:var(--card2);color:var(--accent);border-color:var(--accent)}
+.ea{display:flex;flex-wrap:wrap;gap:6px}
+.ea button{flex:1;padding:9px 6px;border-radius:9px;border:1px solid var(--line);background:var(--card2);color:var(--text);font:600 13px 'Manrope',sans-serif;cursor:pointer}
+#e_ok{background:var(--accent);color:#06121f;border-color:var(--accent)}
+#e_del{color:var(--bad)}
+.hday{border-top:1px solid var(--line)}
+.hday summary{list-style:none;cursor:pointer;position:relative;padding:10px 40px 10px 8px}
+.hday summary::-webkit-details-marker{display:none}
+.box .hday:not([open]) summary::after{transform:translateY(-70%) rotate(45deg)}
+.hb{padding:0 8px 10px}
+.hl{font-size:13px;padding:2px 0;color:var(--sec)}
+.hl.ok{color:var(--ok)}
+.ht{color:var(--accent);font-weight:600;margin-right:8px}
+#clk{font:700 20px 'Syne',sans-serif;color:var(--accent)}
+.box .row.now{border-color:var(--ok);box-shadow:0 0 0 1px var(--ok)}
+#dnote{width:100%;font:500 15px 'Manrope',sans-serif;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:8px 10px;resize:vertical;color-scheme:dark}
+.lbl{font-size:13px;color:var(--sec);margin-bottom:6px}
+.hd{font:700 13px 'Syne',sans-serif;color:var(--sec);margin:10px 0 0}
+.row{display:flex;gap:12px;text-align:left;width:100%;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;color:var(--text);font:inherit;cursor:pointer}
+.row.open{border-style:dashed;background:transparent}
+.chk{flex:0 0 22px;height:22px;margin-top:2px;border:2px solid var(--line);border-radius:50%;display:grid;place-items:center}
+.row.done .chk{background:var(--ok);border-color:var(--ok)}
+.row.done .chk::after{content:'';width:5px;height:10px;border:solid #052e16;border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.body{display:flex;flex-direction:column;min-width:0}
+.time{font-size:12px;color:var(--accent);font-weight:600}
+.ttl{font:700 16px 'Syne',sans-serif;line-height:1.25;margin-top:1px}
+.sub{font-size:13px;color:var(--sec);margin-top:2px}
+.row.done .ttl{text-decoration:line-through;color:var(--sec)}
+.row.done{opacity:.6}
+.row.cut{opacity:.4;cursor:default}
+.tag{font-weight:700;margin-left:6px;color:var(--sec)}
+.tag.ok{color:var(--ok)}.tag.warn{color:var(--warn)}.tag.bad{color:var(--bad)}
+.sleep{margin-top:22px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow)}
+.sleep h2{font:700 15px 'Syne',sans-serif;margin-bottom:6px}
+.sleep div{display:flex;justify-content:space-between;font-size:14px;padding:3px 0}
+.sleep i{font-style:normal;color:var(--sec)}
+#nowBanner{display:none;align-items:center;gap:12px;background:var(--card);border:1px solid var(--ok);border-radius:14px;padding:12px 14px;margin-bottom:14px;box-shadow:var(--shadow)}
+#nowBanner.show{display:flex}
+#nowBanner .nb-i{font-size:22px}
+#nowBanner .nb-t{font:700 15px 'Syne',sans-serif}
+#nowBanner .nb-s{font-size:12px;color:var(--sec)}
+.trow{display:flex;align-items:center;gap:8px;margin:5px 0;font-size:13px}
+.trow .tlab{flex:0 0 42px;color:var(--sec)}
+.trow .tlab.wide{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)}
+.tbar{flex:1;height:8px;background:var(--card2);border-radius:4px;overflow:hidden}
+.tfill{height:100%;background:var(--accent);border-radius:4px}
+.trow .tpct{flex:0 0 40px;text-align:right;color:var(--sec);font-weight:600}
+.dateWrap{position:relative}
+#datePick{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:0;font-size:16px}
+.wakerow #awayBtn{width:auto;margin:0 0 0 auto;padding:8px 12px;border:1px dashed var(--accent);background:none;color:var(--accent);text-decoration:none;font:600 13px 'Manrope',sans-serif}
+.wakerow #awayBtn.on{background:var(--accent);color:#06121f;border-style:solid}
+#reset{margin-left:0;text-decoration:none;font-size:18px;padding:6px 10px}
+.tlcheck::before{content:'';position:absolute;inset:-9px}
+#settingsBtn.nudge{position:relative}
+#settingsBtn.nudge::after{content:'';position:absolute;top:5px;right:5px;width:8px;height:8px;border-radius:50%;background:var(--warn)}
+.sleep #sleep{display:block;padding:0}
+#todayBtn{width:100%;margin-bottom:12px}
+.capRow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:4px 0}
+.about p,.about ul{font-size:13px;color:var(--sec)}
+.about ul{margin:4px 0 8px 18px}
+.about li{margin:2px 0}
+.about .ver{color:var(--accent);font-weight:700}
+.clog{border-top:1px solid var(--line)}
+.clog summary{cursor:pointer;padding:10px 0;font:700 14px 'Syne',sans-serif}
+.clog summary span{font:500 12px 'Manrope',sans-serif;color:var(--sec);margin-left:6px}
+.clog h3{font:700 12px 'Manrope',sans-serif;color:var(--text);margin:8px 0 2px}
+.capRow label{flex:0 0 64px;white-space:nowrap}
+.capRow i{margin-left:auto;white-space:nowrap;font-size:13px}
+.capRow input{font:600 15px 'Manrope',sans-serif;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:7px 10px;color-scheme:dark}
+</style>
 </head>
 <body>
-<div id="app">
-
-  <header id="app-header">
-    <div class="h-left" id="h-left"><span class="h-date" id="h-date"></span></div>
-    <div id="h-center"></div>
-    <div class="h-right">
-      <button class="icon-btn" onclick="openSettings()">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="3"/>
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-        </svg>
-      </button>
+<div class="app">
+  <div class="top"><h1>Yotei</h1><span id="clk"></span><button id="settingsBtn" aria-label="Settings">⚙</button></div>
+  <section id="tab-home" class="tab">
+    <div class="dateWrap"><button class="date" id="dateBtn"><span id="date"></span></button><input type="date" id="datePick" aria-label="Pick a date" tabindex="-1"></div>
+    <div class="weekstrip" id="weekstrip"></div>
+    <button class="add" id="todayBtn" hidden>Back to today</button>
+    
+    
+    <div class="wakerow">
+      <label for="wake">Wake time</label><input type="time" id="wake"><button id="reset">↺</button><button class="add" id="awayBtn" aria-pressed="false"></button>
     </div>
-  </header>
-
-  <main id="app-main">
-
-    <div id="view-home" class="view active">
-      <div class="view-inner">
-      <div class="home-greeting">
-        <h1 id="greeting-text">Good morning.</h1>
-        <p>Here's your routine for today.</p>
-      </div>
-      <div class="streak-banner">
-        <div class="streak-col">
-          <div class="streak-emoji">🌅</div>
-          <div>
-            <div class="streak-num m" id="sc-m">0</div>
-            <div class="streak-lbl">morning streak</div>
-            <div class="streak-best" id="sb-m">Best: 0</div>
-          </div>
-        </div>
-        <div class="streak-col">
-          <div class="streak-emoji">🌙</div>
-          <div>
-            <div class="streak-num n" id="sc-n">0</div>
-            <div class="streak-lbl">night streak</div>
-            <div class="streak-best" id="sb-n">Best: 0</div>
-          </div>
-        </div>
-      </div>
-      <div id="home-cards"></div>
-      </div>
+    <p class="msg" id="msg" role="status"></p>
+    <p class="prog" id="prog"></p>
+    <div id="nowBanner"><span class="nb-i" id="nb-i"></span><div><div class="nb-t" id="nb-t" aria-live="polite"></div><div class="nb-s" id="nb-s"></div></div></div>
+    <div id="tl"></div>
+    <div class="sleep">
+      <h2>Note for this day</h2>
+      <p class="wn" id="awayHint"></p>
+      <textarea id="dnote" rows="3" placeholder="Anything worth remembering about today"></textarea>
     </div>
+  </section>
 
-    <div id="view-routine" class="view"></div>
+  <section id="tab-history" class="tab" hidden>
+    <div id="trends"></div>
+    <div id="histbox"></div>
+  </section>
 
-    <div id="view-log" class="view"></div>
-
-    <div id="view-history" class="view">
-      <div class="view-inner">
-      <div class="v-title">History</div>
-      <div class="v-sub" id="hist-sub">Your past routines</div>
-      <div class="h-list" id="hist-list"></div>
-      </div>
+  <section id="tab-settings" class="tab" hidden>
+    <div class="sleep"><h2>Editing</h2><p class="wn">Add, change or reorder tasks and blocks from the Home tab. Long-press any task or block to edit it.</p><button class="add" id="editToggle">Turn on editing</button></div>
+    <div class="sleep"><h2>Backup</h2><p class="wn">Your tasks, blocks and history live in this browser only. Export a copy so clearing the browser does not erase them.</p><p class="wn" id="bkInfo"></p><div class="ea"><button id="exp">Export</button><button id="imp">Import</button></div><input type="file" id="impf" accept=".json,application/json" hidden></div>
+    <div class="sleep">
+      <h2>Sleep caps</h2>
+      <div id="sleep"></div>
     </div>
-
-    <div id="view-stats" class="view">
-      <div class="view-inner">
-      <div class="v-title">Stats</div>
-      <div class="v-sub">Your performance over time</div>
-      <div id="stats-content"></div>
-      </div>
+    <div class="sleep">
+      <h2>Reset</h2>
+      <p class="wn">Restore every task and block to the built-in defaults. This cannot be undone.</p>
+      <button class="add" id="rst">Reset all tasks and blocks to defaults</button>
     </div>
+  </section>
 
-  </main>
-
-  <nav id="app-nav">
-    <button class="nav-item" data-view="history" onclick="navigate('history')">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      History
-    </button>
-    <button class="nav-item active" data-view="home" onclick="navigate('home')">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
-      Home
-    </button>
-    <button class="nav-item" data-view="stats" onclick="navigate('stats')">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-      Stats
-    </button>
+  <nav class="tabs" role="tablist">
+    <button data-tab="home" role="tab">Home</button>
+    <button data-tab="history" role="tab">History</button>
+    <button data-tab="settings" role="tab">Settings</button>
   </nav>
-
-  <div id="settings-overlay">
-    <div class="s-bg" onclick="closeSettings()"></div>
-    <div class="s-sheet">
-      <div class="s-handle"></div>
-      <div class="s-title">Settings</div>
-
-      <!-- Theme -->
-      <div class="s-row">
-        <div><div class="s-row-lbl">Light Mode</div><div class="s-row-sub">Switch to light theme</div></div>
-        <button class="toggle" id="theme-toggle" onclick="toggleTheme()"></button>
-      </div>
-
-      <!-- In-bed stretch editor -->
-      <div class="s-section">
-        <div class="s-section-title">In-Bed Stretches</div>
-        <div class="stretch-list" id="stretch-list"></div>
-        <button class="add-stretch-btn" onclick="addStretch()">+ Add stretch</button>
-      </div>
-
-      <!-- Data -->
-      <div class="s-section">
-        <div class="s-section-title">Data</div>
-        <button class="s-action-btn" onclick="exportData()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Export backup
-        </button>
-        <button class="s-action-btn" onclick="triggerImport()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17,8 12,3 7,8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-          Import backup
-        </button>
-        <input type="file" id="import-file" accept=".json" onchange="importData(this.files[0])">
-      </div>
-
-    </div>
-  </div>
-
 </div>
+<dialog id="ed"><div class="ef">
+  <label>Task<div class="taskRow"><input id="e_t"><button type="button" id="e_iconBtn" class="iconPreview" aria-label="Choose icon">+</button><input type="hidden" id="e_icon"></div></label>
+  <label>Color<div class="chips" id="e_colors"></div><input type="hidden" id="e_color"></label>
+  <label>Kind<select id="e_k">
+    <option value="core">Core (shrinks last)</option><option value="flex">Flexible (shrinks first)</option><option value="opt">Optional (cut first)</option>
+    <option value="fixedlen">Fixed length</option><option value="sug">Suggestion, no time</option><option value="fixedtime">Fixed clock time</option><option value="open">Open slot</option>
+  </select></label>
+  <label>How long?<div class="chips" id="e_presets">
+    <button type="button" data-m="5">5m</button><button type="button" data-m="15">15m</button><button type="button" data-m="20">20m</button>
+    <button type="button" data-m="30">30m</button><button type="button" data-m="45">45m</button><button type="button" data-m="60">1h</button><button type="button" data-m="90">1.5h</button>
+  </div></label>
+  <div class="er"><label>Minutes<input id="e_d" type="number" min="0"></label><label>Shortest<input id="e_m" type="number" min="0"></label><label>Fixed at<input id="e_f" type="time"></label></div>
+  <div class="days" id="e_days"></div>
+  <label>Details<textarea id="e_details" rows="2" placeholder="What this task is, or how to do it"></textarea></label>
+  <label>Subtasks, one per line<textarea id="e_p" rows="3"></textarea></label>
+  <div class="ea"><button id="e_del">Delete</button><button id="e_up">Up</button><button id="e_dn">Down</button><button id="e_x">Cancel</button><button id="e_ok">Save</button></div>
+</div></dialog>
+<dialog id="iconPick"><div class="ef">
+  <div id="ip_groups"></div>
+  <label>Custom<input id="e_icon_custom" placeholder="Type a key like 'book', or paste an emoji" maxlength="16"></label>
+  <div class="ea"><button id="ip_x">Cancel</button><button id="ip_ok">Use custom</button></div>
+</div></dialog>
+<dialog id="taskSheet"><div class="ef">
+  <div class="tsHead"><span class="tsIcon" id="ts_icon"></span><div><b id="ts_title"></b><div class="wn" id="ts_time"></div></div></div>
+  <p id="ts_details" hidden></p>
+  <p class="wn" id="ts_stepsline" hidden></p>
+  <div class="ea"><button id="ts_done"></button><button id="ts_del">Delete</button><button id="ts_dup">Duplicate</button><button id="ts_edit">Edit</button><button id="ts_close">Close</button></div>
+</div></dialog>
+<dialog id="stepsSheet"><div class="ef">
+  <b id="ss_title"></b>
+  <div id="ss_list"></div>
+  <div class="ea"><button id="ss_close">Close</button></div>
+</div></dialog>
+<dialog id="eb"><div class="ef">
+  <label>Block name<input id="b_n"></label>
+  <div class="er"><label>Starts (hours after waking)<input id="b_f" type="number" step="0.25" min="0"></label><label>Ends<input id="b_t" type="number" step="0.25" min="0"></label></div>
+  <label>Note<input id="b_s"></label>
+  <div class="ea"><button id="b_r">Reset block</button><button id="b_x">Cancel</button><button id="b_ok">Save</button></div>
+</div></dialog>
 <script>
-// ═══════════════════════════════════════
-// STORAGE
-// ═══════════════════════════════════════
-const S = {
-  get:(k,d=null)=>{try{const v=localStorage.getItem('yotei_'+k);return v!==null?JSON.parse(v):d}catch{return d}},
-  set:(k,v)=>{try{localStorage.setItem('yotei_'+k,JSON.stringify(v));return true}catch{return false}}
+// ============================================================
+// YOTEI — script map (search for the header text to jump)
+//   STORAGE & CONFIG            SEED DATA
+//   APP STATE                   TIME HELPERS
+//   SCHEDULING ENGINE           ICONS, COLOR, DOT SIZE/FILL
+//   WINDOW-BLOCK EDITOR         DATA ACCESS & MIGRATION
+//   TASK EDITOR                 TASK DETAIL SHEET
+//   SUBTASK SHEET               HISTORY & TRENDS TABS
+//   MAIN RENDER LOOP            NOW BANNER, CHIME, CLOCK
+//   IMPORT / EXPORT / RESET     GESTURES
+//   TABS & INIT
+// ============================================================
+// ============================================================
+// STORAGE & CONFIG
+// ============================================================
+const $ = s => document.querySelector(s);
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem('yotei_v2_'+k); return v === null ? d : JSON.parse(v); }catch{ return d; } },
+  set(k, v){ try{ localStorage.setItem('yotei_v2_'+k, JSON.stringify(v)); }catch{} }
 };
+const DEF_WAKE = 300;                      // 5:00 AM, in minutes after midnight
+const CAP = Object.assign({ soft: 22*60, hard: 23*60 }, store.get('caps', {}));  // defaults 10 PM soft, 11 PM hard; editable in Settings
 
-// ═══════════════════════════════════════
-// STRETCHES (editable)
-// ═══════════════════════════════════════
-const DEFAULT_STRETCHES = ['Full-body stretch','Knee-to-chest stretch (alternating)','Supine twist'];
-function getStretches(){ return S.get('m_stretches', DEFAULT_STRETCHES); }
-function saveStretches(arr){ S.set('m_stretches', arr); }
-
-// ═══════════════════════════════════════
-// ROUTINE DATA
-// ═══════════════════════════════════════
-// Morning steps — s4 = Make bed, s5 = Get out of bed (v1.2.2 order)
-const MORNING = {
-  id:'morning', icon:'🌅',
-  name:'Morning Routine', sub:'Golden Hour · Biological Activation',
-  phases:[
-    {
-      id:'mp1', name:'Phase 1 — Wake-Up Activation', dur:'~9 min',
-      steps:[
-        {id:'s1', label:'Wake up'},
-        {id:'s2', label:'In-bed stretching'}, // sub injected dynamically from getStretches()
-        {id:'s4', label:'Make bed', sub:'Top bunk — done before getting down'},
-        {id:'s5', label:'Get out of bed'},
-      ]
-    },
-    {
-      id:'mp2', name:'Phase 2 — Biological Activation', dur:'~30–35 min',
-      standardSteps:[
-        {id:'s6',  label:'Gargle'},
-        {id:'s7',  label:'Drink first glass of water', sub:'~500ml'},
-        {id:'s8',  label:'Brush teeth'},
-        {id:'s9',  label:'Wash face'},
-        {id:'s10', label:'Dead hangs', sub:'1 set · 60 sec · Doorway pull bar'},
-        {id:'s11', label:'Go to rooftop', sub:'4 flights of stairs — warm-up before stretching'},
-        {id:'s12', label:'Morning sunlight exposure', sub:'Sunny day: ~10 min · Cloudy day: ~15–20 min'},
-        {id:'s13', label:'Stretching'},
-        {id:'s14', label:'Return downstairs'},
-        {id:'s15', label:'Drink second glass of water'},
-      ],
-      awaySteps:[
-        {id:'s6',  label:'Gargle'},
-        {id:'s7',  label:'Drink first glass of water', sub:'~500ml'},
-        {id:'s8',  label:'Brush teeth'},
-        {id:'s9',  label:'Wash face'},
-        {id:'s12', label:'Morning sunlight exposure', sub:'Sunny day: ~10 min · Cloudy day: ~15–20 min · Window light counts if no outdoor access'},
-        {id:'s13', label:'Stretching', sub:'Wherever sunlight exposure happens'},
-        {id:'s15', label:'Drink second glass of water'},
-      ]
-    },
-    {
-      id:'mp3', name:'Phase 3 — Transition to Day Mode', dur:'~35–45 min',
-      standardSteps:[
-        {id:'s16', label:'Shower', sub:'School days: non-negotiable · Non-school: conditional'},
-        {id:'s17', label:'Get dressed'},
-        {id:'s3',  label:'Physiological sighs', sub:'3–5 repetitions · Transition into cognitive phase'},
-        {id:'s18', label:'Breakfast prep', sub:'Conditional — skip if already ready'},
-        {id:'s19', label:'Journal', sub:"5–10 min · What's on your mind · Intentions for today · One thing you're grateful for · While breakfast cooks if you prepped it; before eating if already ready"},
-        {id:'s20', label:'Breakfast'},
-      ],
-      schoolSteps:[
-        {id:'s16', label:'Shower', sub:'School days: non-negotiable · Non-school: conditional'},
-        {id:'s17', label:'Get dressed'},
-        {id:'s20', label:'Breakfast'},
-        {id:'s21', label:'Commute to school', sub:'Walking/tricycle: keep the light going · Car: just transition'},
-      ],
-      awaySteps:[
-        {id:'s16', label:'Shower', sub:'Conditional based on access and plans'},
-        {id:'s17', label:'Get dressed'},
-        {id:'s3',  label:'Physiological sighs', sub:'3–5 repetitions · Transition into cognitive phase'},
-        {id:'s19', label:'Journal', sub:"5–10 min · What's on your mind · Intentions for today · One thing you're grateful for"},
-        {id:'s20', label:'Breakfast'},
-      ],
-    },
-  ],
-  optional:[
-    {id:'mo1', label:'Neighborhood walk', sub:'~20 min · Phase 2 or Phase 3 · Mood & crowd dependent'},
-    {id:'mo2', label:'Sweeping', sub:'Anywhere it fits · Reduces environmental clutter'},
-    {id:'mo3', label:'Meditation', sub:'5–10 min · Phase 1 · After making bed'},
-    {id:'mo4', label:'Light tidying', sub:'Phase 1 or Phase 3 · Extends bed-making energy'},
-    {id:'mo6', label:'Cold face splash', sub:'Phase 2 · Adjacent to face wash · Needs container + ice'},
-  ],
-  schoolOptional:[
-    {id:'s3',  label:'Physiological sighs', sub:'3–5 repetitions · Cut from required on school days'},
-    {id:'s18', label:'Breakfast prep', sub:'Conditional — skip if already ready'},
-  ],
-  awayOptional:[
-    {id:'s10',  label:'Dead hangs', sub:'1 set · 60 sec · Only if a bar is available'},
-    {id:'mao1', label:'Find a staircase or elevated spot', sub:'Combines rooftop visit + return into one optional add-on · Stairwell, balcony, or any elevated spot works'},
-  ]
-};
-
-const MORNING_EMERG = [
-  {id:'em1', label:'Wake up'},
-  {id:'em2', label:'In-bed stretching'},
-  {id:'em3d',label:'Drink', sub:'~500ml'},
-  {id:'em3', label:'Brush teeth'},
-  {id:'em4', label:'Morning sunlight exposure'},
+// Shrink order when the morning runs late: opt -> flex -> core. Each block can shrink down to m (min minutes).
+// ============================================================
+// SEED DATA — built-in defaults, used until the user edits a list
+// (see getBlocks/setBlocks below for how overrides replace these)
+// ============================================================
+const PRE = [
+  { id:'wake',  t:'Wake up and make the bed', d:5,  m:5,  p:'core' },
+  { id:'light', t:'Go outside for light and stretching', details:'Rooftop if possible. Hydrate during or after.', d:15, m:10, p:'core' },
+  { id:'prep',  t:'Prepare for the day', details:'Breakfast if possible. Write down today\'s top priority. Hydrate again.', d:20, m:10, p:'flex' },
+  { id:'get',   t:'Shower, get dressed, brush teeth', d:20, m:15, p:'core' }
 ];
-
-const NIGHT = {
-  id:'night', icon:'🌙',
-  name:'Night Routine', sub:'Wind Down · Day Closure',
-  phases:[
-    {
-      id:'np1', name:'Phase 1 — Final Activation',
-      workoutSteps:[
-        {id:'np1w', label:'Finish workout', sub:'D1/D4 (Push): wrap up by ~8–8:30 PM · D2/D3/D5 (Pull/Legs): wrap up by ~7:45–8:15 PM'},
-        {id:'np1m', label:'Post-workout meal', sub:'Heaviest meal of the day · Eat before showering to preserve core temp drop mechanism'},
-        {id:'np1p', label:'Switch to Night Playlist', sub:'Phase 1→2 transition cue'},
-      ],
-      restSteps:[
-        {id:'np1d', label:'Dinner', sub:'Opening anchor for rest day wind-down'},
-        {id:'np1r', label:'Rooftop visit', sub:'~9 PM · Starts the routine'},
-        {id:'np1p', label:'Switch to Night Playlist', sub:'Phase 1→2 transition cue'},
-      ],
-      awaySteps:[
-        {id:'np1d', label:'Dinner', sub:'Opening anchor for away night wind-down'},
-        {id:'np1p', label:'Switch to Night Playlist', sub:'Phase 1→2 transition cue'},
-      ],
-    },
-    {
-      id:'np2', name:'Phase 2 — Day Closure',
-      workoutSteps:[
-        {id:'np2s', label:'Shower', sub:'Warm · Non-negotiable'},
-        {id:'np2t', label:'Brush teeth'},
-      ],
-      restSteps:[
-        {id:'np2h', label:'Shower or face wash', sub:'Shower if needed · Face wash if skipping'},
-        {id:'np2t', label:'Brush teeth'},
-      ],
-    },
-    {
-      id:'np3', name:'Phase 3 — Cognitive Shutdown',
-      steps:[{id:'np3j', label:'Journal', sub:'15 min default · 20-min ceiling · Reflections · Brain dump · Tomorrow capture'}],
-    },
-    {
-      id:'np4', name:'Phase 4 — Sleep',
-      steps:[
-        {id:'np4s', label:'Sleep', sub:'Optional: light reading first — one-chapter cap on nights you read'},
-      ],
-    },
-  ],
-  optional:[
-    {id:'no1', label:'Evening walk', sub:'~20 min · Phase 1 · Crowd-dependent'},
-    {id:'no2', label:'Skincare', sub:'Phase 2 · Post-shower · Skin barrier restoration'},
-    {id:'no3', label:'Tomorrow prep', sub:'Post-journal · 5 min max · Physical — bag, clothes, tomorrow\'s items'},
-    {id:'no4', label:'Breathwork (4-7-8)', sub:'Between Phase 3 and 4 · As needed · 2–3 cycles · ~2 min'},
-  ],
-  awayOptional:[
-    {id:'nao1', label:'Step outside / find an outdoor spot', sub:'Phase 1 · Location-flexible rooftop equivalent · Only if accessible'},
-  ]
-};
-
-const NIGHT_EMERG_WORKOUT = [
-  {id:'enw', label:'Shower', sub:'Post-workout · Warm'},
-  {id:'en1', label:'Brush teeth'},
-  {id:'en2', label:'Quick journal', sub:'Few sentences · 5 min max'},
-  {id:'en3', label:'Sleep'},
+const NIGHT = [  // same every night, like the morning routine; shrinks to finish before lights-out
+  { id:'n1', t:'Shower', d:15, m:10, p:'core' },
+  { id:'n2', t:'Stargaze', d:15, m:5, p:'opt' },
+  { id:'n3', t:'Buffer time', d:20, m:5, p:'flex' },
+  { id:'n4', t:'Meditation', d:10, m:5, p:'core' }
 ];
-const NIGHT_EMERG_REST = [
-  {id:'en1', label:'Brush teeth'},
-  {id:'en2', label:'Quick journal', sub:'Few sentences · 5 min max'},
-  {id:'en3', label:'Sleep'},
-];
-
-// ═══════════════════════════════════════
-// STEP INFO (static, updated per version)
-// ═══════════════════════════════════════
-const STEP_INFO = {
-  s1:  'Your body completes sleep in cycles. Waking naturally — without an alarm — means you\'ve finished a cycle. The Cortisol Awakening Response (CAR) begins immediately at wake: a distinct cortisol peak over the next 30–45 min that drives biological activation for the day. <strong>Don\'t rush it.</strong>',
-  s2:  'The spine absorbs fluid overnight, making discs slightly thicker and stiffer in the morning. These passive stretches take advantage of that hydration — mobilizing the spine before you load it vertically. Done in bed: zero friction, no warm-up needed.',
-  s3:  'Physiological sighs (cyclic sighing): double inhale through the nose, long slow exhale through the mouth. The second inhale re-inflates collapsed alveoli; the extended exhale activates the parasympathetic branch via pulmonary stretch receptors. Balban et al. (2023) found this outperformed box breathing and mindfulness for reducing real-time anxiety. <strong>Placement:</strong> after getting dressed, before journaling — functions as a transition cue from the physical preparation phase into the cognitive phase.',
-  s4:  'Making your bed before getting down is a top-bunk constraint turned into a behavioral win. It activates the "completion bias" — finishing a task immediately after waking primes you for follow-through on the rest of the routine.',
-  s5:  'Deliberate orientation toward the window as you get up gives your ipRGCs (the photoreceptors that drive circadian entrainment) their first light signal. Even indirect morning light through a window starts the process.',
-  s6:  'No strong physiological requirement here. Retained because it improves subjective oral cleanliness and adds negligible friction. Clearing the overnight bacterial load before the first glass of water is the practical reasoning.',
-  s7:  'You lose ~500ml of water overnight through respiration and passive sweating, more if your room is warm. Rehydration first thing supports blood pressure regulation and cognitive function before any stimulant or food.',
-  s8:  'Oral bacteria peak overnight. Brushing removes the biofilm before it can influence your gut microbiome via swallowing — a secondary reason beyond hygiene.',
-  s9:  'Face washing removes sebum and overnight bacterial accumulation. The tactile stimulus also contributes to alertness — mild sensory activation without the thermal intervention of cold water.',
-  s10: 'Dead hangs provide passive spinal traction — gravity decompresses the lumbar and thoracic vertebrae after overnight disc swelling. 1 set, 60 sec on the doorway pull bar. Urban & Roberts (2003) support spinal decompression as a morning mobility intervention.',
-  s11: '4 flights of stairs functions as the warm-up for rooftop stretching. Cold connective tissue loaded with static stretches before adequate circulation is a risk — the stair climb solves that. Never do the rooftop stretches without it.',
-  s12: 'Light is the dominant zeitgeber (time-giver) for the SCN master clock. Morning sunlight — ideally within the first hour of waking — drives the phase advance that determines when you feel sleepy at night. Czeisler & Wright (2000). Overcast days reduce the signal but don\'t eliminate it.',
-  s13: 'All rooftop stretches are passive holds — no active reps, no counting. Current list: Standing Forward Fold (soft knees, no flexed feet), Chest Opener, Lateral Neck Flexion, Chin-to-Chest, Cross-body Stretch, Hip Flexor Stretch. Full circumduction removed — cervical compression risk (Puentedura et al., 2012).',
-  s14: 'Returning downstairs ends the outdoor activation phase. The transition back into the house is an implicit environmental cue shift — from activation to transition.',
-  s15: 'Post-exertion rehydration. Movement and sun exposure accelerate fluid loss. Second glass replaces what the rooftop phase cost. Sawka et al. (2007).',
-  s16: 'School days: non-negotiable. The shower functions as a behavioral transition cue — the context shift between physical and cognitive phases (Wood & Neal, 2007). Non-school days: conditional based on workout status and plans. Duration: ~5–10 min. Soap: key zones. Shampoo: not daily unless needed.',
-  s17: 'Getting dressed after the shower completes the transition to day mode. Staying in sleep clothes extends the psychological framing of the sleep state.',
-  s18: 'Conditional step — skip if breakfast is already ready. If you prep: start cooking, then journal while it cooks. If it\'s already ready: journal first, then eat. The journal is not conditional — only the prep step is.',
-  s19: 'Journal while breakfast cooks (if you prepped it), or before eating (if it was already ready). Three prompts: (1) brain dump — cognitive offloading reduces intrusive thought frequency (Risko & Gilbert, 2016); (2) intentions for the day with when/where context — if-then framing increases follow-through (Gollwitzer, 1999); (3) one thing you\'re grateful for — linked to improved well-being and sleep quality (Emmons & McCullough, 2003). 5–10 min total.',
-  s20: 'Target: protein + complex carb. Practical: 2–3 eggs + rice + milk + banana (~20–25g protein). Whole egg recommended — yolk contains choline, fat-soluble vitamins, healthy fats. Supports muscle protein synthesis and sustained cognitive function (Morton et al., 2018). Avoid high-sugar options — mid-morning glucose crash undermines the whole activation window.',
-  s21: 'Walking or riding open-air (tricycle) extends the same ipRGC light dose s12 starts — more light-minutes means a stronger SCN phase-advance signal (Czeisler & Wright, 2000). Since this happens right after breakfast, there\'s a second mechanism layered on: light post-meal movement blunts the glucose spike regardless of pace (Buffey et al., 2022). An enclosed, tinted car cuts most of the light benefit — on those days this step is just transition time, and that\'s fine.',
-  // Night steps
-  np1w:'Push days (D1/D4): start by 6:30 PM, finish by ~8–8:30 PM. Pull/Legs days (D2/D3/D5): start by 6:00 PM, finish by ~7:45–8:15 PM. The earlier start on high-demand days preserves the post-exercise cortisol normalization buffer — Hackney (2006) puts this at 2+ hours before sleep onset. On high-demand days, the realistic sleep window skews toward 10:30–11 PM, not 10 PM sharp.',
-  np1m:'Dinner, day\'s heaviest meal. Digestion raises metabolic heat — eating before the shower (not after) preserves the Krauchi vasodilation→core temp drop→sleep onset mechanism. ~2–2.5 hr buffer before sleep on workout nights is workable, not ideal, but unavoidable given meal context. Schoenfeld & Aragon (2018): total daily protein matters more than precise timing — a meal within a few hours either side is fine.',
-  np1d:'Dinner is the opening anchor for rest day wind-down — sets the sequence in motion before the rooftop visit. More buffer before sleep than workout nights, so the Krauchi core-temp-drop timing is less of a concern here.',
-  np1r:'The rooftop visit at ~9 PM is the routine\'s opening cue. Outdoor light at this hour is now low enough to stop suppressing melatonin, and the brief movement primes the wind-down sequence.',
-  np1p:'The playlist switch is a deliberate Phase 1→2 transition cue — the audio environment shifts from daytime to wind-down mode before any hygiene steps begin. Context cues reliably trigger associated behavioral states (Wood & Neal, 2007). The playlist runs continuously through Phases 2–4. Its ~55-min duration acts as a soft natural time signal — when it ends, you should be close to sleep.',
-  np2s:'Warm shower in the evening works via a different mechanism than the morning one: vasodilation brings heat to the skin surface, which is then lost to the environment. The resulting drop in core temperature is a sleep-onset signal (Krauchi et al., 1999).',
-  np2t:'Same as morning — oral hygiene. Also serves as a behavioral anchor: brushing teeth at night is a near-universal wind-down cue even without conscious intent.',
-  np2h:'If no shower: a face wash achieves the hygiene baseline and provides a lighter version of the transition cue without the full thermal intervention.',
-  np3j:'15 minutes default, 20-minute ceiling. Three purposes: reflection on the day (closes open loops), brain dump (clears working memory before sleep — reduces sleep-onset rumination), and tomorrow capture (externalizes next-day concerns so the brain stops rehearsing them). Risko & Gilbert (2016). Body check-in: note only if something feels off — prevents rote entries.',
-  np4s:'The last step. Sleep quality is largely determined by what happened in the hours before this — the routine exists to make this easier, not harder. <strong>Optional reading before sleep:</strong> one-chapter cap on nights you read; non-fiction is out for Phase 4 (cognitively activating). 11 PM is the hard ceiling regardless.',
-  // Optional morning
-  mo1: 'Flexible placement: after rooftop (Phase 2) or after breakfast (Phase 3). Mood and crowd conditions are legitimate decision factors — this is correctly classified as optional. Additional light and low-intensity movement extend the activation benefit.',
-  mo2: 'Sweeping is a low-cognitive physical task. Environmental order reduces background mental noise — a minor but real effect on subsequent focus. Fits anywhere in the routine where there\'s a natural pause.',
-  mo3: 'Placement: Phase 1, after making bed. Morning meditation is timed after CAR has peaked and the mind is alert but not yet reactive. 5–10 min is sufficient for the cognitive benefit without over-extending Phase 1.',
-  mo4: 'Same mechanism as sweeping — environmental order. Phase 1 placement extends the bed-making behavioral momentum; Phase 3 placement functions as a pre-leave sweep.',
-  mo6: 'Brief cold exposure activates the sympathetic nervous system — mild alertness boost. Requires a container and ice cubes. Factor in prep time before making this a regular addition.',
-  mao1: 'Away from home, a guaranteed 4-flight stairwell isn\'t a given. This folds the original go-up/stretch/come-down sequence into a single optional add-on — use any staircase or elevated spot if one\'s available, otherwise sunlight exposure and stretching can happen wherever you are.',
-  // Optional night
-  no1: 'Evening walk, ~20 min, Phase 1, rest days only. On workout nights, training already banks the movement/circadian benefit — an additional walk would extend cortisol normalization and delay wind-down instead of helping it.',
-  no2: 'Post-shower skincare. Showering strips the skin\'s natural lipid barrier — applying a basic moisturizer or routine restores it. Especially relevant in a tropical climate where heat and humidity increase transepidermal water loss. Secondary function: the tactile, routine nature of skincare reinforces the wind-down behavioral sequence.',
-  no3: 'Post-journal, 5-minute cap. Write out tomorrow\'s key tasks, items to bring, or things that need to happen. The Zeigarnik effect (Zeigarnik, 1927) — the brain keeps rehearsing incomplete tasks. Externalizing them onto paper stops the loop. Works alongside the journal\'s cognitive capture to fully close the day\'s behavioral loop.',
-  no4: 'Between Phase 3 and Phase 4, as needed. The 4-7-8 technique: inhale for 4 counts, hold for 7, exhale for 8. The extended exhale activates the vagus nerve and promotes a parasympathetic shift — directly reducing arousal before sleep. 2–3 cycles, approximately 2 minutes. Use when the mind is still active after journaling.',
-  nao1: 'The rooftop visit doesn\'t translate directly when you\'re away — this is the flexible equivalent. A few minutes outside serves the same light-exposure and movement-priming function as the rooftop step, but only when an outdoor spot is actually accessible — hence optional rather than required.',
+const WORKOUT_DAYS = [1,4,6];  // Mon/Thu/Sat: certain, every week
+const REST_DAYS = [0,2,3,5];   // Sun/Tue/Wed/Fri: Sunday is a fixed rest day; Tue/Wed/Fri default to rest until the week-1-2 vs week-3+ rotation is set up
+const MODES = {
+  home: { deadline:null, msg:'No fixed departure. The day flows from your wake time.', post:[
+    { id:'h1', t:'Buffer time', d:10 },
+    { id:'h2', t:'Neighborhood stroll', details:'Plan the day along the way if you can.', d:20 },
+    { id:'h3', t:'Morning journal', d:20 },
+    { id:'h4', t:'Reading block', d:30 },
+    { id:'h5', t:'Free time', d:10 },
+    { id:'h6', t:'Study block', d:90, w:'peak', days:[1,2,3,4,5,6] },
+    { id:'h7', t:'Break time', d:15, w:'peak', days:[1,2,3,4,5,6] },
+    { id:'h8', t:'Study block 2', d:90, w:'peak', days:[1,2,3,4,5,6] },
+    { id:'h_laundry', t:'Do the laundry', d:195, w:'peak', days:[0] },
+    { id:'t1', t:'Free time, lunch preparation', details:'Hang the clothes if laundry was done.', d:15, w:'trough' },
+    { id:'t2', t:'Eat lunch', d:20, w:'trough' },
+    { id:'t3', t:'Post-lunch outdoor walk', d:10, w:'trough' },
+    { id:'t4', t:'Household chores', d:30, w:'trough' },
+    { id:'t5', t:'Free time, buffer for the chores', d:30, w:'trough' },
+    { id:'t6', t:'Power nap', d:20, w:'trough' },
+    { id:'t7', t:'Buffer time', d:10, w:'trough' },
+    { id:'c1', t:'Go outside and touch some grass', d:20, w:'climb2' },
+    { id:'c2', t:'Reading or watching block', d:60, w:'climb2' },
+    { id:'c3', t:'Buffer time', d:10, w:'climb2' },
+    { id:'c4', t:'Gaming block', d:30, w:'climb2' },
+    { id:'c5', t:'Drawing block', d:60, w:'climb2' },
+    { id:'c9', t:'Buffer time', d:20, w:'climb2' },
+    { id:'c6', t:'Workout block', d:100, w:'climb2', days:WORKOUT_DAYS },
+    { id:'c7', t:'Review block', details:'Rest-day swap for the workout block.', d:40, w:'climb2', days:REST_DAYS },
+    { id:'c8', t:'Free time', details:'Or get the clothes if laundry was done.', d:40, w:'climb2', days:REST_DAYS },
+    { id:'w1', t:'Sunset viewing', d:20, w:'wmz' },
+    { id:'w2', t:'Dinner time', d:30, w:'wmz' },
+    { id:'w3', t:'Neighborhood stroll', d:30, w:'wmz' },
+    { id:'w4', t:'Daily journal', d:40, w:'wmz' },
+    { id:'w5', t:'Free time, prep for tomorrow', d:20, w:'wmz' },
+  ]},
+  school: { deadline:6*60, post:[
+    { id:'s1', t:'Bike to school', d:20 },
+    { id:'s2', t:'Plan out the day', d:20 },
+    { id:'s3', t:'Buffer time', d:20, days:[0,2,3,4,5,6] },
+    { id:'s3m', t:'Flag ceremony', details:'Replaces the buffer on Mondays.', d:20, days:[1] },
+    { id:'s4', t:'Quick review of the day\'s subjects', d:20 },
+    { id:'ss2', t:'Flashcard review', details:'Suggestion for this window', d:0, sug:true },
+    { id:'ss3', t:'Reading assignment', details:'Suggestion for this window', d:0, sug:true },
+    { id:'sc', t:'Class 1 and 2', d:120, fixed:7*60 + 20, w:'peak' },
+    { id:'sbrk', t:'Break time', d:20, w:'peak' },
+    { id:'sc3', t:'Class 3', d:60, w:'peak' },
+    { id:'st1', t:'Class 4', d:90, w:'trough' },
+    { id:'st2', t:'Eat lunch', d:10, w:'trough' },
+    { id:'st3', t:'Campus stroll', d:15, w:'trough' },
+    { id:'st4', t:'Power nap', d:10, w:'trough' },
+    { id:'st5', t:'Buffer time', d:5, w:'trough' },
+    { id:'sc5', t:'Class 5 and 6', d:120, w:'climb2' },
+    { id:'sc6', t:'Free time, or cleaning the room', d:10, w:'climb2' },
+    { id:'sc7', t:'Hangout with friends', d:30, w:'climb2' },
+    { id:'sc8', t:'Go home', details:'Preferably by bike. The rest of the day runs like a Home day.', d:30, w:'climb2' },
+    { id:'sc9', t:'Rest, buffer time', d:20, w:'climb2' },
+    { id:'sc10', t:'Workout block', d:100, w:'climb2', days:WORKOUT_DAYS },
+    { id:'sc11', t:'Gaming block', details:'Rest-day swap for the workout block.', d:20, w:'climb2', days:REST_DAYS },
+    { id:'sc12', t:'Drawing block', d:60, w:'climb2', days:REST_DAYS }
+  ]},
+  away: { deadline:null, msg:'Set the wake time for where you are and everything shifts with it.', post:[
+    { id:'a1', t:'Go outside and touch some grass', d:0, sug:true },
+    { id:'a2', t:'Write a morning journal, if possible', d:0, sug:true },
+    { id:'a3', t:'Do focus-heavy tasks instead of doomscrolling', d:0, sug:true },
+    { id:'a4', t:'Do anything that needs deep focus here', d:0, sug:true, w:'peak' },
+    { id:'a5', t:'Continue what you were doing during First Climb', d:0, sug:true, w:'peak' },
+    { id:'a6', t:'Skip the doomscrolling here', d:0, sug:true, w:'peak' },
+    { id:'at1', t:'Get some rest at this window', d:0, sug:true, w:'trough' },
+    { id:'at2', t:'Eat lunch, then walk right after if possible', d:0, sug:true, w:'trough' },
+    { id:'at3', t:'Socialize, if possible', d:0, sug:true, w:'trough' },
+  ] }
 };
 
-// ═══════════════════════════════════════
-// HOW-TO (static, execution-level technique — separate from STEP_INFO's "why")
-// ═══════════════════════════════════════
-const HOW_TO = {
-  s1:  'Keep eyes closed or half-open for the first 10–30 sec — no phone. Checking it stacks an artificial arousal spike on top of the CAR that\'s already rising. <strong>Stay lying down through this step</strong> — don\'t sit up yet.',
-  s2:  'Move distal-to-proximal before spinal work: ankle circles, wrist circles, a couple of neck rolls first. <strong>Full-body stretch:</strong> arms overhead, gentle elongation, 10–15 sec — fine as-is. <strong>Knee-to-chest:</strong> alternate single-leg rather than both at once, hands behind the thigh not the shin, other leg flat on the bed — bilateral pulls more lumbar flexion onto a disc that\'s still fluid-hydrated from sleep (McGill). <strong>Supine twist:</strong> knees bent, drop both to one side, shoulders stay flat, 15–20 sec/side — rotation, not flexion, so it\'s lower-risk as written.',
-  s5:  'As you climb down, glance toward the brightest window in the room for a few seconds. Not a full session — just an early ipRGC signal before s12 properly starts the dose.',
-  s6:  'Warm water with a pinch of salt over plain, if you want the marginal upgrade — saline\'s osmotic action clears mucus slightly better. Not worth obsessing over.',
-  s7:  'Sip it over 1–2 min, don\'t chug. Temperature doesn\'t matter here — the cold-water-slows-digestion idea isn\'t solid evidence.',
-  s8:  'Modified Bass technique: bristles at 45° into the gumline, short gentle vibrating strokes, ~2 min total. Brush the tongue too — that\'s where most of the overnight bacterial load actually sits. Swap the brush every ~3 months or once bristles fray.',
-  s9:  'Lukewarm, not hot — hot water strips the skin\'s lipid barrier. Pat dry, don\'t rub. 20–30 sec is enough.',
-  s10: '<strong>Passive hang only</strong> — fully extended arms, relaxed shoulders, let gravity do the decompression. An active hang (shoulders pulled down/engaged) is a different exercise and won\'t give the same traction. Shoulder-width grip, palms forward, breathe normally throughout. If grip fails before 60 sec, that\'s fine — the effect scales with hang time, it\'s not all-or-nothing.',
-  s11: 'Brisk but controlled, ~1–2 min for 4 flights. The goal is raising core temp and circulation before static stretching, not cardio output.',
-  s12: 'Don\'t look directly at the sun — gaze toward open sky or the horizon. Stand somewhere genuinely unobstructed, not under a rooftop overhang or in shade; that kills most of outdoor light\'s advantage over indoor.',
-  s13: 'All passive holds, no bouncing. <strong>Standing Forward Fold:</strong> soft knees, fold from the hips, let head/arms hang, 20–30 sec — locked knees shift the stretch into lumbar flexion instead of a controlled fold. <strong>Chest Opener:</strong> clasp hands behind back, squeeze shoulder blades together, lift slightly. <strong>Lateral Neck Flexion / Chin-to-Chest:</strong> slow, no pulling with the hands, 15–20 sec. <strong>Cross-body Stretch:</strong> press the forearm/bicep, not the elbow joint directly. <strong>Hip Flexor Stretch</strong> — the one people get wrong: needs a posterior pelvic tilt (tuck the pelvis, squeeze the back-leg glute) or you barely feel it; without the tilt, lumbar extension compensates instead of the hip flexor actually stretching.',
-  s15: 'Same as s7 — sip, don\'t chug. You\'ve actually lost some fluid by now between the stairs, hang, and stretching.',
-  s16: 'Optional: a 15–30 sec cold finish at the end of an otherwise normal shower for a noradrenaline-driven alertness bump (Šrámek et al., 2000). Not required — just a real mechanism if you want it.',
-  s3:  'Double inhale through the nose — one big inhale to near-full capacity, then a second short sharp sniff on top of it to re-inflate collapsed alveoli — then exhale slowly through the mouth, noticeably longer than the inhale took. <strong>The extended exhale is what drives the effect</strong> — exhaling at normal speed misses it.',
-  s19: '<strong>Brain dump:</strong> write without editing or worrying about grammar — self-censoring while writing partially defeats the cognitive-offloading effect (Pennebaker). <strong>Intentions:</strong> use real if-then phrasing with a specific trigger — "When I get home, I\'ll start the workout," not "be productive today." The trigger is what makes it work.',
-  s20: 'Eat the eggs before the rice. Protein/fat first blunts the glucose spike from the carb that follows — same meal, same total intake, just reordered (Shukla et al., 2015).',
-  s21: 'Walking/tricycle: no sunglasses, no hood, sunnier side of the street if you have a choice. Pace doesn\'t matter for either mechanism. Car days: nothing to optimize — it\'s just transition time.',
-  mo1: 'Phase 2 placement: keep face/eyes unshaded like s12 — it stacks onto the same light dose. Phase 3 placement (after breakfast): the walk itself blunts the post-meal glucose spike regardless of pace — different mechanism, both valid, just know which one you\'re using it for.',
-  mo3: 'Eyes closed, seated or lying down, breath-count or body scan — nothing elaborate needed. Your CAR is still rising during this window, but meditation doesn\'t interfere with it; it\'s not a sympathetic/parasympathetic conflict.',
-  mo6: 'Needs to be genuinely cold — roughly 10–15°C, ice water — to trigger the dive reflex via the trigeminal nerve. Lukewarm won\'t do it. 2–3 short splashes/submersions, a few seconds each.',
+const WIN = {
+  sleep:{ name:'Morning routine', from:0, to:60, note:'Sleep inertia: grogginess usually fades over the first hour or so.' },
+  climb1:{ name:'First Climb', from:60, to:180, note:'Alertness tends to climb toward a first peak. Outdoor light can help.' },
+  peak:{ name:'Sustained Peak', from:180, to:360, note:'For many people this is a strong focus window.' },
+  trough:{ name:'Trough', from:360, to:480, note:'Many people dip after lunch. Alertness often drops.' },
+  climb2:{ name:'Second Climb', from:480, to:720, note:'Often a second peak, sometimes as strong as the morning one.' },
+  wmz:{ name:'Wake Maintenance Zone', from:720, to:900, note:'Many people find it hard to fall asleep here, and naps tend not to help.' },
+  wind:{ name:'Night Routine', from:900, to:1080, note:'The same every night. Slow down and get ready for sleep.' }
 };
-
-// ═══════════════════════════════════════
-// HELPERS
-// ═══════════════════════════════════════
-function phaseSteps(phase, dt){
-  if(phase.steps) return phase.steps;
-  if(dt==='away' && phase.awaySteps) return phase.awaySteps;
-  if(phase.standardSteps||phase.schoolSteps) return (dt==='school'&&phase.schoolSteps)?phase.schoolSteps:phase.standardSteps;
-  return dt==='workout'?phase.workoutSteps:phase.restSteps;
+const MODE_NAME = { home:'at home', school:'at school', away:'away' };
+MODES.none = { deadline:null, msg:'Choose where you are for First Climb below to see the rest of the day. The morning routine is the same for every type.', post:[] };
+Object.values(MODES).forEach(M => M.post.forEach(b => { b.w = b.w || 'climb1'; }));
+// ============================================================
+// APP STATE — in-memory + localStorage-backed
+// ============================================================
+let mode = null;
+let wake = store.get('wake', DEF_WAKE);
+if (typeof wake !== 'number') wake = (wake && wake.home) || DEF_WAKE;
+let done = null, day = null, plans = store.get('plans', {});
+let openState = store.get('open', {});
+let editing = false, cur = null, edDays = [];
+let noteEditing = null;
+const esc = z => (z || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const todayStr = () => new Date().toDateString();
+let viewDate = todayStr();
+loadDay(viewDate);
+function defWake(){ const w = store.get('wake', DEF_WAKE); return typeof w === 'number' ? w : ((w && w.home) || DEF_WAKE); }
+function planFor(ds){
+  if (plans[ds]) return plans[ds];
+  const L = store.get('day', null), D = store.get('done', null);
+  if (L && L.date === ds && L.types) return { w:defWake(), d:(D && D.date === ds ? D.ids : []), t:L.types, a:!!L.away, n:L.note || '' };
+  const h = store.get('hist', {})[ds];
+  if (h) return { w:h.wake, d:(h.rows || []).filter(r => r.done).map(r => r.id), t:h.types || {}, a:false, n:h.note || '' };
+  return null;
 }
-function allMIds(){
-  const ids=[];
-  MORNING.phases.forEach(p=>['steps','standardSteps','schoolSteps','awaySteps'].forEach(k=>{if(p[k])p[k].forEach(s=>ids.push(s.id))}));
-  MORNING.optional.forEach(s=>ids.push(s.id));
-  (MORNING.schoolOptional||[]).forEach(s=>ids.push(s.id));
-  (MORNING.awayOptional||[]).forEach(s=>ids.push(s.id));
-  MORNING_EMERG.forEach(s=>ids.push(s.id));
-  return [...new Set(ids)];
+function loadDay(ds){
+  const p = planFor(ds);
+  wake = p ? p.w : defWake();
+  done = { date:ds, ids:p ? (p.d || []).slice() : [] };
+  day = { date:ds, types:p ? { ...(p.t || {}) } : {}, away:p ? !!p.a : false, note:p ? (p.n || '') : '' };
+  if (p && p.p) day.prevTypes = p.p;
 }
-function allNIds(){
-  const ids=[];
-  NIGHT.phases.forEach(p=>['steps','workoutSteps','restSteps','awaySteps'].forEach(k=>{if(p[k])p[k].forEach(s=>ids.push(s.id))}));
-  NIGHT.optional.forEach(s=>ids.push(s.id));
-  (NIGHT.awayOptional||[]).forEach(s=>ids.push(s.id));
-  NIGHT_EMERG_WORKOUT.forEach(s=>ids.push(s.id));
-  NIGHT_EMERG_REST.forEach(s=>ids.push(s.id));
-  return [...new Set(ids)];
+function saveDay(){
+  plans[viewDate] = { w:wake, d:done.ids, t:day.types, a:!!day.away, n:day.note || '', p:day.prevTypes || null };
+  const ks = Object.keys(plans).sort((a, b) => new Date(a) - new Date(b));
+  while (ks.length > 200) delete plans[ks.shift()];
+  store.set('plans', plans);
+  if (viewDate === todayStr()) store.set('wake', wake);
+  if (new Date(viewDate) <= new Date(todayStr())) saveHist();
 }
-function mReq(dt)    { return MORNING.phases.flatMap(p=>phaseSteps(p,dt||'standard')); }
-function nReq(dt)    { return NIGHT.phases.flatMap(p=>phaseSteps(p,dt)); }
-function mEmergReq() { return MORNING_EMERG; }
-function nEmergReq(dt)  { return (dt||'workout')==='workout' ? NIGHT_EMERG_WORKOUT : NIGHT_EMERG_REST; }
-
-// ═══════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════
-let TODAY    = todayStr();
-let todayLog = null;
-let streaks  = {morning:{current:0,best:0},night:{current:0,best:0}};
-const collapsed = new Set(); // tracks collapsed phase IDs
-const openNotes = new Set();   // tracks open note areas
-const openInfos = new Set();   // tracks open info panels
-const openHowTos = new Set();  // tracks open how-to panels
-
-function dateStr(d){ const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${dd}`; }
-function todayStr(){
-  const now=new Date();
-  // Before 4 AM → treat as previous calendar day (night grace period)
-  if(now.getHours()<4){ now.setDate(now.getDate()-1); }
-  return dateStr(now);
+function goDate(ds){ viewDate = ds; noteEditing = null; loadDay(ds); render(); }
+function noteKey(id){ return viewDate + '_' + id; }
+function getNote(id){ return store.get('taskNotes', {})[noteKey(id)] || ''; }
+function setNote(id, txt){
+  const nm = store.get('taskNotes', {}), k = noteKey(id);
+  if (txt) nm[k] = txt; else delete nm[k];
+  store.set('taskNotes', nm);
 }
 
-// ═══════════════════════════════════════
-// LOG INIT & SAVE
-// ═══════════════════════════════════════
-function newMLog(){
-  const steps={};
-  allMIds().forEach(id=>steps[id]={completed:false,note:''});
-  return {steps,dayNote:'',completedAt:null,mode:'full',dayType:'standard'};
-}
-function newNLog(){
-  const steps={};
-  allNIds().forEach(id=>steps[id]={completed:false,note:''});
-  return {steps,dayNote:'',completedAt:null,mode:'full',dayType:'workout'};
-}
 
-function migrateOldLogs(){
-  const logs=S.get('logs',{});
-  let changed=false;
-  Object.keys(logs).forEach(date=>{
-    const log=logs[date];
-    if(log && log.steps && !log.morning && !log.night){
-      const mSteps={}; allMIds().forEach(id=>mSteps[id]=log.steps[id]||{completed:false,note:''});
-      logs[date]={
-        morning:{steps:mSteps,dayNote:log.dayNote||'',completedAt:log.completedAt||null,mode:'full'},
-        night:newNLog()
-      };
-      changed=true;
+// ============================================================
+// TIME HELPERS
+// ============================================================
+function fmt(m){
+  m = ((Math.round(m) % 1440) + 1440) % 1440;
+  const h = Math.floor(m/60), mm = m % 60;
+  return [((h+11)%12+1) + ':' + String(mm).padStart(2,'0'), h < 12 ? 'AM' : 'PM'];
+}
+function range(a, b){
+  const x = fmt(a), y = fmt(b);
+  return (x[1] === y[1] ? x[0] : x[0]+' '+x[1]) + ' – ' + y[0] + ' ' + y[1];
+}
+function mondayOf(ds){
+  const d = new Date(ds), wd = d.getDay(), diff = (wd === 0 ? -6 : 1 - wd);
+  const m = new Date(d); m.setDate(d.getDate() + diff); return m;
+}
+function isoLocal(d){ const p = n => String(n).padStart(2, '0'); return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()); }
+const toVal = m => String(Math.floor(m/60)).padStart(2,'0') + ':' + String(m%60).padStart(2,'0');
+
+// ============================================================
+// SCHEDULING ENGINE — turns blocks + wake time into timed rows
+// NOTE: window from/to are labels, not hard constraints — a task
+// can run past its window's nominal end (see the 'runs past
+// window end' tag in rowHtml, and isNowW's overflow-aware check).
+// ============================================================
+function build(dow){
+  dow = dow === undefined ? new Date().getDay() : dow;
+  const m1 = typeOf('climb1'), M = MODES[m1 || 'none'], onDay = b => !b.days || b.days.includes(dow);
+  const pre = getBlocks('pre').filter(onDay).map(b => ({ ...b, use:b.d }));
+  let msg = M.msg || '', tone = 'ok';
+  if (M.deadline !== null){
+    const avail = M.deadline - wake, total = pre.reduce((a, b) => a + b.d, 0), leave = fmt(M.deadline).join(' ');
+    if (avail >= total){
+      const gap = avail - total;
+      if (gap > 0){
+        pre.push({ id:'buf', t:'Buffer time', details:'Extra time from an early start.', d:gap, use:gap, p:'buf' });
+        msg = 'Early start: ' + gap + ' min of buffer added before you leave at ' + leave + '.';
+      } else msg = 'Fits exactly. You leave at ' + leave + '.';
+    } else {
+      let need = total - avail;
+      for (const pri of ['opt','flex','core']) for (const b of pre){
+        if (b.p !== pri || need <= 0) continue;
+        const cut = Math.min(need, b.use - (b.m || 0));
+        b.use -= cut; need -= cut;
+      }
+      if (need > 0){ tone = 'bad'; msg = 'Even at minimum lengths you are ' + need + ' min over. Wake earlier or trim the routine.'; }
+      else { tone = 'warn'; msg = 'Late start: routine shortened by ' + (total - avail) + ' min so you can leave at ' + leave + '.'; }
     }
-  });
-  if(changed) S.set('logs',logs);
-}
-
-function initLog(){
-  const date=todayStr();
-  TODAY=date;
-  const logs=S.get('logs',{});
-  if(!logs[date]){
-    logs[date]={morning:newMLog(),night:newNLog()};
-  } else {
-    if(!logs[date].morning) logs[date].morning=newMLog();
-    if(!logs[date].night)   logs[date].night=newNLog();
-    // Ensure all step IDs exist (handles new steps added in updates)
-    allMIds().forEach(id=>{ if(!logs[date].morning.steps[id]) logs[date].morning.steps[id]={completed:false,note:''}; });
-    allNIds().forEach(id=>{ if(!logs[date].night.steps[id])   logs[date].night.steps[id]  ={completed:false,note:''}; });
   }
-  S.set('logs',logs);
-  todayLog=logs[date];
-}
-
-function saveLog(){
-  const logs=S.get('logs',{});
-  logs[TODAY]=todayLog;
-  const ok=S.set('logs',logs);
-  if(!ok) console.warn('Yotei: localStorage save failed.');
-  return ok;
-}
-
-// ═══════════════════════════════════════
-// COMPLETION & STREAKS
-// ═══════════════════════════════════════
-function mDone(){  const l=todayLog?.morning; if(!l) return 0; const r=l.mode==='emergency'?mEmergReq():mReq(l.dayType||'standard'); return r.filter(s=>l.steps[s.id]?.completed).length; }
-function nDone(){  const l=todayLog?.night;   if(!l) return 0; const r=l.mode==='emergency'?nEmergReq(l.dayType||'workout'):nReq(l.dayType||'workout'); return r.filter(s=>l.steps[s.id]?.completed).length; }
-function mTotal(){ const l=todayLog?.morning; if(!l) return mReq('standard').length; return l.mode==='emergency'?mEmergReq().length:mReq(l.dayType||'standard').length; }
-function nTotal(){ const l=todayLog?.night;   if(!l) return nReq('workout').length; return l.mode==='emergency'?nEmergReq(l.dayType||'workout').length:nReq(l.dayType||'workout').length; }
-function mComplete(){ return mDone()===mTotal(); }
-function nComplete(){ return nDone()===nTotal(); }
-
-// Good Enough: at least 2 phases have ≥1 step completed (mirrors Morning Routine v1.2.5 operating rule)
-function mGoodEnough(){
-  const l=todayLog?.morning; if(!l||l.mode==='emergency') return false;
-  if(mComplete()) return false; // full completion supersedes
-  const dt=l.dayType||'standard';
-  const touched=MORNING.phases.filter(p=>phaseSteps(p,dt).some(s=>l.steps[s.id]?.completed)).length;
-  return touched>=2;
-}
-function nGoodEnough(){
-  const l=todayLog?.night; if(!l||l.mode==='emergency') return false;
-  if(nComplete()) return false;
-  const dt=l.dayType||'workout';
-  const touched=NIGHT.phases.filter(p=>phaseSteps(p,dt).some(s=>l.steps[s.id]?.completed)).length;
-  return touched>=2;
-}
-
-// Sleep auto-complete: on open, if Sleep step unticked but night routine is good enough → auto-tick Sleep
-function maybeSleepAutoComplete(){
-  const l=todayLog?.night; if(!l) return;
-  const sleepId='np4s';
-  if(l.steps[sleepId]?.completed) return; // already ticked
-  if(nGoodEnough()){
-    l.steps[sleepId].completed=true;
-    if(!l.completedAt&&nComplete()) l.completedAt=new Date().toISOString();
-    saveLog(); calcStreaks();
+  let t = wake; const rows = [];
+  for (const b of pre){
+    const bf = b.p === 'buf';
+    rows.push({ ...b, w:bf ? 'climb1' : 'sleep', md:bf ? m1 : undefined, start:t, end:t + b.use }); t += b.use;
   }
-}
-
-function logComplete(logs,date,type){
-  const log=logs[date]?.[type]; if(!log||!log.steps) return false;
-  const req=log.mode==='emergency'?(type==='morning'?mEmergReq():nEmergReq(log.dayType||'workout')):(type==='morning'?mReq(log.dayType||'standard'):nReq(log.dayType||'workout'));
-  return req.every(s=>log.steps[s.id]?.completed);
-}
-
-function calcStreaks(){
-  const logs=S.get('logs',{});
-  ['morning','night'].forEach(type=>{
-    const isToday=type==='morning'?mComplete():nComplete();
-    let check=new Date(todayStr()+'T12:00:00');
-    if(!isToday) check.setDate(check.getDate()-1);
-    let count=0;
-    for(let i=0;i<365;i++){
-      const ds=dateStr(check);
-      if(logComplete(logs,ds,type)){count++;check.setDate(check.getDate()-1);}
-      else break;
+  if (M.deadline !== null) t = Math.max(t, M.deadline);
+  for (const k of Object.keys(WIN)){
+    const night = k === 'wind', tp = night ? 'night' : typeOf(k);
+    if (k === 'sleep' || !tp) continue;
+    let list = getBlocks(tp).filter(x => (night || (x.w || 'climb1') === k) && onDay(x));
+    if (night){
+      t = Math.max(t, wake + wins().wind.from);
+      list = list.map(b => ({ ...b, use:b.d }));
+      let need = list.filter(b => !b.sug).reduce((a, b) => a + b.use, 0) - (CAP.hard - t);
+      for (const pri of ['opt', 'flex', 'core']) for (const b of list){
+        if (b.p !== pri || need <= 0 || b.sug) continue;
+        const cut = Math.min(need, b.use - (b.m || 0));
+        b.use -= cut; need -= cut;
+      }
     }
-    const prev=streaks[type]?.best||0;
-    streaks[type]={current:count,best:Math.max(prev,count)};
+    for (const b of list){
+      const at = b.fixed !== undefined ? b.fixed : t;
+      if (b.fixed !== undefined && t > b.fixed){ tone = 'bad'; msg = 'The routine runs past the ' + fmt(b.fixed).join(' ') + ' start. Trim it or wake earlier.'; }
+      let use = b.use !== undefined ? b.use : b.d, capCut = false;
+      if (b.fixed === undefined && !b.sug && ((at >= CAP.hard && b.p !== 'core') || (at >= CAP.soft && b.p === 'opt'))){ use = 0; capCut = true; }
+      rows.push({ ...b, w:k, use, capCut, start:at, end:at + use, post:true, md:tp });
+      t = Math.max(t, at + use);
+    }
+  }
+  return { rows, msg, tone };
+}
+
+const nowM = () => { const d = new Date(); return d.getHours()*60 + d.getMinutes(); };
+// ============================================================
+// ICONS, COLOR, DOT SIZE/FILL — visual helpers for the timeline
+// ============================================================
+const MODE_LABEL = { home:'Home', school:'School', away:'Away' };
+const ICON_RULES = [
+  [/wake|rise|shine/i, 'sun'], [/stretch|yoga/i, 'stretch'], [/shower|bath/i, 'shower'],
+  [/bike|bicycle|cycle/i, 'bike'], [/school|class|lecture|homework|subject|study|review|flashcard|reading assignment/i, 'book'],
+  [/walk|stroll/i, 'walk'], [/breakfast|lunch|dinner|\beat\b|meal/i, 'meal'],
+  [/journal|write|writing/i, 'pen'], [/\bread/i, 'book'],
+  [/nap|sleep/i, 'moon'], [/rest\b|buffer|free time|open slot/i, 'hourglass'],
+  [/chore|clean|laundry|tidy/i, 'broom'], [/game|gaming/i, 'game'], [/music/i, 'music'],
+  [/work.?out|exercise|gym|training/i, 'dumbbell'], [/friend|social|hangout|catch up|host/i, 'people'],
+  [/draw|art|creative/i, 'palette'], [/plan\b/i, 'clipboard']
+];
+function guessIcon(t){ for (const [re, ic] of ICON_RULES){ if (re.test(t)) return ic; } return null; }
+const ICONS = {
+  sun:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>',
+  cloud:'<svg viewBox="0 0 24 24"><path d="M7 18a4 4 0 1 1 .5-7.97A5 5 0 0 1 17 12a3.5 3.5 0 0 1-.5 6.93z"/></svg>',
+  sunset:'<svg viewBox="0 0 24 24"><path d="M3 18h18M5 18a7 7 0 0 1 14 0"/><path d="M12 6v4M8.5 8.5l1.5 1.5M15.5 8.5l-1.5 1.5"/></svg>',
+  moon:'<svg viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/></svg>',
+  book:'<svg viewBox="0 0 24 24"><path d="M4 5c2-1 5-1 8 1 3-2 6-2 8-1v13c-2-1-5-1-8 1-3-2-6-2-8-1z"/></svg>',
+  stretch:'<svg viewBox="0 0 24 24"><circle cx="12" cy="4" r="2"/><path d="M12 6v7M8 9l4-2 4 2M8 20l4-7 4 7"/></svg>',
+  shower:'<svg viewBox="0 0 24 24"><path d="M12 2C9 6 6 10 6 14a6 6 0 0 0 12 0c0-4-3-8-6-12z"/></svg>',
+  bike:'<svg viewBox="0 0 24 24"><circle cx="6" cy="17" r="3.5"/><circle cx="18" cy="17" r="3.5"/><path d="M6 17l4-9h4l3 9M10 8h3M9 17h9"/></svg>',
+  walk:'<svg viewBox="0 0 24 24"><circle cx="13" cy="4" r="2"/><path d="M11 6l-3 4 3 2v9M11 10l4 1 3-3M8 21l3-6 3 2 3 4"/></svg>',
+  meal:'<svg viewBox="0 0 24 24"><path d="M6 2v8M4 2v5a2 2 0 0 0 4 0V2M8 10v12M18 2c-2 0-3 2-3 5s1 4 3 4M18 2v18"/></svg>',
+  pen:'<svg viewBox="0 0 24 24"><path d="M4 20l1-4L16 5l3 3L8 19l-4 1z"/></svg>',
+  hourglass:'<svg viewBox="0 0 24 24"><path d="M6 3h12M6 21h12M7 3c0 5 5 6 5 9s-5 4-5 9M17 3c0 5-5 6-5 9s5 4 5 9"/></svg>',
+  broom:'<svg viewBox="0 0 24 24"><path d="M19 5L9 15M5 19l3-7 4 4-7 3zM14 4l6 6"/></svg>',
+  game:'<svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="9" rx="4"/><path d="M8 11v3M6.5 12.5h3M16 12h.01M18 10h.01"/></svg>',
+  music:'<svg viewBox="0 0 24 24"><path d="M9 18V5l10-2v13"/><circle cx="7" cy="18" r="2.5"/><circle cx="17" cy="16" r="2.5"/></svg>',
+  dumbbell:'<svg viewBox="0 0 24 24"><path d="M4 12h16M4 9v6M20 9v6M7 7v10M17 7v10"/></svg>',
+  people:'<svg viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M2 20c0-3 3-5 6-5s6 2 6 5M12 20c0-3 3-5 6-5"/></svg>',
+  palette:'<svg viewBox="0 0 24 24"><path d="M12 3a9 8 0 1 0 0 16c1.5 0 2-1 2-2s-.5-1.5-.5-2 1-1 2-1h1a4 4 0 0 0 4-4c0-4-4-7-8.5-7z"/><circle cx="8" cy="11" r="1"/><circle cx="12" cy="8" r="1"/><circle cx="16" cy="11" r="1"/></svg>',
+  clipboard:'<svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1M8 11h8M8 15h5"/></svg>'
+};
+function iconMarkup(v){ return ICONS[v] || esc(v); }
+function onColor(c){
+  const m = /^#([0-9a-f]{6})$/i.exec((c || '').trim()); if (!m) return '#fff';
+  const v = [0, 2, 4].map(i => { const x = parseInt(m[1].substr(i, 2), 16) / 255; return x <= .03928 ? x / 12.92 : Math.pow((x + .055) / 1.055, 2.4); });
+  return (.2126 * v[0] + .7152 * v[1] + .0722 * v[2]) > .3 ? '#06121f' : '#fff';
+}
+const DOT_W = 56;
+function dotHeight(use){
+  const BASE = 56, MAX = 150, CAP_AT = 120; // minutes at which height maxes out
+  if (!use || use <= 10) return BASE;
+  const t = Math.min(1, (use - 10) / (CAP_AT - 10));
+  return Math.round(BASE + t * (MAX - BASE));
+}
+function fracFor(r, NM){
+  if (r.start === undefined || r.end === undefined || r.end <= r.start) return NM >= (r.start || 0) ? 1 : 0;
+  if (NM <= r.start) return 0;
+  if (NM >= r.end) return 1;
+  return (NM - r.start) / (r.end - r.start);
+}
+function buildSpine(){
+  const wrap = document.querySelector('#tl .tlwrap'); if (!wrap) return;
+  const old = wrap.querySelector('.tlspine'); if (old) old.remove();
+  const yIn = el => { let y = 0; while (el && el !== wrap){ y += el.offsetTop; el = el.offsetParent; } return y; };
+  const nodes = [];
+  Array.from(wrap.children).forEach(el => {
+    if (!el.matches('.blk,.tlhead')) return;
+    const dot = el.querySelector('.tldot'); if (!dot) return;
+    const top = yIn(dot), h = dot.offsetHeight;
+    let bottom = top + h;
+    const nx = el.nextElementSibling;
+    if (el.matches('.tlhead') && nx && nx.matches('.modeWrap')){
+      const m = nx.querySelector('.mode');
+      if (m) bottom = yIn(m) + m.offsetHeight + 7;
+    }
+    nodes.push({ c: el.dataset.c, f: parseFloat(el.dataset.f), top, mid: top + h / 2, bottom });
   });
-  S.set('streak',streaks);
+  if (nodes.length < 2) return;
+  const GRAY = 'var(--graydot)', y0 = nodes[0].mid, stops = [];
+  const push = (p, c) => stops.push([Math.max(p - y0, stops.length ? stops[stops.length - 1][0] : 0), c]);
+  for (let k = 0; k < nodes.length - 1; k++){
+    const a = nodes[k], b = nodes[k + 1], A = a.mid, B = b.mid;
+    push(A, a.f > 0 ? a.c : GRAY);
+    let endCol = a.f >= 1 ? a.c : GRAY;
+    if (a.f > 0 && a.f < 1){
+      const front = A + a.f * (B - A);
+      push(front - 6, a.c); push(front + 6, GRAY);
+    }
+    const E = b.f > 0 ? b.c : GRAY;
+    if (endCol !== E){ const mid = (a.bottom + b.top) / 2; push(mid - 8, endCol); push(mid + 8, E); }
+    push(B, E);
+  }
+  const spine = document.createElement('div');
+  spine.className = 'tlspine';
+  spine.style.top = y0 + 'px';
+  let end = nodes[nodes.length - 1].mid;
+  const lastEl = Array.from(wrap.children).filter(el => el.matches('.blk,.tlhead')).pop();
+  if (lastEl && lastEl.matches('.tlhead') && lastEl.nextElementSibling && lastEl.nextElementSibling.matches('.modeWrap')){
+    const m = lastEl.nextElementSibling.querySelector('.mode');
+    if (m) end = Math.max(end, yIn(m) - 5);
+  }
+  spine.style.height = (end - y0) + 'px';
+  spine.style.background = 'linear-gradient(to bottom,' + stops.map(([p, c]) => c + ' ' + p.toFixed(1) + 'px').join(',') + ')';
+  wrap.insertBefore(spine, wrap.firstChild);
 }
-
-// ═══════════════════════════════════════
-// NAVIGATION
-// ═══════════════════════════════════════
-let curView='home';
-let activeRoutine='morning';
-
-function navigate(view){
-  if(view===curView&&view!=='routine'&&view!=='log') return;
-  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-  document.getElementById('view-'+view)?.classList.add('active');
-  curView=view;
-  updateHeader(view);
-  document.querySelectorAll('.nav-item').forEach(b=>b.classList.toggle('active',b.dataset.view===view));
-  document.getElementById('app-nav').style.display=['home','history','stats'].includes(view)?'flex':'none';
-  if(view==='home')    renderHome();
-  if(view==='routine') renderRoutine();
-  if(view==='history') renderHistory();
-  if(view==='stats')   renderStats();
-}
-
-function openRoutine(type){ activeRoutine=type; navigate('routine'); }
-
-function updateHeader(view){
-  const left=document.getElementById('h-left');
-  document.getElementById('h-center').innerHTML='';
-  if(view==='home'){
-    left.innerHTML=`<span class="h-date">${fmtDate()}</span>`;
-  } else if(view==='routine'){
-    left.innerHTML=`<button class="back-btn" onclick="navigate('home')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15,18 9,12 15,6"/></svg>Back</button>`;
-  } else if(view==='log'){
-    left.innerHTML=`<button class="back-btn" onclick="navigate('history')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15,18 9,12 15,6"/></svg>Back</button>`;
-    document.getElementById('h-center').innerHTML=`<span class="h-title" id="log-header-date"></span>`;
+window.addEventListener('resize', buildSpine);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(buildSpine);
+function dotFillHtml(iconKey, color, frac){
+  const cov = Math.round(frac * 100);
+  const svg = ICONS[iconKey];
+  const iconHtml = svg
+    ? '<span class="dotIconWrap"><span class="dotIconTop" style="clip-path:inset(0 0 ' + (100 - cov) + '% 0);color:' + onColor(color) + '">' + svg + '</span><span class="dotIconBot" style="clip-path:inset(' + cov + '% 0 0 0);color:' + color + '">' + svg + '</span></span>'
+    : '<span class="dotIconPlain">' + esc(iconKey) + '</span>';
+  let fill;
+  if (frac <= 0){
+    fill = '<rect width="64" height="64" fill="var(--graydot)"/>';
+  } else if (frac >= 1){
+    fill = '<rect width="64" height="64" fill="' + color + '"/>';
   } else {
-    left.innerHTML=`<span class="h-title">${{history:'History',stats:'Stats'}[view]||''}</span>`;
+    const wy = (-40 + frac * 94).toFixed(1);
+    fill = '<rect width="64" height="64" fill="var(--graydot)"/><g class="waveDrift"><path fill="' + color + '" transform="translate(0,' + wy + ')" d="M-64,32 Q-48,20 -32,32 T0,32 T32,32 T64,32 T96,32 T128,32 V-100 H-64 Z"/></g>';
   }
+  return '<svg class="dotwave" viewBox="0 0 64 64" preserveAspectRatio="none" aria-hidden="true">' + fill + '</svg>' + iconHtml;
 }
-
-function fmtDate(){
-  const n=new Date();
-  return `${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][n.getDay()]}, ${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][n.getMonth()]} ${n.getDate()}`;
+const ICON_GROUPS = {
+  'Body & movement':['sun','stretch','shower','walk','bike','dumbbell'],
+  'Food':['meal'],
+  'Mind & focus':['book','pen','clipboard','palette'],
+  'Rest & time':['moon','hourglass','cloud','sunset'],
+  'Home & social':['broom','people','game','music']
+};
+const COLOR_SWATCHES = ['#f59e0b','#fbbf24','#facc15','#38bdf8','#fb7185','#a78bfa','#6366f1','#22c55e','#f97316','#eef2ff'];
+const WIN_STYLE = {
+  sleep:{ c:'#f59e0b', i:'sun' }, climb1:{ c:'#fbbf24', i:'sun' }, peak:{ c:'#facc15', i:'sun' },
+  trough:{ c:'#38bdf8', i:'cloud' }, climb2:{ c:'#fb7185', i:'sunset' }, wmz:{ c:'#a78bfa', i:'cloud' }, wind:{ c:'#6366f1', i:'moon' }
+};
+function typeOf(k){
+  const keys = Object.keys(WIN);
+  for (let i = keys.indexOf(k); i >= 0; i--) if (day.types[keys[i]]) return day.types[keys[i]];
+  return null;
 }
-function greeting(){ const h=new Date().getHours(); return h<12?'Good morning.':h<17?'Good afternoon.':'Good evening.'; }
-
-// ═══════════════════════════════════════
-// HOME
-// ═══════════════════════════════════════
-function renderHome(){
-  document.getElementById('greeting-text').textContent=greeting();
-  document.getElementById('sc-m').textContent=streaks.morning.current;
-  document.getElementById('sc-n').textContent=streaks.night.current;
-  document.getElementById('sb-m').textContent='Best: '+streaks.morning.best;
-  document.getElementById('sb-n').textContent='Best: '+streaks.night.best;
-
-  function badge(complete,goodEnough,emerg,inProg,isNight){
-    if(complete)    return `<div class="card-badge badge-done"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20,6 9,17 4,12"/></svg>Completed</div>`;
-    if(goodEnough)  return `<div class="card-badge badge-ge">~ Good Enough</div>`;
-    if(emerg)       return `<div class="card-badge badge-emerg">⚡ Emergency</div>`;
-    const cls=isNight?'card-badge badge-n':'card-badge badge-m';
-    return `<div class="${cls}"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>${inProg>0?'In progress':'Not started'}</div>`;
+function schedule(){
+  return build(new Date(viewDate).getDay());
+}
+function pickType(k, m){ day.types[k] = m; saveDay(); render(); }
+// ============================================================
+// WINDOW-BLOCK EDITOR (the settings dialog for one window)
+// ============================================================
+const wins = () => { const o = store.get('wins', {}), r = {}; for (const k in WIN) r[k] = { ...WIN[k], ...(o[k] || {}) }; return r; };
+let ebk = null;
+function openBlockEd(k){
+  const W = wins()[k]; ebk = k;
+  $('#b_n').value = W.name; $('#b_f').value = W.from / 60; $('#b_t').value = W.to / 60; $('#b_s').value = W.note;
+  $('#eb').showModal();
+}
+$('#b_x').onclick = () => $('#eb').close();
+$('#b_r').onclick = () => { const o = store.get('wins', {}); delete o[ebk]; store.set('wins', o); $('#eb').close(); render(); };
+$('#b_ok').onclick = () => {
+  const n = $('#b_n').value.trim(), f = parseFloat($('#b_f').value), t = parseFloat($('#b_t').value);
+  if (!n || isNaN(f) || isNaN(t) || t <= f) return;
+  const o = store.get('wins', {}); o[ebk] = { name:n, from:Math.round(f * 60), to:Math.round(t * 60), note:$('#b_s').value.trim() };
+  store.set('wins', o); $('#eb').close(); render();
+};
+// ============================================================
+// DATA ACCESS & MIGRATION
+// schemaV gates one-time migrations; bump it if you add another.
+// ============================================================
+const clone = a => JSON.parse(JSON.stringify(a));
+function migrateFields(){
+  if (store.get('schemaV', 0) >= 1){ return; }
+  const blocks = store.get('blocks', null);
+  if (blocks){
+    let changed = false;
+    for (const l in blocks){
+      const arr = blocks[l];
+      if (!Array.isArray(arr)) continue;
+      for (const b of arr){
+        if (b && b.s !== undefined){
+          if (!b.details) b.details = b.s;
+          delete b.s;
+          changed = true;
+        }
+      }
+    }
+    if (changed) store.set('blocks', blocks);
   }
-
-  const ml=todayLog.morning,nl=todayLog.night;
-  const mc=mComplete(),nc=nComplete();
-  const mge=mGoodEnough(),nge=nGoodEnough();
-  const md=mDone(),mt=mTotal(),mp=mt?Math.round(md/mt*100):0;
-  const nd=nDone(),nt=nTotal(),np=nt?Math.round(nd/nt*100):0;
-  const me=ml.mode==='emergency',ne=nl.mode==='emergency';
-  const dt=nl.dayType||'workout';
-  const mdt=ml.dayType||'standard';
-
-  document.getElementById('home-cards').innerHTML=`
-    <div class="routine-card${mc?' r-done':mge?' r-ge':''}" onclick="openRoutine('morning')">
-      <div class="card-top">
-        <div><div class="card-name-row"><span class="card-icon">🌅</span><div class="card-title">Morning Routine</div></div><div class="card-meta">${me?'Emergency mode':mt+' steps · 3 phases · '+(mdt==='school'?'School day':mdt==='away'?'Away day':'Standard day')}</div></div>
-        ${badge(mc,mge,me,md,false)}
-      </div>
-      <div class="prog-wrap">
-        <div class="prog-lbl"><span>Progress</span><span>${md} / ${mt}</span></div>
-        <div class="prog-track"><div class="prog-fill${mc?' df':mge?' gef':''}" style="width:${mp}%"></div></div>
-      </div>
-      <div class="card-hint"><span>Tap to open</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg></div>
-    </div>
-    <div class="routine-card night-card${nc?' r-done':nge?' r-ge':''}" onclick="openRoutine('night')">
-      <div class="card-top">
-        <div><div class="card-name-row"><span class="card-icon">🌙</span><div class="card-title">Night Routine</div></div><div class="card-meta">${ne?'Emergency mode':nt+' steps · 4 phases · '+(dt==='workout'?'Workout day':dt==='away'?'Away day':'Rest day')}</div></div>
-        ${badge(nc,nge,ne,nd,true)}
-      </div>
-      <div class="prog-wrap">
-        <div class="prog-lbl"><span>Progress</span><span>${nd} / ${nt}</span></div>
-        <div class="prog-track"><div class="prog-fill nf${nc?' df':nge?' gef':''}" style="width:${np}%"></div></div>
-      </div>
-      <div class="card-hint"><span>Tap to open</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg></div>
-    </div>`;
+  store.set('schemaV', 1);
 }
-
-// ═══════════════════════════════════════
-// ROUTINE RENDERING
-// ═══════════════════════════════════════
-function stepHtml(step, log, isNight){
-  const sub = step.id==='s2' ? getStretches().join(' · ') : step.sub;
-  const sd=log.steps?.[step.id]||{completed:false,note:''};
-  const on=sd.completed, hn=sd.note&&sd.note.trim().length>0;
-  const hasInfo=!!STEP_INFO[step.id];
-  const hasHowTo=!!HOW_TO[step.id];
-  return `
-    <div class="step-item${on?' si-done':''}" id="si-${step.id}">
-      <div class="step-row">
-        <div class="step-cb${on?' on':''}${on&&isNight?' ncb':''}" onclick="toggleStep('${step.id}')"></div>
-        <div class="step-content">
-          <div class="step-label">${step.label}</div>
-          ${sub?`<div class="step-sub">${esc(sub)}</div>`:''}
-        </div>
-        ${step.optional?`<span class="opt-tag">OPT</span>`:''}
-        ${hasInfo?`<button class="info-btn${isNight?' ni':''}" onclick="toggleInfo('${step.id}')">!</button>`:''}
-        ${hasHowTo?`<button class="howto-btn${isNight?' ni':''}" onclick="toggleHowTo('${step.id}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/></svg></button>`:''}
-        <button class="note-btn${hn?' hn':''}${hn&&isNight?' nhn':''}" id="nb-${step.id}" onclick="toggleNote('${step.id}')">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-        </button>
-      </div>
-      ${hasInfo?`<div class="info-panel${openInfos.has(step.id)?' open':''}" id="ip-${step.id}"><div class="info-panel-inner">${STEP_INFO[step.id]}</div></div>`:''}
-      ${hasHowTo?`<div class="howto-panel${openHowTos.has(step.id)?' open':''}" id="hp-${step.id}"><div class="howto-panel-inner">${HOW_TO[step.id]}</div></div>`:''}
-      <div class="note-area${openNotes.has(step.id)?' open':''}" id="na-${step.id}">
-        <textarea class="note-input" placeholder="Add a note..." oninput="saveStepNote('${step.id}',this.value)">${esc(sd.note||'')}</textarea>
-      </div>
-    </div>`;
+function getBlocks(l){
+  const b = store.get('blocks', null);
+  return b && b[l] ? b[l] : (l === 'pre' ? PRE : l === 'night' ? NIGHT : MODES[l].post);
 }
-
-function phaseHtml(phase, log, isNight, steps){
-  const phaseDone=steps.filter(s=>log.steps?.[s.id]?.completed).length;
-  const phaseTotal=steps.length;
-  const allPhaseDone=phaseDone===phaseTotal;
-  const isColl=collapsed.has(phase.id);
-  const nameClass=`phase-name${isNight?' n':''}${phase.isEmerg?' el':''}`;
-  const chevronClass=`phase-chevron${isColl?' flipped':''}`;
-
-  return `
-    <div class="phase-sec">
-      <div class="phase-hdr" onclick="togglePhase('${phase.id}')">
-        <div class="phase-hdr-left">
-          ${phase.name?`<div class="${nameClass}">${phase.name}</div>`:''}
-          ${phase.dur?`<div class="phase-dur">${phase.dur}</div>`:''}
-        </div>
-        <div class="phase-hdr-right">
-          <span class="phase-count${allPhaseDone?' done':''}">${phaseDone}/${phaseTotal}</span>
-          <svg id="pc-${phase.id}" class="${chevronClass}" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,9 12,15 18,9"/></svg>
-        </div>
-      </div>
-      <div id="pb-${phase.id}" class="phase-body${isColl?' collapsed':''}">
-        <div>
-          <div class="phase-steps">
-            ${steps.map(s=>stepHtml(s,log,isNight)).join('')}
-          </div>
-        </div>
-      </div>
-    </div>`;
+function setBlocks(l, arr){ const b = store.get('blocks', null) || {}; b[l] = arr; store.set('blocks', b); }
+// ============================================================
+// TASK EDITOR (the main add/edit-task dialog, #ed)
+// ============================================================
+function drawDays(){
+  $('#e_days').innerHTML = ['Su','Mo','Tu','We','Th','Fr','Sa'].map((n, i) => '<button type="button" data-i="' + i + '"' + (edDays.includes(i) ? ' class="on"' : '') + '>' + n + '</button>').join('');
 }
-
-function progBarHtml(done,total,isNight){
-  const pct=total?Math.round(done/total*100):0;
-  const complete=done===total;
-  return `<div class="rv-prog">
-    <div class="rv-prog-top">
-      <span class="rv-prog-steps">${done} of ${total} steps</span>
-      <span class="rv-prog-pct${isNight?' n':''}">${pct}%</span>
-    </div>
-    <div class="prog-track" style="height:8px">
-      <div class="prog-fill${isNight?' nf':''}${complete?' df':''}" style="width:${pct}%"></div>
-    </div>
-  </div>`;
+function openEd(l, id, w){
+  const b = id ? getBlocks(l).find(x => x.id === id) : null;
+  if (id && !b) return;
+  cur = { l, id, w };
+  const x = b || { t:'', d:20 };
+  $('#e_t').value = x.t;
+  $('#e_k').value = x.sug ? 'sug' : x.fixed !== undefined ? 'fixedtime' : x.p === 'open' ? 'open' : ['core','flex','opt'].includes(x.p) ? x.p : 'fixedlen';
+  $('#e_d').value = x.d; $('#e_m').value = x.m ?? ''; highlightChip();
+  $('#e_icon').value = x.icon || ''; updateIconBtn();
+  $('#e_color').value = x.color || ''; $('#e_colorCustom').value = x.color || '#4d8ef7'; highlightColor();
+  $('#e_f').value = x.fixed !== undefined ? toVal(x.fixed) : '';
+  $('#e_details').value = x.details || ''; $('#e_p').value = (x.steps || []).join('\n');
+  edDays = x.days ? x.days.slice() : [0,1,2,3,4,5,6]; drawDays();
+  ['e_del','e_up','e_dn'].forEach(i => { $('#' + i).style.display = b ? '' : 'none'; });
+  $('#ed').showModal();
 }
-
-function emergBanner(){
-  return `<div class="emerg-banner"><span style="font-size:18px">⚡</span><div><div class="eb-title">Emergency Mode</div><div class="eb-sub">Simplified steps · Continuity over perfection</div></div></div>`;
+function moveBlock(d){
+  const arr = clone(getBlocks(cur.l)), i = arr.findIndex(x => x.id === cur.id), wk = x => x.w || 'climb1';
+  let j = i + d;
+  while (i >= 0 && j >= 0 && j < arr.length && wk(arr[j]) !== wk(arr[i])) j += d;
+  if (i < 0 || j < 0 || j >= arr.length) return;
+  [arr[i], arr[j]] = [arr[j], arr[i]];
+  setBlocks(cur.l, arr); $('#ed').close(); render();
 }
-
-function renderRoutine(){
-  activeRoutine==='morning'?renderMorning():renderNight();
+function highlightChip(){ const v = $('#e_d').value; document.querySelectorAll('#e_presets button').forEach(b => b.classList.toggle('on', b.dataset.m === v)); }
+function updateIconBtn(){ const v = $('#e_icon').value; $('#e_iconBtn').innerHTML = v ? iconMarkup(v) : '+'; }
+$('#ip_groups').innerHTML = Object.keys(ICON_GROUPS).map(g =>
+  '<div class="ipGroup"><p class="lbl">' + g + '</p><div class="chips ipRow">' +
+  ICON_GROUPS[g].map(k => '<button type="button" data-i="' + k + '">' + ICONS[k] + '</button>').join('') +
+  '</div></div>'
+).join('');
+$('#e_iconBtn').addEventListener('click', () => {
+  const v = $('#e_icon').value;
+  $('#e_icon_custom').value = (v && !ICONS[v]) ? v : '';
+  $('#iconPick').showModal();
+});
+$('#ip_groups').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  $('#e_icon').value = b.dataset.i; updateIconBtn(); $('#iconPick').close();
+});
+$('#ip_x').onclick = () => $('#iconPick').close();
+$('#ip_ok').onclick = () => {
+  $('#e_icon').value = $('#e_icon_custom').value.trim(); updateIconBtn(); $('#iconPick').close();
+};
+function highlightColor(){
+  const v = $('#e_color').value;
+  document.querySelectorAll('#e_colors button').forEach(b => b.classList.toggle('on', b.dataset.c === v));
 }
-
-function renderMorning(){
-  const rv=document.getElementById('view-routine');
-  const st=rv.scrollTop;
-  const log=todayLog.morning, isEmerg=log.mode==='emergency', dt=log.dayType||'standard';
-  const done=mDone(), total=mTotal();
-
-  let h=`<div class="rv-top">
-    <div><div class="rv-title">🌅 Morning Routine</div><div class="rv-sub">Golden Hour · Biological Activation</div></div>
-    <button class="emerg-btn" onclick="toggleEmerg('morning')">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13,2 3,14 12,14 11,22 21,10 12,10 13,2"/></svg>
-      ${isEmerg?'Full mode':'Emergency'}
-    </button>
-  </div>`;
-
-  h+=`<div class="dts m">
-    <button class="dts-btn${dt==='standard'?' on':''}" onclick="setMDayType('standard')">🌅 Standard</button>
-    <button class="dts-btn${dt==='school'?' on':''}" onclick="setMDayType('school')">🎒 School</button>
-    <button class="dts-btn${dt==='away'?' on':''}" onclick="setMDayType('away')">🧳 Away</button>
-  </div>`;
-
-  if(isEmerg){
-    h+=emergBanner();
-    h+=progBarHtml(done,total,false);
-    h+=phaseHtml({id:'mp-emerg',name:'Emergency Steps',isEmerg:true}, log, false, MORNING_EMERG);
-  } else {
-    h+=progBarHtml(done,total,false);
-    MORNING.phases.forEach(p=>{
-      h+=phaseHtml(p, log, false, phaseSteps(p,dt));
-    });
-    const optList = dt==='school' ? MORNING.optional.concat(MORNING.schoolOptional) : dt==='away' ? MORNING.optional.filter(s=>s.id!=='mo2').concat(MORNING.awayOptional) : MORNING.optional;
-    h+=`<div class="opt-section">
-      <div class="opt-section-hdr">Optional Additions</div>
-      ${phaseHtml({id:'mp-opt',name:'',dur:''},log,false,optList.map(s=>({...s,optional:true})))}
-    </div>`;
-  }
-
-  h+=`<div class="day-note-wrap"><div class="day-note-label">Day Note</div><textarea class="day-note-input" placeholder="How's the morning going? Any thoughts for the day..." oninput="saveDayNote('morning',this.value)">${esc(log.dayNote||'')}</textarea></div>`;
-  rv.innerHTML=h; rv.scrollTop=st;
+$('#e_colors').innerHTML = '<button type="button" class="colorAuto" data-c="">Auto</button>' +
+  COLOR_SWATCHES.map(c => '<button type="button" class="colorSwatch" data-c="' + c + '" style="background:' + c + '"></button>').join('') +
+  '<input type="color" id="e_colorCustom" title="Custom color">';
+$('#e_colors').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  $('#e_color').value = b.dataset.c; highlightColor();
+});
+$('#e_colors').addEventListener('input', e => {
+  if (e.target.id !== 'e_colorCustom') return;
+  $('#e_color').value = e.target.value; highlightColor();
+});
+// ============================================================
+// TASK DETAIL SHEET — opens on tap, shows name/time + actions
+// (Delete / Duplicate / Edit). Deliberately excludes Details —
+// keep it lean, see the phase history for why.
+// ============================================================
+let sheetCtx = null;
+function openTaskSheet(l, id){
+  const { rows } = schedule();
+  const r = rows.find(x => x.id === id);
+  if (!r) return;
+  sheetCtx = { l, id };
+  const st = WIN_STYLE[r.w] || WIN_STYLE.climb1;
+  const cut = r.use === 0 && !r.sug && r.fixed === undefined;
+  $('#ts_icon').innerHTML = iconMarkup(r.icon || guessIcon(r.t) || st.i);
+  $('#ts_icon').style.setProperty('--dot', r.color || st.c); $('#ts_icon').style.color = onColor(r.color || st.c);
+  $('#ts_title').textContent = r.t;
+  $('#ts_done').hidden = cut || r.sug || r.fixed !== undefined;
+  $('#ts_done').textContent = done.ids.includes(r.id) ? 'Mark not done' : 'Mark done';
+  $('#ts_time').textContent = cut ? 'Skipped today' : r.sug ? 'Suggestion' : r.fixed !== undefined ? fmt(r.start).join(' ') : range(r.start, r.end);
+  if (r.details){ $('#ts_details').textContent = r.details; $('#ts_details').hidden = false; } else $('#ts_details').hidden = true;
+  const steps = r.steps || [];
+  if (steps.length){
+    const nDone = steps.filter((z, i) => done.ids.includes(r.id + '#' + i)).length;
+    $('#ts_stepsline').textContent = 'Subtasks: ' + nDone + ' of ' + steps.length + ' done';
+    $('#ts_stepsline').hidden = false;
+  } else $('#ts_stepsline').hidden = true;
+  $('#taskSheet').showModal();
 }
-
-function renderNight(){
-  const rv=document.getElementById('view-routine');
-  const st=rv.scrollTop;
-  const log=todayLog.night, isEmerg=log.mode==='emergency', dt=log.dayType||'workout';
-  const done=nDone(), total=nTotal();
-
-  let h=`<div class="rv-top">
-    <div><div class="rv-title">🌙 Night Routine</div><div class="rv-sub">Wind Down · Day Closure</div></div>
-    <button class="emerg-btn" onclick="toggleEmerg('night')">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13,2 3,14 12,14 11,22 21,10 12,10 13,2"/></svg>
-      ${isEmerg?'Full mode':'Emergency'}
-    </button>
-  </div>`;
-
-  h+=`<div class="dts">
-    <button class="dts-btn${dt==='rest'?' on':''}" onclick="setDayType('rest')">🛌 Rest</button>
-    <button class="dts-btn${dt==='workout'?' on':''}" onclick="setDayType('workout')">💪 Workout</button>
-    <button class="dts-btn${dt==='away'?' on':''}" onclick="setDayType('away')">🧳 Away</button>
-  </div>`;
-
-  if(isEmerg){
-    h+=emergBanner();
-    h+=progBarHtml(done,total,true);
-    h+=phaseHtml({id:'np-emerg',name:'Emergency Steps',isEmerg:true}, log, true, nEmergReq(dt));
-  } else {
-    h+=progBarHtml(done,total,true);
-    NIGHT.phases.forEach(p=>{
-      const steps=phaseSteps(p,dt);
-      h+=phaseHtml(p, log, true, steps);
-    });
-    h+=`<div class="opt-section">
-      <div class="opt-section-hdr">Optional Additions</div>
-      ${phaseHtml({id:'np-opt',name:'',dur:''},log,true,NIGHT.optional.filter(s=>dt==='rest'||dt==='away'||s.id!=='no1').concat(dt==='away'?NIGHT.awayOptional:[]).map(s=>({...s,optional:true})))}
-    </div>`;
-  }
-
-  h+=`<div class="day-note-wrap"><div class="day-note-label">Night Note</div><textarea class="day-note-input" placeholder="How did the day go? Any thoughts before sleeping..." oninput="saveDayNote('night',this.value)">${esc(log.dayNote||'')}</textarea></div>`;
-  rv.innerHTML=h; rv.scrollTop=st;
-}
-
-// ═══════════════════════════════════════
-// INTERACTIONS
-// ═══════════════════════════════════════
-function toggleStep(id){
-  const log=todayLog[activeRoutine];
-  if(!log||!log.steps[id]) return;
-  log.steps[id].completed=!log.steps[id].completed;
-  const done=activeRoutine==='morning'?mComplete():nComplete();
-  if(done&&!log.completedAt) log.completedAt=new Date().toISOString();
-  else if(!done) log.completedAt=null;
-  saveLog(); calcStreaks(); renderRoutine();
-}
-
-function togglePhase(id){
-  const body=document.getElementById('pb-'+id);
-  const chevron=document.getElementById('pc-'+id);
-  if(!body) return;
-  if(collapsed.has(id)){
-    collapsed.delete(id);
-    body.classList.remove('collapsed');
-    if(chevron) chevron.classList.remove('flipped');
-  } else {
-    collapsed.add(id);
-    body.classList.add('collapsed');
-    if(chevron) chevron.classList.add('flipped');
-  }
-}
-
-function setDayType(dt){ todayLog.night.dayType=dt; saveLog(); renderNight(); }
-function setMDayType(dt){ todayLog.morning.dayType=dt; saveLog(); renderMorning(); }
-
-function toggleEmerg(type){
-  todayLog[type].mode=todayLog[type].mode==='emergency'?'full':'emergency';
-  saveLog(); renderRoutine();
-}
-
-function toggleNote(id){
-  const area=document.getElementById('na-'+id);
-  if(!area) return;
-  if(openNotes.has(id)){ openNotes.delete(id); } else { openNotes.add(id); }
-  area.classList.toggle('open');
-  if(area.classList.contains('open')) setTimeout(()=>area.querySelector('textarea')?.focus(),80);
-}
-
-function toggleInfo(id){
-  const panel=document.getElementById('ip-'+id);
-  if(!panel) return;
-  if(openInfos.has(id)){ openInfos.delete(id); } else { openInfos.add(id); }
-  panel.classList.toggle('open');
-}
-
-function toggleHowTo(id){
-  const panel=document.getElementById('hp-'+id);
-  if(!panel) return;
-  if(openHowTos.has(id)){ openHowTos.delete(id); } else { openHowTos.add(id); }
-  panel.classList.toggle('open');
-}
-
-function saveStepNote(id,val){
-  const log=todayLog[activeRoutine]; if(!log||!log.steps[id]) return;
-  log.steps[id].note=val; saveLog();
-  const btn=document.getElementById('nb-'+id);
-  if(btn){
-    const hn=val.trim().length>0;
-    btn.classList.toggle('hn',hn);
-    btn.classList.toggle('nhn',hn&&activeRoutine==='night');
-    if(!hn) btn.classList.remove('nhn');
-  }
-}
-
-function saveDayNote(type,val){ todayLog[type].dayNote=val; saveLog(); }
-function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-// ═══════════════════════════════════════
-// HISTORY
-// ═══════════════════════════════════════
-function renderHistory(){
-  const logs=S.get('logs',{});
-  const dates=Object.keys(logs).sort().reverse();
-  const list=document.getElementById('hist-list');
-  document.getElementById('hist-sub').textContent=`${dates.length} ${dates.length===1?'day':'days'} recorded`;
-
-  if(!dates.length){
-    list.innerHTML=`<div class="empty-state"><div class="ei">📋</div><p>No history yet.<br>Complete your first routine to see it here.</p></div>`;
-    return;
-  }
-
-  const DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const MOS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-
-  function pillStat(rlog, emR, reqFn, defaultDt){
-    if(!rlog||!rlog.steps) return {val:'—',cls:''};
-    const req=rlog.mode==='emergency'?emR:reqFn(rlog.dayType||defaultDt);
-    const done=req.filter(s=>rlog.steps[s.id]?.completed).length;
-    const full=done===req.length&&req.length>0;
-    if(rlog.mode==='emergency') return {val:`⚡ ${done}/${req.length}`,cls:'em'};
-    if(full) return {val:`✓ ${done}/${req.length}`,cls:'ok'};
-    return {val:`${done}/${req.length}`,cls:''};
-  }
-
-  list.innerHTML=dates.map(date=>{
-    const log=logs[date];
-    const d=new Date(date+'T00:00:00');
-    const label=`${DAYS[d.getDay()]}, ${MOS[d.getMonth()]} ${d.getDate()}`;
-    const isToday=date===TODAY;
-    const ms=pillStat(log?.morning, mEmergReq(), (dt)=>mReq(dt), 'standard');
-    const ns=pillStat(log?.night,   nEmergReq(log?.night?.dayType||'workout'), (dt)=>nReq(dt), 'workout');
-    const note=(log?.morning?.dayNote||log?.night?.dayNote||'').trim();
-    return `<div class="h-item" onclick="openLog('${date}')" style="cursor:pointer">
-      <div class="h-date-row">
-        <div class="h-date">${label}${isToday?`<span class="today-badge">Today</span>`:''}</div>
-        <svg style="color:var(--text-ter);flex-shrink:0;margin-left:auto" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg>
-      </div>
-      <div class="h-pills">
-        <div class="h-pill">
-          <div class="h-pill-top"><span class="h-pill-icon">🌅</span><span class="h-pill-lbl">Morning</span></div>
-          <div class="h-pill-val ${ms.cls}">${ms.val}</div>
-        </div>
-        <div class="h-pill">
-          <div class="h-pill-top"><span class="h-pill-icon">🌙</span><span class="h-pill-lbl">Night</span></div>
-          <div class="h-pill-val ${ns.cls}">${ns.val}</div>
-        </div>
-      </div>
-      ${note?`<div class="h-note-prev">"${esc(note.substring(0,70))}${note.length>70?'…':''}"</div>`:''}
-    </div>`;
+$('#ts_close').onclick = () => $('#taskSheet').close();
+$('#ts_done').onclick = () => {
+  const k = sheetCtx.id, i = done.ids.indexOf(k);
+  if (i === -1) done.ids.push(k); else done.ids.splice(i, 1);
+  saveDay(); $('#taskSheet').close(); render();
+};
+$('#ts_edit').onclick = () => { $('#taskSheet').close(); openEd(sheetCtx.l, sheetCtx.id); };
+$('#ts_del').onclick = () => {
+  if (!confirm('Delete this task?')) return;
+  setBlocks(sheetCtx.l, clone(getBlocks(sheetCtx.l)).filter(x => x.id !== sheetCtx.id));
+  $('#taskSheet').close(); render();
+};
+$('#ts_dup').onclick = () => {
+  const arr = clone(getBlocks(sheetCtx.l)), i = arr.findIndex(x => x.id === sheetCtx.id);
+  if (i === -1) return;
+  const copy = { ...arr[i], id:'u' + Date.now().toString(36) };
+  arr.splice(i + 1, 0, copy);
+  setBlocks(sheetCtx.l, arr);
+  $('#taskSheet').close(); render();
+  openEd(sheetCtx.l, copy.id);
+};
+// ============================================================
+// SUBTASK SHEET — opens from the small icon next to a task's
+// subtask count. Checklist only, no Delete/Duplicate/Edit here.
+// ============================================================
+let stepsSheetId = null;
+function stepsRowsHtml(r){
+  const dot = r.color || (WIN_STYLE[r.w] || WIN_STYLE.climb1).c;
+  return (r.steps || []).map((z, i) => {
+    const k = r.id + '#' + i, dn = done.ids.includes(k);
+    return '<button class="stp' + (dn ? ' done' : '') + '" data-k="' + k + '" data-b="' + r.id + '" data-n="' + r.steps.length + '" style="--dot:' + dot + '"><span class="ssCheck"></span><span>' + esc(z) + '</span></button>';
   }).join('');
 }
-
-let activeLogDate = null;
-
-function openLog(date){
-  activeLogDate = date;
-  navigate('log');
-  renderLog();
+function openStepsSheet(id){
+  const { rows } = schedule(), r = rows.find(x => x.id === id);
+  if (!r || !(r.steps || []).length) return;
+  stepsSheetId = id;
+  $('#ss_title').textContent = r.t;
+  $('#ss_list').innerHTML = stepsRowsHtml(r);
+  $('#stepsSheet').showModal();
 }
-
-function renderLog(){
-  const DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const MOS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const logs=S.get('logs',{});
-  const log=logs[activeLogDate];
-  const d=new Date(activeLogDate+'T00:00:00');
-  const label=`${DAYS[d.getDay()]}, ${MOS[d.getMonth()]} ${d.getDate()}`;
-
-  // Set header date
-  const hd=document.getElementById('log-header-date');
-  if(hd) hd.textContent=label;
-
-  if(!log){ document.getElementById('view-log').innerHTML=`<div class="empty-state"><p>No data for this day.</p></div>`; return; }
-
-  function logStepHtml(step, rlog, isNight){
-    if(!step||!rlog) return '';
-    const sd=rlog.steps?.[step.id];
-    const done=sd?.completed||false;
-    const note=sd?.note?.trim()||'';
-    const sub=step.id==='s2'?(S.get('m_stretches',['Full-body stretch','Knee-to-chest stretch (alternating)','Supine twist']).join(' · ')):step.sub;
-    return `<div class="log-step${done?'':' ls-skip'}">
-      <div class="log-cb ${done?(isNight?'done nc':'done'):'skip'}"></div>
-      <div class="log-step-body">
-        <div class="log-step-label">${step.label}</div>
-        ${sub?`<div class="log-step-sub">${esc(sub)}</div>`:''}
-        ${note?`<div class="log-step-note${isNight?' nn':''}">${esc(note)}</div>`:''}
-      </div>
-    </div>`;
+$('#ss_close').onclick = () => $('#stepsSheet').close();
+$('#ss_list').addEventListener('click', e => {
+  const st = e.target.closest('.stp'); if (!st) return;
+  const k = st.dataset.k, i = done.ids.indexOf(k);
+  if (i === -1) done.ids.push(k); else done.ids.splice(i, 1);
+  const b = st.dataset.b, all = Array.from({ length:+st.dataset.n }, (_, j) => done.ids.includes(b + '#' + j)).every(Boolean), bi = done.ids.indexOf(b);
+  if (all && bi === -1) done.ids.push(b); else if (!all && bi !== -1) done.ids.splice(bi, 1);
+  saveDay();
+  render();
+  const { rows } = schedule(), r = rows.find(x => x.id === stepsSheetId);
+  if (r) $('#ss_list').innerHTML = stepsRowsHtml(r);
+});
+$('#e_presets').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  $('#e_d').value = b.dataset.m; highlightChip();
+});
+$('#e_d').addEventListener('input', highlightChip);
+$('#e_days').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const i = +b.dataset.i;
+  edDays = edDays.includes(i) ? edDays.filter(z => z !== i) : edDays.concat(i); drawDays();
+});
+$('#e_x').onclick = () => $('#ed').close();
+$('#e_up').onclick = () => moveBlock(-1);
+$('#e_dn').onclick = () => moveBlock(1);
+$('#e_del').onclick = () => { setBlocks(cur.l, clone(getBlocks(cur.l)).filter(x => x.id !== cur.id)); $('#ed').close(); render(); };
+$('#e_ok').onclick = () => {
+  const t = $('#e_t').value.trim(); if (!t) return;
+  const k = $('#e_k').value, arr = clone(getBlocks(cur.l)), old = arr.find(x => x.id === cur.id);
+  const b = { id: old ? old.id : 'u' + Date.now().toString(36), t };
+  if (old && old.w) b.w = old.w; else if (cur.l !== 'pre' && cur.l !== 'night') b.w = cur.w || 'climb1';
+  const details = $('#e_details').value.trim(); if (details) b.details = details;
+  const color = $('#e_color').value.trim(); if (color) b.color = color;
+  const icon = $('#e_icon').value.trim(); if (icon) b.icon = icon;
+  const steps = $('#e_p').value.split('\n').map(z => z.trim()).filter(Boolean); if (steps.length) b.steps = steps;
+  if (edDays.length && edDays.length < 7) b.days = edDays.slice().sort();
+  const d = Math.max(0, parseInt($('#e_d').value) || 0), m = parseInt($('#e_m').value);
+  if (k === 'sug'){ b.sug = true; b.d = 0; }
+  else if (k === 'fixedtime'){
+    const f = $('#e_f').value; if (!f) return;
+    const [h, mi] = f.split(':').map(Number); b.fixed = h*60 + mi; b.d = d;
+  } else {
+    b.d = d;
+    if (k === 'open') b.p = 'open';
+    else if (k !== 'fixedlen'){ b.p = k; b.m = Math.min(d, isNaN(m) ? d : m); }
   }
-
-  function logSectionHtml(title, icon, rlog, steps, isNight){
-    if(!steps||!steps.length) return '';
-    const hasAnyData=steps.some(s=>rlog?.steps?.[s.id]?.completed||rlog?.steps?.[s.id]?.note?.trim());
-    return `<div class="log-section">
-      <div class="log-section-title"><span>${icon}</span>${title}</div>
-      <div class="phase-steps">
-        ${steps.map(s=>logStepHtml(s,rlog,isNight)).join('')}
-      </div>
-    </div>`;
+  if (old) arr[arr.indexOf(old)] = b; else arr.push(b);
+  setBlocks(cur.l, arr); $('#ed').close(); render();
+};
+$('#settingsBtn').addEventListener('click', () => setTab('settings'));
+$('#editToggle').addEventListener('click', () => {
+  editing = !editing;
+  $('#settingsBtn').classList.toggle('on', editing);
+  $('#editToggle').textContent = editing ? 'Turn off editing' : 'Turn on editing';
+  if (editing) setTab('home');
+  render();
+});
+// ============================================================
+// HISTORY & TRENDS TABS
+// ============================================================
+function historyDayInner(h){
+  const WB = wins(), rs = h.rows || [];
+  const tp = h.types ? Object.keys(h.types).map(k => esc(WB[k] ? WB[k].name : k) + ': ' + (MODE_LABEL[h.types[k]] || '')).join(', ') : '';
+  const groups = Object.keys(WB).map(k => {
+    const g = rs.filter(r => r.w === k && (r.u > 0 || r.done));
+    return g.length ? '<p class="hd">' + esc(WB[k].name) + '</p>' + g.map(r => '<p class="hl' + (r.done ? ' ok' : '') + '"><span class="ht">' + fmt(r.s).join(' ') + '</span>' + esc(r.t) + (r.n ? '<br><span class="ht">Note</span>' + esc(r.n) : '') + '</p>').join('') : '';
+  }).join('');
+  return (tp ? '<p class="wn">' + tp + '</p>' : '') + (h.note ? '<p class="hl">Note: ' + esc(h.note) + '</p>' : '') + groups;
+}
+function trendsHtml(){
+  const H = store.get('hist', {}), days = Object.keys(H).sort((a, b) => new Date(b) - new Date(a)).slice(0, 7).reverse();
+  if (!days.length) return '<p class="wn">Not enough history yet for trends.</p>';
+  const dayRows = days.map(d => {
+    const h = H[d], rs = (h.rows || []).filter(r => r.u > 0 && !r.sug), n = rs.filter(r => r.done).length, pct = rs.length ? Math.round(n / rs.length * 100) : 0;
+    return '<div class="trow"><span class="tlab">' + new Date(d).toLocaleDateString(undefined, { weekday:'short' }) + '</span><div class="tbar"><div class="tfill" style="width:' + pct + '%"></div></div><span class="tpct">' + pct + '%</span></div>';
+  }).join('');
+  const counts = {};
+  Object.values(H).forEach(h => (h.rows || []).forEach(r => {
+    if (r.u <= 0 || r.sug) return;
+    if (!counts[r.id]) counts[r.id] = { t: r.t, done: 0, total: 0 };
+    counts[r.id].total++; if (r.done) counts[r.id].done++;
+  }));
+  const top = Object.values(counts).filter(c => c.total >= 2).sort((a, b) => b.done / b.total - a.done / a.total || b.total - a.total).slice(0, 6)
+    .map(c => '<div class="trow"><span class="tlab wide">' + esc(c.t) + '</span><div class="tbar"><div class="tfill" style="width:' + Math.round(c.done / c.total * 100) + '%"></div></div><span class="tpct">' + c.done + '/' + c.total + '</span></div>').join('');
+  return '<div class="sleep"><h2>Completion, last ' + days.length + ' days</h2>' + dayRows + '</div>' + (top ? '<div class="sleep"><h2>Most consistent tasks</h2>' + top + '</div>' : '');
+}
+function histHtml(){
+  const H = store.get('hist', {});
+  const days = Object.keys(H).filter(d => d !== todayStr()).sort((a, b) => new Date(b) - new Date(a));
+  const items = days.map(d => {
+    const h = H[d], rs = h.rows || [], live = rs.filter(r => r.u > 0 && !r.sug), n = live.filter(r => r.done).length, dt = new Date(d);
+    return '<details class="hday"><summary><span class="bt">' + dt.toLocaleDateString(undefined, { weekday:'long', month:'short', day:'numeric', year:'numeric' }) + '</span><span class="bm">' + n + ' of ' + live.length + ' done, woke ' + fmt(h.wake).join(' ') + '</span></summary><div class="hb">' + historyDayInner(h) + '</div></details>';
+  }).join('');
+  return items || '<p class="wn">No past days yet.</p>';
+}
+function drawNav(){
+  const d = new Date(viewDate);
+  $('#date').innerHTML = '<b>' + d.toLocaleDateString(undefined, { weekday:'long' }) + '</b><span class="dacc">' + d.toLocaleDateString(undefined, { month:'long', day:'numeric', year:'numeric' }) + '</span>';
+  const base = mondayOf(viewDate), todayDS = todayStr();
+  let strip = '';
+  for (let i = 0; i < 7; i++){
+    const wd = new Date(base); wd.setDate(base.getDate() + i);
+    const ds = wd.toDateString(), sel = ds === viewDate, isToday = ds === todayDS;
+    strip += '<button class="wd' + (sel ? ' on' : '') + (isToday ? ' today' : '') + '" data-d="' + ds + '"><span class="wdn">' + wd.toLocaleDateString(undefined, { weekday:'short' }) + '</span><span class="wdd">' + wd.getDate() + '</span></button>';
   }
-
-  let h='';
-
-  // ── MORNING ──
-  const ml=log.morning;
-  if(ml){
-    const mIsEmerg=ml.mode==='emergency';
-    const mdt=ml.dayType||'standard';
-    const mOptPool=mdt==='school'?MORNING.optional.concat(MORNING.schoolOptional):mdt==='away'?MORNING.optional.filter(s=>s.id!=='mo2').concat(MORNING.awayOptional):MORNING.optional;
-    const mOptDone=mOptPool.filter(s=>ml.steps?.[s.id]?.completed||ml.steps?.[s.id]?.note?.trim());
-
-    if(ml.dayNote?.trim()){
-      h+=`<div class="log-day-note"><div class="log-day-note-lbl">Morning Note</div><div class="log-day-note-text">${esc(ml.dayNote)}</div></div>`;
-    }
-
-    if(mIsEmerg){
-      h+=logSectionHtml('Emergency Steps','⚡',ml,MORNING_EMERG,false);
-    } else {
-      MORNING.phases.forEach(p=>{
-        h+=logSectionHtml(p.name,'🌅',ml,phaseSteps(p,mdt),false);
-      });
-      if(mOptDone.length){
-        h+=logSectionHtml('Optional','✨',ml,mOptDone,false);
+  $('#weekstrip').innerHTML = strip;
+  $('#datePick').value = isoLocal(d);
+  $('#todayBtn').hidden = viewDate === todayStr();
+}
+let lastSig = '';
+function saveHist(){
+  const tn = store.get('taskNotes', {});
+  const snap = { dow:new Date(day.date).getDay(), wake, types:day.types, note:day.note || '', rows:schedule().rows.map(r => ({ w:r.w, id:r.id, t:r.t, md:r.md || null, s:r.start, e:r.end, u:r.use, sug:!!r.sug, done:done.ids.includes(r.id), n:tn[day.date + '_' + r.id] || '' })) };
+  const sig = day.date + JSON.stringify(snap);
+  if (sig === lastSig) return;
+  lastSig = sig;
+  const h = store.get('hist', {});
+  h[day.date] = snap;
+  const keys = Object.keys(h).sort((a, b) => new Date(a) - new Date(b));
+  while (keys.length > 90) delete h[keys.shift()];
+  store.set('hist', h);
+  const oldest = new Date(keys[0]), nm = store.get('taskNotes', {});
+  let ch = false;
+  for (const k in nm){ if (new Date(k.split('_')[0]) < oldest){ delete nm[k]; ch = true; } }
+  if (ch) store.set('taskNotes', nm);
+}
+// ============================================================
+// MAIN RENDER LOOP — render() picks today vs. another date,
+// draw() builds today's live interactive timeline.
+// ============================================================
+function render(){
+  drawNav();
+  if (document.activeElement !== $('#dnote')) $('#dnote').value = day.note || '';
+  draw();
+  $('#trends').innerHTML = trendsHtml();
+  $('#histbox').innerHTML = histHtml();
+  const hrs = c => ((wake + 1440 - c) / 60).toFixed(1);
+  $('#sleep').innerHTML =
+    '<div class="capRow"><label for="capS">Soft cap</label><input type="time" id="capS" value="' + toVal(CAP.soft) + '"><i>' + hrs(CAP.soft) + ' h before wake</i></div>' +
+    '<div class="capRow"><label for="capH">Hard cap</label><input type="time" id="capH" value="' + toVal(CAP.hard) + '"><i>' + hrs(CAP.hard) + ' h before wake</i></div>' +
+    (hrs(CAP.hard) < 7 ? '<p class="wn">Under 7 h between your hard cap and wake time. Most adults do better with 7 to 9 h, so consider an earlier cap or a later wake.</p>' : '');
+  if (viewDate === todayStr()) saveHist();
+}
+function draw(){
+  const w = wake, isToday = viewDate === todayStr(), NM = isToday ? nowM() : (new Date(viewDate) < new Date(todayStr()) ? 1e4 : -1);
+  $('#wake').value = toVal(w);
+  const { rows, msg, tone } = schedule();
+  let capMsg = '', capTone = 'warn';
+  if (isToday && (NM >= CAP.hard || NM < wake)){ capMsg = 'Past your hard sleep cap (' + fmt(CAP.hard).join(' ') + '). Lights out. After it, only core tasks stay on the schedule.'; capTone = 'bad'; }
+  else if (isToday && NM >= CAP.soft) capMsg = 'Past your soft sleep cap (' + fmt(CAP.soft).join(' ') + '). Wrap up. Optional tasks after it are skipped.';
+  const m = $('#msg'); m.textContent = capMsg || msg; m.className = 'msg ' + (capMsg ? capTone : tone);
+  const live = rows.filter(r => r.use > 0);
+  const n = live.filter(r => done.ids.includes(r.id)).length;
+  $('#prog').textContent = live.length ? n + ' of ' + live.length + ' done' : '';
+  const rowHtml = (r, prev) => {
+    const cut = r.use === 0 && !r.sug && r.fixed === undefined, dn = done.ids.includes(r.id);
+    let tag = '';
+    const isNow = r.use > 0 && r.fixed === undefined && !r.sug && NM >= r.start && NM < r.end;
+    const winB = WIN[r.w] ? wins()[r.w] : null;
+    const overflow = winB && r.use > 0 && !r.sug && r.start <= w + winB.to && r.end > w + winB.to;
+    const sw = (isNow ? '<span class="tag ok">now</span>' : '') + (prev && prev.md && r.md !== prev.md && MODE_NAME[r.md] ? '<span class="tag warn">switched to ' + MODE_NAME[r.md] + '</span>' : '') + (r.fixed !== undefined ? '<span class="tag">fixed time</span>' : '') + (overflow ? '<span class="tag warn">runs past window end</span>' : '');
+    if (cut) tag = '<span class="tag bad">' + (r.capCut ? 'past sleep cap' : 'cut today') + '</span>';
+    else if (r.m !== undefined && r.use < r.d) tag = '<span class="tag warn">' + (r.use - r.d) + ' min</span>';
+    else if (r.p === 'buf') tag = '<span class="tag ok">buffer</span>';
+    const st = WIN_STYLE[r.w] || WIN_STYLE.climb1;
+    const dotColor = r.color || st.c;
+    const h = dotHeight(r.use);
+    const frac = fracFor(r, NM);
+    const dotIcon = dotFillHtml(r.icon || guessIcon(r.t) || st.i, dotColor, frac);
+    const dotStyle = 'width:' + DOT_W + 'px;height:' + h + 'px;border-radius:' + (DOT_W / 2) + 'px';
+    const nDone = (r.steps || []).filter((z, i) => done.ids.includes(r.id + '#' + i)).length;
+    const stepBadge = r.steps && r.steps.length ? '<span class="stepcount">' + nDone + '/' + r.steps.length + '</span><span class="stepsBtn" role="button" tabindex="0" data-sid="' + r.id + '" aria-label="Subtasks"><svg viewBox="0 0 24 24"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg></span>' : '';
+    const timeLbl = (cut || r.sug) ? '' : fmt(r.start).join(' ');
+    const check = r.sug ? '' : '<span class="tlcheck"></span>';
+    return '<div class="blk" data-c="' + dotColor + '" data-f="' + frac.toFixed(3) + '"><button class="tlrow' + (dn ? ' done' : '') + (isNow ? ' now' : '') + (cut ? ' cut' : '') + (r.sug ? ' sug' : '') + '" style="--dot:' + dotColor + '" data-id="' + r.id + '" data-l="' + (r.post ? r.md : 'pre') + '" data-locked="' + ((cut || r.fixed !== undefined || r.sug) ? 1 : 0) + '" aria-label="' + esc(r.t) + (cut ? ', skipped' : r.sug ? ', suggestion' : dn ? ', done' : ', not done') + '">'
+      + '<span class="tltime">' + timeLbl + '</span><span class="tldot" style="' + dotStyle + '">' + dotIcon + '</span><span class="tlbody"><span class="time">' + (cut ? 'Skipped' : r.sug ? 'Suggestion' : r.fixed !== undefined ? fmt(r.start).join(' ') : range(r.start, r.end)) + tag + sw + '</span>'
+      + '<span class="ttl">' + esc(r.t) + stepBadge + '</span></span>' + check + '</button>' + noteHtml(r) + '</div>';
+  };
+  function gapRows(rs){
+    let out = '';
+    for (let i = 0; i < rs.length; i++){
+      out += rowHtml(rs[i], rs[i - 1]);
+      const cur = rs[i], next = rs[i + 1];
+      if (cur.use > 0 && !cur.sug && next && next.use > 0 && !next.sug && next.start > cur.end){
+        const mins = next.start - cur.end, h = Math.floor(mins / 60), m = mins % 60;
+        const dur = (h ? h + 'h ' : '') + (m || !h ? m + 'm' : '');
+        out += '<div class="gap"><span class="gaptxt">' + dur + ' free</span>' + (editing ? '<button class="add" data-l="' + (cur.md || 'pre') + '" data-w="' + cur.w + '">+ Add task</button>' : '') + '</div>';
       }
     }
+    return out;
   }
-
-  // ── NIGHT ──
-  const nl=log.night;
-  if(nl){
-    const nIsEmerg=nl.mode==='emergency';
-    const dt=nl.dayType||'workout';
-    const nOptPool=dt==='away'?NIGHT.optional.concat(NIGHT.awayOptional):NIGHT.optional;
-    const nOptDone=nOptPool.filter(s=>nl.steps?.[s.id]?.completed||nl.steps?.[s.id]?.note?.trim());
-
-    if(nl.dayNote?.trim()){
-      h+=`<div class="log-day-note"><div class="log-day-note-lbl">Night Note</div><div class="log-day-note-text">${esc(nl.dayNote)}</div></div>`;
-    }
-
-    if(nIsEmerg){
-      h+=logSectionHtml('Emergency Steps','⚡',nl,nEmergReq(dt),true);
-    } else {
-      NIGHT.phases.forEach(p=>{
-        const steps=phaseSteps(p,dt);
-        h+=logSectionHtml(p.name,'🌙',nl,steps,true);
-      });
-      if(nOptDone.length){
-        h+=logSectionHtml('Optional','✨',nl,nOptDone,true);
-      }
-    }
+  function noteHtml(r){
+    if (editing) return '';
+    if (noteEditing === r.id) return '<div class="noteEdit"><textarea class="ntxt">' + esc(getNote(r.id)) + '</textarea><div class="ea"><button class="ncancel">Cancel</button><button class="nsave" data-nid="' + r.id + '">Save</button></div></div>';
+    return '<button class="noteBtn" data-nid="' + r.id + '">' + (getNote(r.id) ? 'Edit note' : '+ Note') + '</button>';
   }
-
-  if(!h) h=`<div class="empty-state"><p>Nothing recorded for this day.</p></div>`;
-
-  document.getElementById('view-log').innerHTML=h;
-}
-// ═══════════════════════════════════════
-let statsTab='morning';
-
-function renderStats(){
-  document.getElementById('stats-content').innerHTML=`
-    <div class="stats-tabs">
-      <button class="s-tab${statsTab==='morning'?' on':''}" onclick="switchTab('morning')">🌅 Morning</button>
-      <button class="s-tab${statsTab==='night'?' on nt':''}" onclick="switchTab('night')">🌙 Night</button>
-    </div>
-    <div id="stats-inner"></div>`;
-  renderStatsInner();
-}
-
-function switchTab(tab){
-  statsTab=tab;
-  document.querySelectorAll('.s-tab').forEach(b=>{
-    const isMorn=b.textContent.includes('Morning');
-    b.classList.toggle('on',(tab==='morning')===isMorn);
-    b.classList.toggle('nt',tab==='night'&&!isMorn&&b.classList.contains('on'));
-  });
-  renderStatsInner();
-}
-
-function renderStatsInner(){
-  const logs=S.get('logs',{});
-  const isNight=statsTab==='night';
-  const allDates=Object.keys(logs);
-  const completed=allDates.filter(d=>{
-    const log=logs[d]?.[statsTab]; if(!log||!log.steps) return false;
-    const emR=isNight?nEmergReq(log.dayType||'workout'):mEmergReq();
-    const req=log.mode==='emergency'?emR:(isNight?nReq(log.dayType||'workout'):mReq(log.dayType||'standard'));
-    return req.length>0&&req.every(s=>log.steps[s.id]?.completed);
-  }).length;
-  const total=allDates.length;
-  const rate=total?Math.round(completed/total*100):0;
-  const streak=streaks[statsTab];
-  const ac=isNight?'nc':'ac';
-  const DL=['S','M','T','W','T','F','S'];
-  let wg='<div class="week-grid">';
-  for(let i=6;i>=0;i--){
-    const d=new Date(); d.setDate(d.getDate()-i);
-    const ds=dateStr(d);
-    const isToday=i===0;
-    const log=logs[ds]?.[statsTab];
-    let done=false;
-    if(log&&log.steps){
-      const emR=isNight?nEmergReq(log.dayType||'workout'):mEmergReq();
-      const req=log.mode==='emergency'?emR:(isNight?nReq(log.dayType||'workout'):mReq(log.dayType||'standard'));
-      done=req.length>0&&req.every(s=>log.steps[s.id]?.completed);
+  const WB = wins();
+  const winSection = k => {
+    const t = typeOf(k), rs = rows.filter(r => r.w === k), st = WIN_STYLE[k];
+    const nominalEnd = wake + WB[k].to, lastTaskEnd = rs.length ? Math.max(...rs.map(r => r.end)) : nominalEnd;
+    const isNowW = NM >= wake + WB[k].from && NM < Math.max(nominalEnd, lastTaskEnd), started = NM >= wake + WB[k].from;
+    let html = '<div class="tlhead" data-k="' + k + '" data-c="' + st.c + '" data-f="' + (started ? 1 : 0) + '" style="--dot:' + st.c + '"><span class="tlspacer"></span><span class="tldot" style="color:' + onColor(st.c) + '">' + iconMarkup(st.i) + '</span><div class="tlheadtext"><b>' + esc(WB[k].name) + '</b><span class="tlmeta">' + (isNowW ? 'Now, ' : '') + range(wake + WB[k].from, wake + WB[k].to) + '</span></div></div>';
+    if (k !== 'sleep' && k !== 'wind'){
+      const bypassColor = started ? st.c : 'var(--graydot)';
+      const modeKeys = Object.keys(MODE_LABEL).filter(m => !(k === 'wmz' && m === 'school'));
+      html += '<div class="modeWrap"><div class="mode" style="box-shadow:0 0 0 4px var(--bg),0 0 0 7px ' + bypassColor + '" role="group" aria-label="Where you are during ' + esc(WB[k].name) + '">' + modeKeys.map(m => '<button data-w="' + k + '" data-m="' + m + '"' + (t === m ? ' class="on"' : '') + '>' + MODE_LABEL[m] + '</button>').join('') + '</div></div>';
     }
-    const dc=done?(isNight?' nd':' md'):'';
-    const tc=isToday?(isNight?' ntd':' td'):'';
-    wg+=`<div class="wd"><div class="wd-lbl">${DL[d.getDay()]}</div><div class="wd-dot${dc}${tc}">${d.getDate()}</div></div>`;
+    if (k === 'sleep' || k === 'wind' || t){
+      html += rs.length ? gapRows(rs) : '<p class="wn">No tasks yet.</p>';
+      if (editing) html += '<button class="add" data-l="' + (k === 'sleep' ? 'pre' : k === 'wind' ? 'night' : t) + '" data-w="' + k + '">+ Add task</button>';
+    } else html += '<p class="wn">Choose where you are for this stretch and its tasks appear here.</p>';
+    if (editing) html += '<button class="add" data-eb="' + k + '">Edit block</button>';
+    return html;
+  };
+  $('#tl').innerHTML = '<div class="tlwrap">' + Object.keys(WIN).map(winSection).join('') + '</div>';
+  buildSpine();
+  $('#awayBtn').style.display = '';
+  $('#awayBtn').classList.toggle('on', !!day.away);
+  $('#awayBtn').textContent = day.away ? 'Away day: on' : 'Away day'; $('#awayBtn').setAttribute('aria-pressed', !!day.away);
+  $('#awayHint').textContent = day.away ? 'Today is set as an Away day. Tasks below are just suggestions, so a note here is often all you need. Tap Away day again to undo.' : '';
+  if (isToday) drawNowBanner(rows); else $('#nowBanner').classList.remove('show');
+}
+
+$('#wake').addEventListener('change', e => {
+  if (!e.target.value) return;
+  const [h, m] = e.target.value.split(':').map(Number);
+  wake = h*60 + m; saveDay(); render();
+});
+$('#reset').addEventListener('click', () => { wake = DEF_WAKE; saveDay(); render(); });
+$('#reset').setAttribute('aria-label', 'Reset wake time to ' + fmt(DEF_WAKE).join(' '));
+$('#sleep').addEventListener('change', e => {
+  if (!/^cap[SH]$/.test(e.target.id) || !e.target.value) return;
+  const [h, m] = e.target.value.split(':').map(Number), mins = h * 60 + m;
+  const nx = { soft: CAP.soft, hard: CAP.hard }; nx[e.target.id === 'capS' ? 'soft' : 'hard'] = mins;
+  if (mins >= 18 * 60 && nx.soft < nx.hard){ CAP.soft = nx.soft; CAP.hard = nx.hard; store.set('caps', { soft:CAP.soft, hard:CAP.hard }); }
+  render();
+});
+$('#awayBtn').addEventListener('click', () => {
+  day.away = !day.away;
+  if (day.away){ day.prevTypes = { ...day.types }; Object.keys(WIN).forEach(k => { if (k !== 'sleep' && k !== 'wind') day.types[k] = 'away'; }); }
+  else { day.types = day.prevTypes || {}; delete day.prevTypes; }
+  saveDay(); render();
+});
+$('#tl').addEventListener('click', e => {
+  const mb = e.target.closest('.mode button');
+  if (mb){ pickType(mb.dataset.w, mb.dataset.m); return; }
+  if (lpFired){ lpFired = false; return; }
+  const nb = e.target.closest('.noteBtn');
+  if (nb){ noteEditing = nb.dataset.nid; render(); return; }
+  if (e.target.closest('.ncancel')){ noteEditing = null; render(); return; }
+  const ns = e.target.closest('.nsave');
+  if (ns){
+    const id = ns.dataset.nid, txt = e.target.closest('.noteEdit').querySelector('.ntxt').value.trim();
+    setNote(id, txt);
+    noteEditing = null; render(); return;
   }
-  wg+='</div>';
-  document.getElementById('stats-inner').innerHTML=`
-    <div class="stats-grid">
-      <div class="sc"><div class="sc-lbl">Current Streak</div><div class="sc-val ${ac}">${streak.current}</div><div class="sc-sub">days in a row</div></div>
-      <div class="sc"><div class="sc-lbl">Best Streak</div><div class="sc-val">${streak.best}</div><div class="sc-sub">personal best</div></div>
-      <div class="sc"><div class="sc-lbl">Completion Rate</div><div class="sc-val${rate>=80?' gc':''}">${rate}%</div><div class="sc-sub">${completed} of ${total} days</div></div>
-      <div class="sc"><div class="sc-lbl">Total Done</div><div class="sc-val">${completed}</div><div class="sc-sub">full routines</div></div>
-      <div class="sc wide"><div class="sc-lbl">Last 7 Days</div>${wg}</div>
-    </div>`;
+  const ad = e.target.closest('.add');
+  if (ad){
+    if (ad.dataset.eb) openBlockEd(ad.dataset.eb);
+    else openEd(ad.dataset.l, null, ad.dataset.w);
+    return;
+  }
+  const sb = e.target.closest('.stepsBtn');
+  if (sb){ openStepsSheet(sb.dataset.sid); return; }
+  const row = e.target.closest('.tlrow'); if (!row) return;
+  if (editing){ openEd(row.dataset.l, row.dataset.id); return; }
+  const chk = e.target.closest('.tlcheck');
+  if (chk){
+    if (row.dataset.locked === '1') return;
+    const key = row.dataset.id, i = done.ids.indexOf(key);
+    if (i === -1) done.ids.push(key); else done.ids.splice(i, 1);
+    saveDay(); render(); return;
+  }
+  openTaskSheet(row.dataset.l, row.dataset.id);
+});
+// ============================================================
+// NOW BANNER, CHIME, CLOCK
+// ============================================================
+let lastNowId = undefined;
+function chime(){
+  try{
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = 'sine'; o.frequency.value = 880;
+    g.gain.setValueAtTime(0.0001, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.2, ctx.currentTime + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.6);
+    o.connect(g); g.connect(ctx.destination);
+    o.start(); o.stop(ctx.currentTime + 0.6);
+  }catch{}
 }
-
-// ═══════════════════════════════════════
-// STRETCH EDITOR
-// ═══════════════════════════════════════
-function renderStretchEditor(){
-  const stretches=getStretches();
-  const list=document.getElementById('stretch-list');
-  list.innerHTML=stretches.map((s,i)=>`
-    <div class="stretch-row">
-      <input class="stretch-input" value="${esc(s)}"
-        onblur="updateStretch(${i},this.value)"
-        onkeydown="if(event.key==='Enter')this.blur()">
-      <button class="stretch-del" onclick="deleteStretch(${i})" title="Remove">×</button>
-    </div>`).join('');
+function drawNowBanner(rows){
+  const NM = nowM(), cur = rows.find(r => r.use > 0 && r.fixed === undefined && !r.sug && NM >= r.start && NM < r.end);
+  if (lastNowId === undefined) lastNowId = cur ? cur.id : null;
+  else if ((cur ? cur.id : null) !== lastNowId){ lastNowId = cur ? cur.id : null; chime(); }
+  const b = $('#nowBanner');
+  if (!cur){ b.classList.remove('show'); return; }
+  const st = WIN_STYLE[cur.w] || WIN_STYLE.climb1, left = cur.end - NM;
+  $('#nb-i').innerHTML = iconMarkup(cur.icon || st.i);
+  { const nt = 'Now: ' + cur.t; if ($('#nb-t').textContent !== nt) $('#nb-t').textContent = nt; }
+  $('#nb-s').textContent = (left <= 1 ? 'less than a minute left' : left + ' min left');
+  b.classList.add('show');
 }
-
-function addStretch(){
-  const stretches=getStretches();
-  stretches.push('New stretch');
-  saveStretches(stretches);
-  renderStretchEditor();
-  // Focus last input
-  setTimeout(()=>{
-    const inputs=document.querySelectorAll('.stretch-input');
-    const last=inputs[inputs.length-1];
-    if(last){last.select();last.focus();}
-  },50);
-}
-
-function deleteStretch(i){
-  const stretches=getStretches();
-  if(stretches.length<=1) return; // keep at least one
-  stretches.splice(i,1);
-  saveStretches(stretches);
-  renderStretchEditor();
-}
-
-function updateStretch(i,val){
-  const stretches=getStretches();
-  stretches[i]=val.trim()||stretches[i];
-  saveStretches(stretches);
-  renderStretchEditor();
-}
-
-// ═══════════════════════════════════════
-// EXPORT / IMPORT
-// ═══════════════════════════════════════
+function drawClock(){ $('#clk').textContent = fmt(nowM()).join(' '); }
+drawClock(); setInterval(drawClock, 15000);
+setInterval(() => { if (viewDate === todayStr() && !document.querySelector('.hday[open]') && noteEditing === null && !/^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement || {}).tagName || '')) draw(); }, 20000);
+$('#dnote').value = day.note || '';
+$('#dnote').addEventListener('input', e => { day.note = e.target.value; saveDay(); });
+// ============================================================
+// IMPORT / EXPORT / RESET
+// ============================================================
 function exportData(){
-  const data={
-    app:'Yotei', version:'1.5',
-    exportedAt:new Date().toISOString(),
-    logs:S.get('logs',{}),
-    streak:S.get('streak',{}),
-    theme:S.get('theme','dark'),
-    m_stretches:S.get('m_stretches',null),
-  };
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url;
-  a.download=`yotei-backup-${todayStr()}.json`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  const o = {};
+  for (let i = 0; i < localStorage.length; i++){
+    const k = localStorage.key(i);
+    if (k && k.startsWith('yotei_v2_')) o[k] = localStorage.getItem(k);
+  }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify({ app:'yotei', v:2, data:o })], { type:'application/json' }));
+  a.download = 'yotei-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+  document.body.appendChild(a); a.click(); a.remove(); store.set('lastBackup', Date.now()); updateBackupInfo();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
 }
-
-function triggerImport(){
-  document.getElementById('import-file').click();
-}
-
 function importData(file){
-  if(!file) return;
-  const reader=new FileReader();
-  reader.onload=e=>{
+  const r = new FileReader();
+  r.onload = () => {
+    let j = null;
+    try{ j = JSON.parse(r.result); }catch{}
+    const P = 'yotei_v2_';
+    const ok = j && j.app === 'yotei' && j.data && typeof j.data === 'object' && Object.keys(j.data).length &&
+      Object.entries(j.data).every(([k, v]) => {
+        if (!k.startsWith(P) || typeof v !== 'string') return false;
+        try{
+          const p = JSON.parse(v);
+          if (k === P + 'blocks') return p && typeof p === 'object' && Object.values(p).every(a => Array.isArray(a) && a.every(b => b && typeof b === 'object'));
+          return true;
+        }catch{ return false; }
+      });
+    if (!ok){ alert('That file is not a valid Yotei backup. Nothing was changed.'); return; }
+    if (!confirm('Replace everything in Yotei with this backup?')) return;
+    const old = {};
+    for (let i = 0; i < localStorage.length; i++){ const k = localStorage.key(i); if (k && k.startsWith(P)) old[k] = localStorage.getItem(k); }
     try{
-      const data=JSON.parse(e.target.result);
-      if(!data.logs) throw new Error('Invalid backup');
-      if(!confirm('This will replace all current data. Continue?')) return;
-      if(data.logs)        S.set('logs',data.logs);
-      if(data.streak)      S.set('streak',data.streak);
-      if(data.theme)       S.set('theme',data.theme);
-      if(data.m_stretches) S.set('m_stretches',data.m_stretches);
-      location.reload();
-    } catch(err){
-      alert('Could not read backup file. Make sure it\'s a valid Yotei export.');
+      Object.keys(old).forEach(k => localStorage.removeItem(k));
+      Object.keys(j.data).forEach(k => localStorage.setItem(k, j.data[k]));
+    }catch{
+      try{ Object.keys(j.data).forEach(k => localStorage.removeItem(k)); Object.keys(old).forEach(k => localStorage.setItem(k, old[k])); }catch{}
+      alert('Import failed, possibly because storage is full. Your previous data was restored.');
+      return;
     }
+    location.reload();
   };
-  reader.readAsText(file);
-  // Reset input so same file can be re-imported if needed
-  document.getElementById('import-file').value='';
+  r.readAsText(file);
 }
-
-// ═══════════════════════════════════════
-// SETTINGS
-// ═══════════════════════════════════════
-function openSettings(){
-  document.getElementById('settings-overlay').classList.add('open');
-  document.getElementById('theme-toggle').classList.toggle('on',document.getElementById('app').classList.contains('light'));
-  renderStretchEditor();
-}
-function closeSettings(){ document.getElementById('settings-overlay').classList.remove('open'); }
-function toggleTheme(){
-  const light=document.getElementById('app').classList.toggle('light');
-  document.getElementById('theme-toggle').classList.toggle('on',light);
-  S.set('theme',light?'light':'dark');
-}
-
-// ═══════════════════════════════════════
-// DATE-CHANGE DETECTION
-// ═══════════════════════════════════════
-document.addEventListener('visibilitychange',()=>{
-  if(document.visibilityState!=='visible') return;
-  const newDate=todayStr();
-  if(newDate!==TODAY){
-    maybeSleepAutoComplete();
-    initLog();
-    const s2=S.get('streak');
-    if(s2) streaks=s2;
-    calcStreaks();
-    if(curView==='home') renderHome();
-    else if(curView==='routine') renderRoutine();
-    else if(curView==='stats') renderStats();
+$('#rst').addEventListener('click', () => { if (confirm('Reset every task and block to the built-in defaults?')){ try{ localStorage.removeItem('yotei_v2_blocks'); localStorage.removeItem('yotei_v2_wins'); }catch{} render(); } });
+$('#exp').onclick = exportData;
+$('#imp').onclick = () => $('#impf').click();
+$('#impf').onchange = e => { const f = e.target.files[0]; if (f) importData(f); e.target.value = ''; };
+let lastToday = todayStr();
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && todayStr() !== lastToday){ lastToday = todayStr(); goDate(lastToday); }
+});
+$('#tl').addEventListener('toggle', e => {
+  const d = e.target;
+  if (d.dataset && d.dataset.k){ openState[d.dataset.k] = d.open; store.set('open', openState); }
+}, true);
+const openPicker = () => { const p = $('#datePick'); try{ if (p.showPicker) p.showPicker(); else p.click(); }catch{} };
+$('#dateBtn').addEventListener('click', openPicker);
+$('#datePick').addEventListener('click', openPicker);
+$('#todayBtn').addEventListener('click', () => goDate(todayStr()));
+$('#datePick').addEventListener('change', e => {
+  if (!e.target.value) return;
+  const [y, mo, dd] = e.target.value.split('-').map(Number);
+  goDate(new Date(y, mo - 1, dd).toDateString());
+});
+// ============================================================
+// GESTURES — long-press to edit, swipe on the week strip
+// ============================================================
+let lpTimer = null, lpFired = false, lpX = 0, lpY = 0;
+function lpClear(){ clearTimeout(lpTimer); lpTimer = null; }
+$('#tl').addEventListener('pointerdown', e => {
+  if (e.pointerType === 'mouse' && e.button !== 0) return;
+  const row = e.target.closest('.tlrow'), head = e.target.closest('.tlhead');
+  if (!row && !head) return;
+  lpFired = false; lpX = e.clientX; lpY = e.clientY;
+  lpTimer = setTimeout(() => {
+    lpFired = true;
+    if (navigator.vibrate) navigator.vibrate(12);
+    if (row) openEd(row.dataset.l, row.dataset.id); else openBlockEd(head.dataset.k);
+  }, 480);
+});
+$('#tl').addEventListener('pointermove', e => { if (lpTimer && (Math.abs(e.clientX - lpX) > 10 || Math.abs(e.clientY - lpY) > 10)) lpClear(); });
+['pointerup', 'pointercancel'].forEach(ev => document.addEventListener(ev, () => { lpClear(); setTimeout(() => { lpFired = false; }, 50); }));
+$('#tl').addEventListener('contextmenu', e => { if (e.target.closest('.tlrow, .tlhead')) e.preventDefault(); });
+let swX = null, swY = null, swFired = false;
+$('#weekstrip').addEventListener('pointerdown', e => { swX = e.clientX; swY = e.clientY; swFired = false; });
+$('#weekstrip').addEventListener('pointerup', e => {
+  if (swX === null) return;
+  const dx = e.clientX - swX, dy = e.clientY - swY;
+  swX = null;
+  if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)){
+    swFired = true;
+    const d = new Date(viewDate); d.setDate(d.getDate() + (dx < 0 ? 7 : -7));
+    goDate(d.toDateString());
   }
 });
-
-// ═══════════════════════════════════════
-// PWA — SERVICE WORKER
-// ═══════════════════════════════════════
-if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js')
-      .then(()=>console.log('Yotei SW registered'))
-      .catch(err=>console.warn('Yotei SW failed:',err));
-  });
-}
-
-// ═══════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════
-(function init(){
-  if(S.get('theme')==='light') document.getElementById('app').classList.add('light');
-  migrateOldLogs();
-  initLog();
-  const saved=S.get('streak');
-  if(saved) streaks=saved;
-  maybeSleepAutoComplete();
-  calcStreaks();
-  updateHeader('home');
-  renderHome();
+$('#weekstrip').addEventListener('click', e => {
+  if (swFired){ swFired = false; return; }
+  const b = e.target.closest('.wd'); if (!b) return;
+  goDate(b.dataset.d);
+});
+// ============================================================
+// TABS & INIT
+// ============================================================
+$('#tl').addEventListener('keydown', e => {
+  const sb = e.target.closest && e.target.closest('.stepsBtn');
+  if (sb && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); e.stopPropagation(); openStepsSheet(sb.dataset.sid); }
+});
+// ============================================================
+// ABOUT & CHANGELOG (Settings tab)
+// To ship a release: add an entry at the TOP of CHANGELOG, bump
+// APP_VERSION, and bump the CACHE name in sw.js so devices update.
+// ============================================================
+const APP_VERSION = '2.0';
+const FEATURES = [
+  'A daily timeline built from your wake time, split into seven energy windows',
+  'Morning and Night Routines that shrink (optional, then flexible, then core) to fit',
+  'Home, School and Away modes for each window of the day',
+  'Every day is usable: plan upcoming days and update past ones',
+  'Tasks with colors, icons, subtasks, notes, fixed times and weekday rules',
+  'Edit, reorder, duplicate or delete tasks and blocks (long-press to edit)',
+  'Editable sleep caps with a short-sleep warning',
+  'History and trends for the last 90 days',
+  'Backup and restore, installable and works offline'
+];
+const LIMITS = [
+  'Your data lives in this browser only, so export a backup now and then',
+  'Past days are rebuilt from your current task list, so they can differ from how that day originally looked',
+  'Fonts need one online load before they work offline'
+];
+const CHANGELOG = [
+  { v:'2.0', date:'Oct 2026',
+    added:['Night Routine, same every night and shrinks to finish before lights-out', 'Plan and edit any day, past or upcoming, with a Back to today button', 'Installable offline app: manifest, service worker and icons', 'Editable sleep caps with a warning under 7 h', 'Mark done button in the task sheet', 'Backup reminder and persistent storage request', 'Task notes in History', 'About and Changelog in Settings'],
+    changed:['Wind-Down is now the Night Routine', 'Settings merged into one tab', 'Away day moved next to wake time', 'Window notes reworded as tendencies, not facts', 'Larger tap targets and text, better icon contrast, screen reader labels'],
+    fixed:['Notes no longer vanish during the auto refresh', 'Away day now undoes cleanly', 'Most consistent tasks ranks by completion', 'Long-press no longer eats the next tap', 'Import validates the file and restores on failure', 'Sleep caps layout in Settings', 'Date picker on iOS'] },
+  { v:'1.0', date:'Initial', added:['Daily timeline, Home, School and Away modes, history and trends'] }
+];
+(function(){
+  const list = a => a.map(x => '<li>' + esc(x) + '</li>').join('');
+  const sect = (n, a) => a && a.length ? '<h3>' + n + '</h3><ul>' + list(a) + '</ul>' : '';
+  $('#tab-settings').insertAdjacentHTML('beforeend',
+    '<div class="sleep about"><h2>About Yotei <span class="ver">v' + APP_VERSION + '</span></h2><p>Status: stable. Everything below is working.</p><h3 style="font:700 12px Manrope,sans-serif;color:var(--text)">Features</h3><ul>' + list(FEATURES) + '</ul><h3 style="font:700 12px Manrope,sans-serif;color:var(--text)">Good to know</h3><ul>' + list(LIMITS) + '</ul></div>' +
+    '<div class="sleep about"><h2>Changelog</h2>' + CHANGELOG.map((c, i) =>
+      '<details class="clog"' + (i === 0 ? ' open' : '') + '><summary>v' + esc(c.v) + '<span>' + esc(c.date) + '</span></summary>' + sect('Added', c.added) + sect('Changed', c.changed) + sect('Fixed', c.fixed) + '</details>').join('') + '</div>');
 })();
+const tabs = document.querySelectorAll('.tabs button');
+function setTab(t){
+  tabs.forEach(b => { b.classList.toggle('on', b.dataset.tab === t); b.setAttribute('aria-selected', b.dataset.tab === t); b.setAttribute('aria-controls', 'tab-' + b.dataset.tab); });
+  document.querySelectorAll('.tab').forEach(sec => { sec.hidden = sec.id !== 'tab-' + t; sec.setAttribute('role', 'tabpanel'); });
+  store.set('tab', t);
+}
+tabs.forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
+setTab(store.get('tab', 'home'));
+migrateFields();
+migrateV2();
+render();
+function migrateV2(){
+  if (store.get('schemaV', 0) >= 2) return;
+  const bl = store.get('blocks', null);
+  if (bl){
+    const moved = [];
+    for (const l of ['home', 'school', 'away']){
+      if (!Array.isArray(bl[l])) continue;
+      bl[l] = bl[l].filter(b => { if (b && b.w === 'wind'){ if (l === 'home' && !b.sug) moved.push(b); return false; } return true; });
+    }
+    if (!bl.night && moved.length) bl.night = moved.map(b => { const c = { ...b }; delete c.w; if (!c.p){ c.p = 'flex'; c.m = Math.min(c.d, 5); } return c; });
+    store.set('blocks', bl);
+  }
+  store.set('schemaV', 2);
+}
+function updateBackupInfo(){
+  const t = store.get('lastBackup', 0), d = t ? Math.floor((Date.now() - t) / 864e5) : null;
+  const needs = (d === null || d >= 14) && Object.keys(store.get('hist', {})).length >= 3;
+  $('#bkInfo').textContent = d === null ? 'No backup yet.' : d === 0 ? 'Last backup: today.' : 'Last backup: ' + d + ' day' + (d === 1 ? '' : 's') + ' ago.';
+  $('#settingsBtn').classList.toggle('nudge', needs);
+  $('#settingsBtn').setAttribute('aria-label', needs ? 'Settings, backup suggested' : 'Settings');
+}
+updateBackupInfo();
+if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+
+if ('serviceWorker' in navigator){
+  window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(() => {}); });
+}
 </script>
 </body>
 </html>
