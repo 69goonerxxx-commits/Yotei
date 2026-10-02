@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="manifest" href="./manifest.webmanifest">
+<script>try{var D=document.documentElement,T=JSON.parse(localStorage.getItem('yotei_v2_theme')||'"dark"');if(T==='auto')T=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';D.dataset.theme=T;D.dataset.text=JSON.parse(localStorage.getItem('yotei_v2_text')||'"normal"')}catch(e){}</script>
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icons/icon-180.png">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -205,6 +206,43 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 .sleep #sleep{display:block;padding:0}
 #todayBtn{width:100%;margin-bottom:12px}
 .capRow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:4px 0}
+:root[data-theme=light]{--bg:#f3f5fb;--card:#fff;--card2:#eaeef7;--line:#d8dfec;--accent:#2563eb;--text:#101a2e;--sec:#5a6881;--graydot:#cbd3e1;--shadow:0 6px 18px rgba(30,50,90,.12)}
+:root[data-theme=light] .tabs{background:rgba(255,255,255,.82)}
+:root[data-theme=light] body{background:radial-gradient(ellipse 520px 280px at 50% -40px, rgba(37,99,235,.10), transparent 70%), var(--bg)}
+:root[data-theme=light] input,:root[data-theme=light] textarea,:root[data-theme=light] select{color-scheme:light!important}
+html[data-text=large] body{zoom:1.15}
+.hday summary::after{content:'';position:absolute;right:14px;top:50%;width:8px;height:8px;border:solid var(--sec);border-width:0 2px 2px 0;transform:translateY(-70%) rotate(45deg);transition:transform .15s}
+.hday[open] summary::after{transform:translateY(-30%) rotate(-135deg)}
+#liveBtn{width:100%;margin-bottom:12px}
+body.snap .mode{opacity:.45;pointer-events:none}
+.ef select{width:100%;font:600 15px 'Manrope',sans-serif;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:9px 10px}
+.inbox .inRow{gap:8px}
+#inT{flex:1;min-width:0;font:500 14px 'Manrope',sans-serif;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:9px 10px}
+.inbox button:not(.add){font:600 13px 'Manrope',sans-serif;background:var(--card2);color:var(--text);border:1px solid var(--line);border-radius:9px;padding:8px 12px}
+.inbox .inItem{border-top:1px solid var(--line);align-items:center;gap:8px;margin-top:6px}
+.inbox .inItem>span:first-child{flex:1;text-align:left;font-size:14px}
+.inbox .inAct{display:flex;gap:6px;padding:0}
+.inbox .add{margin-top:10px}
+#iconPick{max-height:85vh;overflow:auto}
+.runBtn{display:block;margin:-4px 0 10px auto;padding:8px 14px;font-size:13px;position:relative;z-index:1}
+#runDlg .rStep{color:var(--sec);font-size:13px}
+#runDlg .rIcon{width:64px;height:64px;margin:6px auto;border-radius:50%;background:var(--accent);color:#06121f;display:flex;align-items:center;justify-content:center}
+#runDlg .rIcon svg{width:30px;height:30px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#runDlg .rTime{font:700 56px 'Syne',sans-serif;letter-spacing:1px;font-variant-numeric:tabular-nums;margin:6px 0}
+#runDlg .rTime.over{color:var(--warn,#f59e0b)}
+#runDlg .rBar{height:8px;border-radius:8px;background:var(--bg);overflow:hidden;margin-bottom:12px}
+#runDlg .rBar i{display:block;height:100%;width:0;background:var(--accent);transition:width .25s linear}
+#runDlg h2{margin:0}
+.sleep .wk{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;padding:0 0 8px}
+.wcol{background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--sec);font:600 11px 'Manrope',sans-serif;padding:0;cursor:pointer}
+.wcol.today{color:var(--accent)}
+.wbar{width:100%;height:84px;background:var(--bg);border-radius:8px;display:flex;align-items:flex-end;overflow:hidden}
+.wbar i{display:block;width:100%;background:var(--accent);border-radius:8px}
+.wkNav button{background:none;border:1px solid var(--line);color:var(--text);border-radius:10px;width:40px;height:36px;font-size:16px}
+.wkNav button:disabled{opacity:.3}
+.streak{font-size:15px;color:var(--text)}
+.streak b{font:700 28px 'Syne',sans-serif;color:var(--accent);margin-right:6px}
+.tplRow{margin:10px 0 2px;font-size:13px;color:var(--text);font-weight:700}
 .about p,.about ul{font-size:13px;color:var(--sec)}
 .about ul{margin:4px 0 8px 18px}
 .about li{margin:2px 0}
@@ -213,9 +251,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 .clog summary{cursor:pointer;padding:10px 0;font:700 14px 'Syne',sans-serif}
 .clog summary span{font:500 12px 'Manrope',sans-serif;color:var(--sec);margin-left:6px}
 .clog h3{font:700 12px 'Manrope',sans-serif;color:var(--text);margin:8px 0 2px}
-.capRow label{flex:0 0 64px;white-space:nowrap}
+.capRow label{flex:0 0 84px;white-space:nowrap}
 .capRow i{margin-left:auto;white-space:nowrap;font-size:13px}
-.capRow input{font:600 15px 'Manrope',sans-serif;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:7px 10px;color-scheme:dark}
+.capRow select,.capRow input{font:600 15px 'Manrope',sans-serif;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:7px 10px;color-scheme:dark}
 </style>
 </head>
 <body>
@@ -225,6 +263,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     <div class="dateWrap"><button class="date" id="dateBtn"><span id="date"></span></button><input type="date" id="datePick" aria-label="Pick a date" tabindex="-1"></div>
     <div class="weekstrip" id="weekstrip"></div>
     <button class="add" id="todayBtn" hidden>Back to today</button>
+    <button class="add" id="liveBtn" hidden>Rebuild this day from my current routines</button>
     
     
     <div class="wakerow">
@@ -268,6 +307,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 </div>
 <dialog id="ed"><div class="ef">
   <label>Task<div class="taskRow"><input id="e_t"><button type="button" id="e_iconBtn" class="iconPreview" aria-label="Choose icon">+</button><input type="hidden" id="e_icon"></div></label>
+  <label id="e_wrap" style="display:none">Window<select id="e_w"></select></label>
   <label>Color<div class="chips" id="e_colors"></div><input type="hidden" id="e_color"></label>
   <label>Kind<select id="e_k">
     <option value="core">Core (shrinks last)</option><option value="flex">Flexible (shrinks first)</option><option value="opt">Optional (cut first)</option>
@@ -287,6 +327,25 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   <div id="ip_groups"></div>
   <label>Custom<input id="e_icon_custom" placeholder="Type a key like 'book', or paste an emoji" maxlength="16"></label>
   <div class="ea"><button id="ip_x">Cancel</button><button id="ip_ok">Use custom</button></div>
+</div></dialog>
+<dialog id="setupDlg"><div class="ef">
+  <h2>Welcome to Yotei</h2>
+  <p class="wn">A few quick choices to get started. You can change all of it later in Settings.</p>
+  <label>When do you usually wake up?<input type="time" id="su_wake" value="05:00"></label>
+  <label>Energy rhythm<select id="su_chrono"><option value="early">Early bird</option><option value="normal" selected>In between</option><option value="late">Night owl</option></select></label>
+  <label>Morning routine<select id="su_pre"></select></label>
+  <label>Night routine<select id="su_night"></select></label>
+  <div class="ea"><button id="su_skip">Skip</button><button id="su_ok">Start</button></div>
+</div></dialog>
+<dialog id="runDlg"><div class="ef" style="text-align:center">
+  <div class="rStep" id="runStep"></div>
+  <div class="rIcon" id="runIcon"></div>
+  <h2 id="runTitle"></h2>
+  <p class="wn" id="runDet"></p>
+  <div class="rTime" id="runTime">0:00</div>
+  <div class="rBar"><i id="runBar"></i></div>
+  <div class="ea"><button id="runPause">Pause</button><button id="runPlus">+1 min</button><button id="runSkip">Skip</button></div>
+  <div class="ea"><button id="runClose">Close</button><button id="runDone">Done</button></div>
 </div></dialog>
 <dialog id="taskSheet"><div class="ef">
   <div class="tsHead"><span class="tsIcon" id="ts_icon"></span><div><b id="ts_title"></b><div class="wn" id="ts_time"></div></div></div>
@@ -416,6 +475,16 @@ const MODES = {
     { id:'at1', t:'Get some rest at this window', d:0, sug:true, w:'trough' },
     { id:'at2', t:'Eat lunch, then walk right after if possible', d:0, sug:true, w:'trough' },
     { id:'at3', t:'Socialize, if possible', d:0, sug:true, w:'trough' },
+    { id:'ac1', t:'Take a walk and see where you are', d:0, sug:true, w:'climb2' },
+    { id:'ac2', t:'Work out, or stretch if you cannot', d:0, sug:true, w:'climb2' },
+    { id:'ac3', t:'Do something creative: draw, write or plan', d:0, sug:true, w:'climb2' },
+    { id:'ac4', t:'Catch up with someone, in person or by call', d:0, sug:true, w:'climb2' },
+    { id:'ac5', t:'Read or watch something you have been saving', d:0, sug:true, w:'climb2' },
+    { id:'am1', t:'Watch the sunset if you can', d:0, sug:true, w:'wmz' },
+    { id:'am2', t:'Eat dinner without a screen', d:0, sug:true, w:'wmz' },
+    { id:'am3', t:'Take a short walk after dinner', d:0, sug:true, w:'wmz' },
+    { id:'am4', t:'Write a short journal entry', d:0, sug:true, w:'wmz' },
+    { id:'am5', t:'Prepare for tomorrow: clothes, bag, charger', d:0, sug:true, w:'wmz' },
   ] }
 };
 
@@ -450,7 +519,7 @@ function planFor(ds){
   if (plans[ds]) return plans[ds];
   const L = store.get('day', null), D = store.get('done', null);
   if (L && L.date === ds && L.types) return { w:defWake(), d:(D && D.date === ds ? D.ids : []), t:L.types, a:!!L.away, n:L.note || '' };
-  const h = store.get('hist', {})[ds];
+  const h = new Date(ds) < new Date(todayStr()) ? store.get('hist', {})[ds] : null;
   if (h) return { w:h.wake, d:(h.rows || []).filter(r => r.done).map(r => r.id), t:h.types || {}, a:false, n:h.note || '' };
   return null;
 }
@@ -458,11 +527,11 @@ function loadDay(ds){
   const p = planFor(ds);
   wake = p ? p.w : defWake();
   done = { date:ds, ids:p ? (p.d || []).slice() : [] };
-  day = { date:ds, types:p ? { ...(p.t || {}) } : {}, away:p ? !!p.a : false, note:p ? (p.n || '') : '' };
+  day = { date:ds, types:p ? { ...(p.t || {}) } : {}, away:p ? !!p.a : false, note:p ? (p.n || '') : '', oneoffs:p && p.o ? p.o.slice() : [], live:!!(p && p.l) };
   if (p && p.p) day.prevTypes = p.p;
 }
 function saveDay(){
-  plans[viewDate] = { w:wake, d:done.ids, t:day.types, a:!!day.away, n:day.note || '', p:day.prevTypes || null };
+  plans[viewDate] = { w:wake, d:done.ids, t:day.types, a:!!day.away, n:day.note || '', p:day.prevTypes || null, o:day.oneoffs || [], l:!!day.live };
   const ks = Object.keys(plans).sort((a, b) => new Date(a) - new Date(b));
   while (ks.length > 200) delete plans[ks.shift()];
   store.set('plans', plans);
@@ -507,7 +576,8 @@ const toVal = m => String(Math.floor(m/60)).padStart(2,'0') + ':' + String(m%60)
 function build(dow){
   dow = dow === undefined ? new Date().getDay() : dow;
   const m1 = typeOf('climb1'), M = MODES[m1 || 'none'], onDay = b => !b.days || b.days.includes(dow);
-  const pre = getBlocks('pre').filter(onDay).map(b => ({ ...b, use:b.d }));
+  const ooF = k => (day.oneoffs || []).filter(x => (x.w || 'climb1') === k).map(x => ({ ...x, md:'oo', post:true }));
+  const pre = getBlocks('pre').filter(onDay).concat(ooF('sleep')).map(b => ({ ...b, use:b.d }));
   let msg = M.msg || '', tone = 'ok';
   if (M.deadline !== null){
     const avail = M.deadline - wake, total = pre.reduce((a, b) => a + b.d, 0), leave = fmt(M.deadline).join(' ');
@@ -531,13 +601,13 @@ function build(dow){
   let t = wake; const rows = [];
   for (const b of pre){
     const bf = b.p === 'buf';
-    rows.push({ ...b, w:bf ? 'climb1' : 'sleep', md:bf ? m1 : undefined, start:t, end:t + b.use }); t += b.use;
+    rows.push({ ...b, w:bf ? 'climb1' : 'sleep', md:bf ? m1 : b.md, start:t, end:t + b.use }); t += b.use;
   }
   if (M.deadline !== null) t = Math.max(t, M.deadline);
   for (const k of Object.keys(WIN)){
-    const night = k === 'wind', tp = night ? 'night' : typeOf(k);
-    if (k === 'sleep' || !tp) continue;
-    let list = getBlocks(tp).filter(x => (night || (x.w || 'climb1') === k) && onDay(x));
+    const night = k === 'wind', tp = night ? 'night' : typeOf(k), oo = ooF(k);
+    if (k === 'sleep' || (!tp && !oo.length)) continue;
+    let list = (tp ? getBlocks(tp).filter(x => (night || (x.w || 'climb1') === k) && onDay(x)) : []).concat(oo);
     if (night){
       t = Math.max(t, wake + wins().wind.from);
       list = list.map(b => ({ ...b, use:b.d }));
@@ -552,8 +622,8 @@ function build(dow){
       const at = b.fixed !== undefined ? b.fixed : t;
       if (b.fixed !== undefined && t > b.fixed){ tone = 'bad'; msg = 'The routine runs past the ' + fmt(b.fixed).join(' ') + ' start. Trim it or wake earlier.'; }
       let use = b.use !== undefined ? b.use : b.d, capCut = false;
-      if (b.fixed === undefined && !b.sug && ((at >= CAP.hard && b.p !== 'core') || (at >= CAP.soft && b.p === 'opt'))){ use = 0; capCut = true; }
-      rows.push({ ...b, w:k, use, capCut, start:at, end:at + use, post:true, md:tp });
+      if (b.fixed === undefined && !b.sug && b.md !== 'oo' && ((at >= CAP.hard && b.p !== 'core') || (at >= CAP.soft && b.p === 'opt'))){ use = 0; capCut = true; }
+      rows.push({ ...b, w:k, use, capCut, start:at, end:at + use, post:true, md:b.md === 'oo' ? 'oo' : tp });
       t = Math.max(t, at + use);
     }
   }
@@ -566,6 +636,7 @@ const nowM = () => { const d = new Date(); return d.getHours()*60 + d.getMinutes
 // ============================================================
 const MODE_LABEL = { home:'Home', school:'School', away:'Away' };
 const ICON_RULES = [
+  [/sunrise/i, 'sunrise'], [/sunset/i, 'sunset'], [/stargaz/i, 'star'], [/meditat|mindful|breath/i, 'leaf'], [/laundry/i, 'shirt'], [/go to bed|bedtime|lights out/i, 'bed'],
   [/wake|rise|shine/i, 'sun'], [/stretch|yoga/i, 'stretch'], [/shower|bath/i, 'shower'],
   [/bike|bicycle|cycle/i, 'bike'], [/school|class|lecture|homework|subject|study|review|flashcard|reading assignment/i, 'book'],
   [/walk|stroll/i, 'walk'], [/breakfast|lunch|dinner|\beat\b|meal/i, 'meal'],
@@ -573,27 +644,125 @@ const ICON_RULES = [
   [/nap|sleep/i, 'moon'], [/rest\b|buffer|free time|open slot/i, 'hourglass'],
   [/chore|clean|laundry|tidy/i, 'broom'], [/game|gaming/i, 'game'], [/music/i, 'music'],
   [/work.?out|exercise|gym|training/i, 'dumbbell'], [/friend|social|hangout|catch up|host/i, 'people'],
-  [/draw|art|creative/i, 'palette'], [/plan\b/i, 'clipboard']
+  [/draw|art|creative/i, 'palette'], [/plan\b/i, 'clipboard'],
+  [/grass|outside|outdoor|nature|park/i, 'tree'], [/coffee|\btea\b|water|hydrate/i, 'cup'], [/focus|goal|priority/i, 'target'],
+  [/code|laptop|computer|project/i, 'laptop'], [/call|phone|text|message|doomscroll|scroll/i, 'chat'], [/mail/i, 'mail'],
+  [/shop|grocer|errand/i, 'cart'], [/movie|watch|\btv\b|film/i, 'tv'], [/podcast|listen|headphone/i, 'headphones'],
+  [/photo|camera/i, 'camera'], [/exam|test|quiz/i, 'cap'], [/health|doctor|vitamin|medic/i, 'heart'],
+  [/hike|climb|mountain/i, 'mountain'], [/idea|brainstorm|think/i, 'bulb'], [/pet\b|dog|\bcat\b/i, 'paw'],
+  [/gift|birthday/i, 'gift'], [/timer|pomodoro|deadline/i, 'clock'], [/calendar|schedule/i, 'calendar'],
+  [/\brun\b|jog|sprint/i, 'run'], [/swim|\bpool\b/i, 'swim'], [/basketball|football|soccer|sport/i, 'ball'], [/calorie|streak/i, 'flame'],
+  [/cook|bake|kitchen|soup/i, 'pot'], [/cake|dessert|snack/i, 'cake'], [/search|research|look up/i, 'search'],
+  [/password|\block\b|secure/i, 'lock'], [/\bwin\b|achiev|trophy|award/i, 'trophy'], [/chart|stats|budget|finance/i, 'chart'],
+  [/todo|to-do|checklist/i, 'checklist'], [/\bnote\b|memo/i, 'note'], [/folder|file\b|organi[sz]e/i, 'folder'],
+  [/record|voice|interview|\bmic\b/i, 'mic'], [/travel|trip|flight|plane/i, 'plane'], [/drive|\bcar\b|commute/i, 'car'],
+  [/\bbus\b|train|transit/i, 'bus'], [/\bpay\b|bill|money|rent/i, 'wallet'], [/fix|repair|tool/i, 'wrench'],
+  [/wifi|internet|online/i, 'wifi'], [/charge|battery/i, 'battery'], [/trash|garbage|recycle/i, 'trash'],
+  [/plant|garden|flower/i, 'plant'], [/relax|couch|sofa|lounge/i, 'sofa'], [/\bpack\b|luggage|\bbag\b/i, 'bag'],
+  [/package|parcel|deliver|\bbox\b/i, 'box'], [/appointment|errand|location/i, 'pin'], [/haircut|scissor/i, 'scissors'],
+  [/rain|storm/i, 'rain'], [/snow|winter/i, 'snow'], [/alarm/i, 'alarm'], [/camp\b|tent/i, 'tent'], [/fresh air|breeze/i, 'wind'],
+  [/world|news|language/i, 'globe'], [/milestone/i, 'flag'], [/\bkey\b/i, 'key'], [/energy/i, 'bolt'], [/happy|smile|laugh/i, 'smile']
 ];
 function guessIcon(t){ for (const [re, ic] of ICON_RULES){ if (re.test(t)) return ic; } return null; }
 const ICONS = {
+  run:'<svg viewBox="0 0 24 24"><circle cx="15" cy="4" r="2"/><path d="M14 7l-3 6M14 7l-5 2-2 4M14 7l4 2 2-1M11 13l4 3-1 5M11 13l-3 4-3 1"/></svg>',
+  swim:'<svg viewBox="0 0 24 24"><circle cx="16" cy="6" r="2"/><path d="M4 12l5-3 5 2M2 17c2 1.5 4 1.5 6 0s4-1.5 6 0 4 1.5 6 0M2 21c2 1.5 4 1.5 6 0s4-1.5 6 0 4 1.5 6 0"/></svg>',
+  ball:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5.5 5.5c4 3 4 10 0 13M18.5 5.5c-4 3-4 10 0 13"/></svg>',
+  flame:'<svg viewBox="0 0 24 24"><path d="M12 22c4 0 7-2.5 7-7 0-3-2-5-3-7-1 2-2 3-3 3 0-3-1-6-4-8 0 4-4 6-4 12 0 4.5 3 7 7 7z"/></svg>',
+  bolt:'<svg viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>',
+  drop:'<svg viewBox="0 0 24 24"><path d="M12 3c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11z"/></svg>',
+  flower:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.5"/><path d="M12 9.5C10 6 10 3 12 3s2 3 0 6.5zM14.5 12C18 10 21 10 21 12s-3 2-6.5 0zM12 14.5C14 18 14 21 12 21s-2-3 0-6.5zM9.5 12C6 14 3 14 3 12s3-2 6.5 0z"/></svg>',
+  wind:'<svg viewBox="0 0 24 24"><path d="M3 8h10a3 3 0 1 0-3-3M3 12h15a3 3 0 1 1-3 3M3 16h7a2.5 2.5 0 1 1-2.5 2.5"/></svg>',
+  sunrise:'<svg viewBox="0 0 24 24"><path d="M3 19h18M6 19a6 6 0 0 1 12 0M12 3v5M9 6l3-3 3 3M4.5 12l2 2M19.5 12l-2 2"/></svg>',
+  steps:'<svg viewBox="0 0 24 24"><path d="M8 3c2 0 3.2 2 3.2 4.5S10 11 8 11 4.8 10 4.8 7.5 6 3 8 3zM6 14h4v1.5a2 2 0 0 1-4 0zM16 9c2 0 3.2 2 3.2 4.5S18 17 16 17s-3.2-1-3.2-3.5S14 9 16 9zM14 20h4v.5a2 2 0 0 1-4 0z"/></svg>',
+  bowl:'<svg viewBox="0 0 24 24"><path d="M3 11h18a9 9 0 0 1-9 9 9 9 0 0 1-9-9zM9 7c0-1.5 1-1.5 1-3M14 7c0-1.5 1-1.5 1-3"/></svg>',
+  cake:'<svg viewBox="0 0 24 24"><path d="M4 21h16v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2zM4 16c3 2 5-2 8 0s5-2 8 0M12 11V8M12 5c-1-1-1-2 0-3 1 1 1 2 0 3z"/></svg>',
+  bottle:'<svg viewBox="0 0 24 24"><path d="M10 2h4v4l2 3v12a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V9l2-3zM8 13h8"/></svg>',
+  carrot:'<svg viewBox="0 0 24 24"><path d="M4 20c5-1 9-5 11-11l-2-2c-6 2-10 6-11 11z"/><path d="M15 9c1-3 3-4 6-4-1 3-2 5-5 6M13 7c-1-3-3-4-5-4 0 3 1 5 3 6"/></svg>',
+  cookie:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 9h.01M14 8h.01M10 14h.01M15 14h.01M12 17h.01"/></svg>',
+  egg:'<svg viewBox="0 0 24 24"><path d="M12 3c4 0 7 6 7 11a7 7 0 0 1-14 0c0-5 3-11 7-11z"/></svg>',
+  search:'<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5"/></svg>',
+  lock:'<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
+  key:'<svg viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3M14 9l2 2"/></svg>',
+  bookmark:'<svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/></svg>',
+  flag:'<svg viewBox="0 0 24 24"><path d="M5 21V4M5 4h13l-3 4 3 4H5"/></svg>',
+  trophy:'<svg viewBox="0 0 24 24"><path d="M7 4h10v6a5 5 0 0 1-10 0zM7 6H4v2a3 3 0 0 0 3 3M17 6h3v2a3 3 0 0 1-3 3M12 15v4M8 21h8"/></svg>',
+  chart:'<svg viewBox="0 0 24 24"><path d="M4 20V4M4 20h16M8 16v-4M12 16V8M16 16v-6"/></svg>',
+  checklist:'<svg viewBox="0 0 24 24"><path d="M4 6l2 2 3-3M4 14l2 2 3-3M12 7h8M12 15h8"/></svg>',
+  note:'<svg viewBox="0 0 24 24"><path d="M5 3h14v12l-5 6H5z"/><path d="M14 21v-6h5M8 8h8M8 12h5"/></svg>',
+  folder:'<svg viewBox="0 0 24 24"><path d="M3 6a1 1 0 0 1 1-1h5l2 2h9a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/></svg>',
+  mic:'<svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M9 21h6"/></svg>',
+  globe:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>',
+  rain:'<svg viewBox="0 0 24 24"><path d="M7 15a4 4 0 1 1 .5-7.97A5 5 0 0 1 17 9a3.5 3.5 0 0 1 0 6zM8 18l-1 3M12 18l-1 3M16 18l-1 3"/></svg>',
+  snow:'<svg viewBox="0 0 24 24"><path d="M12 2v20M3.3 7l17.4 10M3.3 17L20.7 7M9.5 4l2.5 2 2.5-2M9.5 20l2.5-2 2.5 2"/></svg>',
+  umbrella:'<svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 18 0zM12 12v7a2 2 0 0 0 4 0"/></svg>',
+  zzz:'<svg viewBox="0 0 24 24"><path d="M4 5h6L4 12h6M13 12h5l-5 6h5"/></svg>',
+  lamp:'<svg viewBox="0 0 24 24"><path d="M8 3h8l3 9H5zM12 12v7M8 21h8"/></svg>',
+  alarm:'<svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="7.5"/><path d="M12 9v4l2.5 2M4 5l3-2M20 5l-3-2"/></svg>',
+  tent:'<svg viewBox="0 0 24 24"><path d="M12 4L2 20h20zM9 20l3-6 3 6"/></svg>',
+  sparkles:'<svg viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg>',
+  car:'<svg viewBox="0 0 24 24"><path d="M5 17H3v-5l2-5h14l2 5v5h-2"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/><path d="M3 12h18M9.5 17h5"/></svg>',
+  bus:'<svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="15" rx="2"/><path d="M4 11h16M8 18v2M16 18v2M8 15h.01M16 15h.01"/></svg>',
+  plane:'<svg viewBox="0 0 24 24"><path d="M21 3L3 10l7 3 3 7z"/><path d="M10 13l11-10"/></svg>',
+  wallet:'<svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h13v4M3 7v11a2 2 0 0 0 2 2h15V9H5a2 2 0 0 1-2-2zM16 14.5h.01"/></svg>',
+  dollar:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 6v12M15 9c0-1.2-1.3-2-3-2s-3 .8-3 2 1.3 2 3 2 3 .8 3 2-1.3 2-3 2-3-.8-3-2"/></svg>',
+  wrench:'<svg viewBox="0 0 24 24"><path d="M20 7.5a5 5 0 0 1-6.7 4.7L7 18.5a2.1 2.1 0 0 1-3-3l6.3-6.3A5 5 0 0 1 16.5 3L13.5 6l.5 2.5 2.5.5z"/></svg>',
+  wifi:'<svg viewBox="0 0 24 24"><path d="M2 9a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0M12 20h.01"/></svg>',
+  battery:'<svg viewBox="0 0 24 24"><rect x="2" y="7" width="17" height="10" rx="2"/><path d="M22 11v2M6 10v4M10 10v4"/></svg>',
+  trash:'<svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 14h10l1-14M10 11v6M14 11v6"/></svg>',
+  sofa:'<svg viewBox="0 0 24 24"><path d="M5 11V8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3M3 13a2 2 0 0 1 4 0v2h10v-2a2 2 0 0 1 4 0v5H3zM6 18v2M18 18v2"/></svg>',
+  plant:'<svg viewBox="0 0 24 24"><path d="M8 21h8l1-6H7zM12 15V9M12 11c-4 0-5-3-5-6 4 0 5 2 5 6zM12 12c0-3 2-5 5-5 0 3-2 5-5 5z"/></svg>',
+  smile:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14c1 2 2.5 3 4 3s3-1 4-3M9 9.5h.01M15 9.5h.01"/></svg>',
+  thumb:'<svg viewBox="0 0 24 24"><path d="M7 11v10H4V11zM7 11l4-8c2 0 3 1 3 3l-1 4h6a2 2 0 0 1 2 2l-1.5 7a2 2 0 0 1-2 1.5H7"/></svg>',
+  pot:'<svg viewBox="0 0 24 24"><path d="M4 10h16v7a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3zM2 10h2M20 10h2M8 6c0-1.5 1-1.5 1-3M13 6c0-1.5 1-1.5 1-3"/></svg>',
+  bag:'<svg viewBox="0 0 24 24"><path d="M5 8h14l1 13H4zM9 8V6a3 3 0 0 1 6 0v2"/></svg>',
+  box:'<svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4v10l-9 4-9-4zM3 7l9 4 9-4M12 11v10"/></svg>',
+  pin:'<svg viewBox="0 0 24 24"><path d="M12 22s7-7 7-12a7 7 0 0 0-14 0c0 5 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>',
+  scissors:'<svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5"/><circle cx="6" cy="18" r="2.5"/><path d="M8 7.5l13 11M8 16.5L21 5.5"/></svg>',
+  heart:'<svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21.2l7.7-7.7 1.1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg>',
+  mountain:'<svg viewBox="0 0 24 24"><path d="M3 20l6-11 4 6 3-4 5 9z"/></svg>',
+  leaf:'<svg viewBox="0 0 24 24"><path d="M5 19c0-9 5-14 15-14 0 10-5 15-14 15"/><path d="M5 19l8-8"/></svg>',
+  tree:'<svg viewBox="0 0 24 24"><path d="M12 22v-6M12 3l5 7h-3l4 6H6l4-6H7z"/></svg>',
+  coffee:'<svg viewBox="0 0 24 24"><path d="M4 8h12v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5zM16 10h2a2 2 0 0 1 0 4h-2M7 2v3M11 2v3"/></svg>',
+  apple:'<svg viewBox="0 0 24 24"><path d="M12 7c-2-2-6-1-6 4 0 4 2 9 4 9 1 0 1-.5 2-.5s1 .5 2 .5c2 0 4-5 4-9 0-5-4-6-6-4z"/><path d="M12 7c0-2 1-3 3-4"/></svg>',
+  cup:'<svg viewBox="0 0 24 24"><path d="M6 3h12l-1.5 17a1 1 0 0 1-1 1h-8a1 1 0 0 1-1-1z"/><path d="M7 9h10"/></svg>',
+  bulb:'<svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg>',
+  target:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>',
+  laptop:'<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 20h20"/></svg>',
+  cap:'<svg viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11.5V16c0 1.5 3 3 6 3s6-1.5 6-3v-4.5"/></svg>',
+  clock:'<svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg>',
+  calendar:'<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>',
+  headphones:'<svg viewBox="0 0 24 24"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4" height="7" rx="1.5"/><rect x="17" y="14" width="4" height="7" rx="1.5"/></svg>',
+  camera:'<svg viewBox="0 0 24 24"><path d="M3 8h4l2-3h6l2 3h4v11H3z"/><circle cx="12" cy="13" r="3.5"/></svg>',
+  bed:'<svg viewBox="0 0 24 24"><path d="M3 19V6M3 15h18v4M21 15v-3a3 3 0 0 0-3-3h-7v6"/><circle cx="7" cy="11" r="1.5"/></svg>',
+  star:'<svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>',
+  bell:'<svg viewBox="0 0 24 24"><path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 21h4"/></svg>',
+  home:'<svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>',
+  shirt:'<svg viewBox="0 0 24 24"><path d="M8 3L3 7l3 3 2-1v12h8V9l2 1 3-3-5-4a4 4 0 0 1-8 0z"/></svg>',
+  cart:'<svg viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.5 12h11L21 7H6"/></svg>',
+  chat:'<svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg>',
+  mail:'<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>',
+  tv:'<svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 3l4 4 4-4"/></svg>',
+  phone:'<svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>',
+  paw:'<svg viewBox="0 0 24 24"><circle cx="7" cy="10" r="1.8"/><circle cx="11" cy="6" r="1.8"/><circle cx="16" cy="7" r="1.8"/><circle cx="19" cy="12" r="1.8"/><path d="M8 18c0-3 3-5 5-5s5 2 4 5c-1 2-3 1-4.5 1S8 20 8 18z"/></svg>',
+  gift:'<svg viewBox="0 0 24 24"><rect x="3" y="9" width="18" height="4"/><path d="M5 13v8h14v-8M12 9v12M12 9c-3 0-5-1-4-3s4 0 4 3zM12 9c3 0 5-1 4-3s-4 0-4 3z"/></svg>',
   sun:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>',
   cloud:'<svg viewBox="0 0 24 24"><path d="M7 18a4 4 0 1 1 .5-7.97A5 5 0 0 1 17 12a3.5 3.5 0 0 1-.5 6.93z"/></svg>',
   sunset:'<svg viewBox="0 0 24 24"><path d="M3 18h18M5 18a7 7 0 0 1 14 0"/><path d="M12 6v4M8.5 8.5l1.5 1.5M15.5 8.5l-1.5 1.5"/></svg>',
   moon:'<svg viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/></svg>',
   book:'<svg viewBox="0 0 24 24"><path d="M4 5c2-1 5-1 8 1 3-2 6-2 8-1v13c-2-1-5-1-8 1-3-2-6-2-8-1z"/></svg>',
-  stretch:'<svg viewBox="0 0 24 24"><circle cx="12" cy="4" r="2"/><path d="M12 6v7M8 9l4-2 4 2M8 20l4-7 4 7"/></svg>',
-  shower:'<svg viewBox="0 0 24 24"><path d="M12 2C9 6 6 10 6 14a6 6 0 0 0 12 0c0-4-3-8-6-12z"/></svg>',
-  bike:'<svg viewBox="0 0 24 24"><circle cx="6" cy="17" r="3.5"/><circle cx="18" cy="17" r="3.5"/><path d="M6 17l4-9h4l3 9M10 8h3M9 17h9"/></svg>',
+  stretch:'<svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><path d="M12 8v6M7 3l5 5 5-5M9 21l3-7 3 7"/></svg>',
+  shower:'<svg viewBox="0 0 24 24"><path d="M5 9a7 7 0 0 1 14 0z"/><path d="M8 13v2M12 13v3M16 13v2M8 19v1M12 20v1M16 19v1"/></svg>',
+  bike:'<svg viewBox="0 0 24 24"><circle cx="5.5" cy="16" r="3.5"/><circle cx="18.5" cy="16" r="3.5"/><path d="M5.5 16L9 8h5l4.5 8M9 8l3.5 8M7.5 6h3"/></svg>',
   walk:'<svg viewBox="0 0 24 24"><circle cx="13" cy="4" r="2"/><path d="M11 6l-3 4 3 2v9M11 10l4 1 3-3M8 21l3-6 3 2 3 4"/></svg>',
   meal:'<svg viewBox="0 0 24 24"><path d="M6 2v8M4 2v5a2 2 0 0 0 4 0V2M8 10v12M18 2c-2 0-3 2-3 5s1 4 3 4M18 2v18"/></svg>',
   pen:'<svg viewBox="0 0 24 24"><path d="M4 20l1-4L16 5l3 3L8 19l-4 1z"/></svg>',
   hourglass:'<svg viewBox="0 0 24 24"><path d="M6 3h12M6 21h12M7 3c0 5 5 6 5 9s-5 4-5 9M17 3c0 5-5 6-5 9s5 4 5 9"/></svg>',
-  broom:'<svg viewBox="0 0 24 24"><path d="M19 5L9 15M5 19l3-7 4 4-7 3zM14 4l6 6"/></svg>',
-  game:'<svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="9" rx="4"/><path d="M8 11v3M6.5 12.5h3M16 12h.01M18 10h.01"/></svg>',
+  broom:'<svg viewBox="0 0 24 24"><path d="M20 4l-7 7"/><path d="M9 10l5 5-3 5H4c1-4 2-7 5-10z"/></svg>',
+  game:'<svg viewBox="0 0 24 24"><rect x="2.5" y="8" width="19" height="10" rx="5"/><path d="M7 11v4M5 13h4M15.5 12.5h.01M18 14.5h.01"/></svg>',
   music:'<svg viewBox="0 0 24 24"><path d="M9 18V5l10-2v13"/><circle cx="7" cy="18" r="2.5"/><circle cx="17" cy="16" r="2.5"/></svg>',
   dumbbell:'<svg viewBox="0 0 24 24"><path d="M4 12h16M4 9v6M20 9v6M7 7v10M17 7v10"/></svg>',
-  people:'<svg viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M2 20c0-3 3-5 6-5s6 2 6 5M12 20c0-3 3-5 6-5"/></svg>',
+  people:'<svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.2c3 0 5 2 5 5.3"/></svg>',
   palette:'<svg viewBox="0 0 24 24"><path d="M12 3a9 8 0 1 0 0 16c1.5 0 2-1 2-2s-.5-1.5-.5-2 1-1 2-1h1a4 4 0 0 0 4-4c0-4-4-7-8.5-7z"/><circle cx="8" cy="11" r="1"/><circle cx="12" cy="8" r="1"/><circle cx="16" cy="11" r="1"/></svg>',
   clipboard:'<svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1M8 11h8M8 15h5"/></svg>'
 };
@@ -681,11 +850,12 @@ function dotFillHtml(iconKey, color, frac){
   return '<svg class="dotwave" viewBox="0 0 64 64" preserveAspectRatio="none" aria-hidden="true">' + fill + '</svg>' + iconHtml;
 }
 const ICON_GROUPS = {
-  'Body & movement':['sun','stretch','shower','walk','bike','dumbbell'],
-  'Food':['meal'],
-  'Mind & focus':['book','pen','clipboard','palette'],
-  'Rest & time':['moon','hourglass','cloud','sunset'],
-  'Home & social':['broom','people','game','music']
+  'Body & movement':['sun','sunrise','stretch','shower','walk','run','swim','bike','dumbbell','ball','steps','heart','flame','bolt','drop','wind','flower','leaf','tree','mountain'],
+  'Food & drink':['meal','bowl','pot','coffee','cup','bottle','apple','carrot','egg','cookie','cake'],
+  'Mind & focus':['book','pen','note','clipboard','checklist','palette','bulb','target','flag','trophy','laptop','cap','search','chart','folder','bookmark','globe','lock','key','mic','headphones','camera','clock','calendar'],
+  'Rest & time':['moon','star','sparkles','bed','zzz','hourglass','alarm','bell','lamp','cloud','sunset','rain','snow','umbrella','tent'],
+  'Home & social':['home','sofa','plant','broom','shirt','trash','people','smile','thumb','chat','mail','phone','tv','game','music','paw','gift'],
+  'Travel & errands':['car','bus','plane','pin','bag','box','cart','wallet','dollar','wrench','scissors','wifi','battery']
 };
 const COLOR_SWATCHES = ['#f59e0b','#fbbf24','#facc15','#38bdf8','#fb7185','#a78bfa','#6366f1','#22c55e','#f97316','#eef2ff'];
 const WIN_STYLE = {
@@ -698,13 +868,16 @@ function typeOf(k){
   return null;
 }
 function schedule(){
+  const sn = snapRows();
+  if (sn) return { rows:sn, msg:'This is the saved record of this day. Times and modes are locked.', tone:'ok' };
   return build(new Date(viewDate).getDay());
 }
 function pickType(k, m){ day.types[k] = m; saveDay(); render(); }
 // ============================================================
 // WINDOW-BLOCK EDITOR (the settings dialog for one window)
 // ============================================================
-const wins = () => { const o = store.get('wins', {}), r = {}; for (const k in WIN) r[k] = { ...WIN[k], ...(o[k] || {}) }; return r; };
+const CHRONO = { early:-30, normal:0, late:45 };
+const wins = () => { const o = store.get('wins', {}), sh = CHRONO[store.get('chrono', 'normal')] || 0, r = {}; for (const k in WIN) r[k] = { ...WIN[k], ...(k === 'sleep' ? {} : { from:WIN[k].from + sh, to:WIN[k].to + sh }), ...(o[k] || {}) }; return r; };
 let ebk = null;
 function openBlockEd(k){
   const W = wins()[k]; ebk = k;
@@ -745,10 +918,11 @@ function migrateFields(){
   store.set('schemaV', 1);
 }
 function getBlocks(l){
+  if (l === 'oo') return day.oneoffs || [];
   const b = store.get('blocks', null);
   return b && b[l] ? b[l] : (l === 'pre' ? PRE : l === 'night' ? NIGHT : MODES[l].post);
 }
-function setBlocks(l, arr){ const b = store.get('blocks', null) || {}; b[l] = arr; store.set('blocks', b); }
+function setBlocks(l, arr){ if (l === 'oo'){ day.oneoffs = arr; saveDay(); return; } const b = store.get('blocks', null) || {}; b[l] = arr; store.set('blocks', b); }
 // ============================================================
 // TASK EDITOR (the main add/edit-task dialog, #ed)
 // ============================================================
@@ -759,6 +933,8 @@ function openEd(l, id, w){
   const b = id ? getBlocks(l).find(x => x.id === id) : null;
   if (id && !b) return;
   cur = { l, id, w };
+  $('#e_wrap').style.display = l === 'oo' ? '' : 'none';
+  if (l === 'oo'){ const WB = wins(); $('#e_w').innerHTML = Object.keys(WB).map(k => '<option value="' + k + '">' + esc(WB[k].name) + '</option>').join(''); $('#e_w').value = (b && b.w) || w || 'climb1'; }
   const x = b || { t:'', d:20 };
   $('#e_t').value = x.t;
   $('#e_k').value = x.sug ? 'sug' : x.fixed !== undefined ? 'fixedtime' : x.p === 'open' ? 'open' : ['core','flex','opt'].includes(x.p) ? x.p : 'fixedlen';
@@ -913,7 +1089,7 @@ $('#e_ok').onclick = () => {
   const t = $('#e_t').value.trim(); if (!t) return;
   const k = $('#e_k').value, arr = clone(getBlocks(cur.l)), old = arr.find(x => x.id === cur.id);
   const b = { id: old ? old.id : 'u' + Date.now().toString(36), t };
-  if (old && old.w) b.w = old.w; else if (cur.l !== 'pre' && cur.l !== 'night') b.w = cur.w || 'climb1';
+  if (cur.l === 'oo') b.w = $('#e_w').value || 'climb1'; else if (old && old.w) b.w = old.w; else if (cur.l !== 'pre' && cur.l !== 'night') b.w = cur.w || 'climb1';
   const details = $('#e_details').value.trim(); if (details) b.details = details;
   const color = $('#e_color').value.trim(); if (color) b.color = color;
   const icon = $('#e_icon').value.trim(); if (icon) b.icon = icon;
@@ -930,6 +1106,7 @@ $('#e_ok').onclick = () => {
     else if (k !== 'fixedlen'){ b.p = k; b.m = Math.min(d, isNaN(m) ? d : m); }
   }
   if (old) arr[arr.indexOf(old)] = b; else arr.push(b);
+  if (cur.fromInbox) store.set('inbox', store.get('inbox', []).filter(x => x.id !== cur.fromInbox));
   setBlocks(cur.l, arr); $('#ed').close(); render();
 };
 $('#settingsBtn').addEventListener('click', () => setTab('settings'));
@@ -967,7 +1144,8 @@ function trendsHtml(){
   }));
   const top = Object.values(counts).filter(c => c.total >= 2).sort((a, b) => b.done / b.total - a.done / a.total || b.total - a.total).slice(0, 6)
     .map(c => '<div class="trow"><span class="tlab wide">' + esc(c.t) + '</span><div class="tbar"><div class="tfill" style="width:' + Math.round(c.done / c.total * 100) + '%"></div></div><span class="tpct">' + c.done + '/' + c.total + '</span></div>').join('');
-  return '<div class="sleep"><h2>Completion, last ' + days.length + ' days</h2>' + dayRows + '</div>' + (top ? '<div class="sleep"><h2>Most consistent tasks</h2>' + top + '</div>' : '');
+  const sk = streaks(H);
+  return '<div class="sleep"><h2>Streaks</h2><p class="streak"><b>' + sk.cur + '</b>day streak, best ' + sk.best + '</p><p class="wn">A day counts when you finish 70% or more of its tasks.</p></div>' + weekHtml(H) + energyHtml(H) + '<div class="sleep"><h2>Completion, last ' + days.length + ' day' + (days.length === 1 ? '' : 's') + '</h2>' + dayRows + '</div>' + (top ? '<div class="sleep"><h2>Most consistent tasks</h2>' + top + '</div>' : '');
 }
 function histHtml(){
   const H = store.get('hist', {});
@@ -991,6 +1169,7 @@ function drawNav(){
   $('#weekstrip').innerHTML = strip;
   $('#datePick').value = isoLocal(d);
   $('#todayBtn').hidden = viewDate === todayStr();
+  $('#liveBtn').hidden = !snapMode();
 }
 let lastSig = '';
 function saveHist(){
@@ -1016,6 +1195,8 @@ function saveHist(){
 function render(){
   drawNav();
   if (document.activeElement !== $('#dnote')) $('#dnote').value = day.note || '';
+  drawInbox();
+  document.body.classList.toggle('snap', snapMode()); $('#wake').disabled = snapMode(); $('#awayBtn').disabled = snapMode();
   draw();
   $('#trends').innerHTML = trendsHtml();
   $('#histbox').innerHTML = histHtml();
@@ -1090,7 +1271,8 @@ function draw(){
       const modeKeys = Object.keys(MODE_LABEL).filter(m => !(k === 'wmz' && m === 'school'));
       html += '<div class="modeWrap"><div class="mode" style="box-shadow:0 0 0 4px var(--bg),0 0 0 7px ' + bypassColor + '" role="group" aria-label="Where you are during ' + esc(WB[k].name) + '">' + modeKeys.map(m => '<button data-w="' + k + '" data-m="' + m + '"' + (t === m ? ' class="on"' : '') + '>' + MODE_LABEL[m] + '</button>').join('') + '</div></div>';
     }
-    if (k === 'sleep' || k === 'wind' || t){
+    if ((k === 'sleep' || k === 'wind') && isToday && rs.some(r => r.use > 0 && !r.sug && !done.ids.includes(r.id))) html += '<button class="add runBtn" data-run="' + k + '">Start ' + esc(WB[k].name.toLowerCase()) + '</button>';
+    if (k === 'sleep' || k === 'wind' || t || rs.length){
       html += rs.length ? gapRows(rs) : '<p class="wn">No tasks yet.</p>';
       if (editing) html += '<button class="add" data-l="' + (k === 'sleep' ? 'pre' : k === 'wind' ? 'night' : t) + '" data-w="' + k + '">+ Add task</button>';
     } else html += '<p class="wn">Choose where you are for this stretch and its tasks appear here.</p>';
@@ -1306,24 +1488,352 @@ $('#tl').addEventListener('keydown', e => {
 // To ship a release: add an entry at the TOP of CHANGELOG, bump
 // APP_VERSION, and bump the CACHE name in sw.js so devices update.
 // ============================================================
-const APP_VERSION = '2.0';
+// ============================================================
+// RUN MODE, STREAKS + WEEK VIEW, TEMPLATES, REMINDERS
+// ============================================================
+let run = null, runTimer = null, wakeLock = null;
+function runStart(k){
+  const q = schedule().rows.filter(r => r.w === k && r.use > 0 && !r.sug && !done.ids.includes(r.id));
+  if (!q.length) return;
+  run = { k, q, i:0, left:q[0].use * 60, paused:false, last:Date.now(), beeped:false };
+  runDraw(); $('#runDlg').showModal();
+  clearInterval(runTimer); runTimer = setInterval(runTick, 250);
+  try{ if (navigator.wakeLock) navigator.wakeLock.request('screen').then(l => { wakeLock = l; }).catch(() => {}); }catch{}
+}
+function runBeep(){
+  try{
+    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+    const A = new (window.AudioContext || window.webkitAudioContext)(), o = A.createOscillator(), g = A.createGain();
+    o.connect(g); g.connect(A.destination); o.frequency.value = 660; g.gain.value = .08; o.start();
+    setTimeout(() => { o.stop(); A.close(); }, 350);
+  }catch{}
+}
+function runDraw(){
+  const r = run.q[run.i], st = WIN_STYLE[run.k];
+  $('#runStep').textContent = 'Step ' + (run.i + 1) + ' of ' + run.q.length;
+  $('#runIcon').innerHTML = iconMarkup(r.icon || guessIcon(r.t) || st.i);
+  $('#runTitle').textContent = r.t;
+  $('#runDet').textContent = r.details || '';
+  $('#runPause').textContent = run.paused ? 'Resume' : 'Pause';
+  $('#runDone').textContent = run.i === run.q.length - 1 ? 'Finish' : 'Done';
+  runTick();
+}
+function runTick(){
+  if (!run) return;
+  const now = Date.now();
+  if (!run.paused) run.left -= (now - run.last) / 1000;
+  run.last = now;
+  const total = run.q[run.i].use * 60, over = run.left < 0, sec = Math.ceil(Math.abs(run.left));
+  $('#runTime').textContent = (over ? '+' : '') + Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0');
+  $('#runTime').classList.toggle('over', over);
+  $('#runBar').style.width = Math.max(0, Math.min(100, (1 - run.left / total) * 100)) + '%';
+  if (over && !run.beeped){ run.beeped = true; runBeep(); }
+}
+function runNext(mark){
+  const r = run.q[run.i];
+  if (mark && !done.ids.includes(r.id)){ done.ids.push(r.id); saveDay(); }
+  run.i++;
+  if (run.i >= run.q.length){ runEnd(); return; }
+  run.left = run.q[run.i].use * 60; run.beeped = false; run.last = Date.now(); runDraw();
+}
+function runEnd(){
+  clearInterval(runTimer); run = null;
+  try{ if (wakeLock) wakeLock.release(); }catch{}
+  wakeLock = null;
+  if ($('#runDlg').open) $('#runDlg').close();
+  render();
+}
+$('#runPause').onclick = () => { run.paused = !run.paused; run.last = Date.now(); runDraw(); };
+$('#runPlus').onclick = () => { run.left += 60; run.beeped = false; runTick(); };
+$('#runSkip').onclick = () => runNext(false);
+$('#runDone').onclick = () => runNext(true);
+$('#runClose').onclick = runEnd;
+$('#runDlg').addEventListener('close', () => { if (run) runEnd(); });
+$('#tl').addEventListener('click', e => {
+  const b = e.target.closest && e.target.closest('.runBtn');
+  if (b){ e.stopPropagation(); runStart(b.dataset.run); }
+}, true);
+
+let weekOff = 0;
+const dayPct = h => { const rs = (h.rows || []).filter(r => r.u > 0 && !r.sug); return rs.length ? rs.filter(r => r.done).length / rs.length : null; };
+function streaks(H){
+  const ok = d => H[d] && (dayPct(H[d]) || 0) >= .7;
+  const days = Object.keys(H).sort((a, b) => new Date(a) - new Date(b));
+  let best = 0, len = 0, prev = null;
+  days.forEach(d => {
+    if (ok(d)){ len = prev && Math.round((new Date(d) - prev) / 864e5) === 1 ? len + 1 : 1; prev = new Date(d); best = Math.max(best, len); }
+    else { len = 0; prev = null; }
+  });
+  let cur = 0; const c = new Date(todayStr());
+  if (!ok(c.toDateString())) c.setDate(c.getDate() - 1);
+  while (ok(c.toDateString())){ cur++; c.setDate(c.getDate() - 1); }
+  return { cur, best };
+}
+function weekHtml(H){
+  const base = new Date(mondayOf(todayStr())); base.setDate(base.getDate() + weekOff * 7);
+  let cols = '', sum = 0, cnt = 0;
+  for (let i = 0; i < 7; i++){
+    const d = new Date(base); d.setDate(base.getDate() + i);
+    const ds = d.toDateString(), p = H[ds] ? dayPct(H[ds]) : null, pc = p === null ? null : Math.round(p * 100);
+    if (pc !== null){ sum += pc; cnt++; }
+    cols += '<button class="wcol' + (ds === todayStr() ? ' today' : '') + '" data-d="' + ds + '"><span class="wbar"><i style="height:' + (pc || 0) + '%"></i></span><span>' + d.toLocaleDateString(undefined, { weekday:'short' }) + '</span><span>' + (pc === null ? '-' : pc + '%') + '</span></button>';
+  }
+  const end = new Date(base); end.setDate(base.getDate() + 6);
+  const f = x => x.toLocaleDateString(undefined, { month:'short', day:'numeric' });
+  return '<div class="sleep"><h2>' + (weekOff === 0 ? 'This week' : weekOff === -1 ? 'Last week' : 'Week view') + '</h2><div class="wkNav"><button data-wk="-1" aria-label="Previous week">&lsaquo;</button><span>' + f(base) + ' to ' + f(end) + '</span><button data-wk="1" aria-label="Next week"' + (weekOff >= 0 ? ' disabled' : '') + '>&rsaquo;</button></div><div class="wk">' + cols + '</div><p class="wn">' + (cnt ? 'Average ' + Math.round(sum / cnt) + '% over ' + cnt + ' tracked day' + (cnt === 1 ? '' : 's') + '. Tap a day to open it.' : 'No tracked days this week.') + '</p></div>';
+}
+$('#trends').addEventListener('click', e => {
+  const n = e.target.closest('[data-wk]');
+  if (n){ if (!n.disabled){ weekOff = Math.min(0, weekOff + Number(n.dataset.wk)); $('#trends').innerHTML = trendsHtml(); } return; }
+  const c = e.target.closest('.wcol');
+  if (c){ setTab('home'); goDate(c.dataset.d); }
+});
+
+const TPL = {
+  pre:{ label:'Morning routine', sets:{
+    'Gentle start':[['Wake up and make the bed',5,5,'core'],['Drink water and stretch',10,5,'core'],['Breakfast',20,10,'flex'],['Get dressed and ready',20,15,'core']],
+    'School rush':[['Wake up',3,3,'core'],['Get dressed',7,5,'core'],['Quick breakfast',10,5,'flex'],['Pack bag and check schedule',5,3,'flex']],
+    'Focus start':[['Wake up and make the bed',5,5,'core'],['Go outside for light',15,10,'core'],['Write the top 3 priorities',10,5,'core'],['Shower and get dressed',20,15,'core'],['Breakfast',15,5,'flex']] } },
+  night:{ label:'Night routine', sets:{
+    'Calm night':[['Tidy up',10,5,'flex'],['Shower',15,10,'core'],['Journal',10,5,'flex'],['Read',20,5,'opt'],['Lights-out prep',5,5,'core']],
+    'Quick night':[['Brush teeth and wash face',5,5,'core'],['Lay out clothes and pack bag',10,5,'flex'],['Phone on charger',2,2,'core']],
+    'Screen-free':[['Phone away',2,2,'core'],['Shower',15,10,'core'],['Read a paper book',20,5,'opt'],['Stretch',10,5,'flex'],['Meditation',10,5,'core']] } }
+};
+function tplApply(list, name){
+  const bl = store.get('blocks', null) || {};
+  bl[list] = TPL[list].sets[name].map((x, i) => ({ id:'t' + Date.now().toString(36) + i, t:x[0], d:x[1], m:x[2], p:x[3] }));
+  store.set('blocks', bl);
+}
+function applyTpl(list, name){
+  const min = TPL[list].sets[name].reduce((a, x) => a + x[1], 0);
+  if (!confirm('Replace your ' + TPL[list].label.toLowerCase() + ' with "' + name + '" (' + min + ' min)? Your current list for this routine will be overwritten.')) return;
+  tplApply(list, name); render();
+}
+function remCard(){
+  const R = store.get('rem', { on:false, lead:0 }), has = 'Notification' in window, perm = has ? Notification.permission : 'unsupported', on = R.on && perm === 'granted';
+  const state = !has ? 'Notifications are not available in this browser. On iPhone, add Yotei to your Home Screen first.' : perm === 'denied' ? 'Notifications are blocked. Allow them for this site in your browser settings.' : on ? 'Reminders are on.' : 'Reminders are off.';
+  return '<h2>Reminders</h2><p class="wn">' + state + '</p><p class="wn">They only fire while Yotei is open or running in the background, and phones may pause web apps. Keep Yotei open if timing matters.</p><div class="capRow"><label for="remLead">Remind me</label><select id="remLead">' + [[0, 'At start'], [5, '5 min before'], [10, '10 min before']].map(o => '<option value="' + o[0] + '"' + (R.lead === o[0] ? ' selected' : '') + '>' + o[1] + '</option>').join('') + '</select></div><div class="ea"><button id="remToggle">' + (on ? 'Turn off' : 'Turn on') + '</button><button id="remTest">Send test</button></div>';
+}
+async function notify(title, body, tag){
+  try{
+    const reg = await navigator.serviceWorker.getRegistration();
+    if (reg && reg.showNotification){ await reg.showNotification(title, { body, tag, icon:'icons/icon-192.png', badge:'icons/icon-192.png', vibrate:[120, 60, 120] }); return; }
+  }catch{}
+  try{ new Notification(title, { body, tag, icon:'icons/icon-192.png' }); }catch{}
+}
+function remCheck(){
+  const R = store.get('rem', { on:false, lead:0 });
+  if (!R.on || !('Notification' in window) || Notification.permission !== 'granted') return;
+  const ds = todayStr(), sv = { wake, day, done };
+  let rows = [], dn = [];
+  try{ loadDay(ds); rows = build(new Date().getDay()).rows; dn = done.ids.slice(); }
+  finally{ wake = sv.wake; day = sv.day; done = sv.done; }
+  const sent = store.get('remSent', null), S = sent && sent.d === ds ? sent : { d:ds, ids:[] }, nm = nowM();
+  let ch = false;
+  rows.filter(r => r.use > 0 && !r.sug && !dn.includes(r.id)).forEach(r => {
+    const key = r.id + '@' + r.start;
+    if (nm >= r.start - R.lead && nm < r.start + 3 && !S.ids.includes(key)){
+      S.ids.push(key); ch = true;
+      notify(R.lead ? r.t + ' in ' + R.lead + ' min' : 'Time for ' + r.t, range(r.start, r.end), key);
+    }
+  });
+  if (ch) store.set('remSent', S);
+}
+setInterval(remCheck, 15000);
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') remCheck(); });
+$('#tab-settings').insertAdjacentHTML('beforeend',
+  '<div class="sleep" id="remCard">' + remCard() + '</div>' +
+  '<div class="sleep"><h2>Routine templates</h2><p class="wn">Start from a ready-made routine, then edit it however you like.</p>' +
+  Object.keys(TPL).map(l => '<p class="tplRow">' + TPL[l].label + '</p><div class="ea">' + Object.keys(TPL[l].sets).map(n => '<button data-tpl="' + l + '|' + n + '">' + n + '</button>').join('') + '</div>').join('') + '</div>');
+$('#tab-settings').addEventListener('click', async e => {
+  const t = e.target.closest('button'); if (!t) return;
+  if (t.dataset.tpl){ const [l, n] = t.dataset.tpl.split('|'); applyTpl(l, n); return; }
+  if (t.id === 'remToggle'){
+    const R = store.get('rem', { on:false, lead:0 });
+    if (R.on) R.on = false;
+    else if ('Notification' in window){ const p = Notification.permission === 'granted' ? 'granted' : await Notification.requestPermission(); R.on = p === 'granted'; }
+    store.set('rem', R); $('#remCard').innerHTML = remCard();
+  }
+  if (t.id === 'remTest'){
+    if ('Notification' in window && Notification.permission === 'granted') notify('Yotei', 'Reminders are working.', 'test');
+    else alert('Turn on reminders first.');
+  }
+});
+$('#tab-settings').addEventListener('change', e => {
+  if (e.target.id !== 'remLead') return;
+  const R = store.get('rem', { on:false, lead:0 }); R.lead = Number(e.target.value); store.set('rem', R);
+});
+
+// ============================================================
+// ONE-OFF TASKS + INBOX, PAST-DAY RECORDS, ENERGY, CALENDAR IMPORT,
+// APPEARANCE, FIRST-RUN SETUP
+// ============================================================
+function snapMode(){ return new Date(viewDate) < new Date(todayStr()) && !day.live && !!store.get('hist', {})[viewDate]; }
+function snapRows(){
+  if (!snapMode()) return null;
+  return (store.get('hist', {})[viewDate].rows || []).map(r => ({ id:r.id, t:r.t, w:r.w, md:r.md || undefined, start:r.s, end:r.e, use:r.u, d:r.u, sug:!!r.sug, post:r.w !== 'sleep', p:'core', snap:true }));
+}
+$('#liveBtn').addEventListener('click', () => { day.live = true; saveDay(); render(); });
+
+function defaultWin(){
+  if (viewDate !== todayStr()) return 'climb1';
+  const WB = wins(), n = nowM() - wake;
+  for (const k of Object.keys(WB)) if (n >= WB[k].from && n < WB[k].to) return k;
+  return 'climb1';
+}
+$('#dnote').parentElement.insertAdjacentHTML('beforebegin', '<div class="sleep inbox" id="inboxCard"></div>');
+function drawInbox(){
+  const el = $('#inboxCard'); if (!el) return;
+  const keep = $('#inT') ? $('#inT').value : '', list = store.get('inbox', []);
+  el.innerHTML = '<h2>Inbox</h2><p class="wn">Capture a task now. Schedule it when you know when.</p><div class="inRow"><input id="inT" placeholder="Add a task" maxlength="80" aria-label="New inbox task"><button id="inAdd">Add</button></div>' +
+    list.map(x => '<div class="inItem"><span>' + esc(x.t) + '</span><span class="inAct"><button data-sch="' + x.id + '">Schedule</button><button data-rm="' + x.id + '" aria-label="Delete ' + esc(x.t) + '">&times;</button></span></div>').join('') +
+    '<button class="add" id="ooNew">New one-off task for this day</button>';
+  $('#inT').value = keep;
+}
+$('#inboxCard').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.id === 'inAdd'){
+    const v = $('#inT').value.trim(); if (!v) return;
+    const l = store.get('inbox', []); l.push({ id:'i' + Date.now().toString(36), t:v }); store.set('inbox', l);
+    $('#inT').value = ''; drawInbox();
+  } else if (b.dataset.rm){ store.set('inbox', store.get('inbox', []).filter(x => x.id !== b.dataset.rm)); drawInbox(); }
+  else if (b.dataset.sch){
+    const it = store.get('inbox', []).find(x => x.id === b.dataset.sch);
+    if (it){ openEd('oo', null, defaultWin()); $('#e_t').value = it.t; cur.fromInbox = it.id; }
+  } else if (b.id === 'ooNew') openEd('oo', null, defaultWin());
+});
+$('#inboxCard').addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.id === 'inT'){ e.preventDefault(); $('#inAdd').click(); } });
+
+function energyHtml(H){
+  const wr = {};
+  Object.values(H).forEach(h => (h.rows || []).forEach(r => { if (r.u <= 0 || r.sug || !r.w) return; const o = wr[r.w] || (wr[r.w] = { d:0, t:0 }); o.t++; if (r.done) o.d++; }));
+  const WB = wins(), ks = Object.keys(wr).filter(k => wr[k].t >= 5 && WB[k]).sort((a, b) => wr[b].d / wr[b].t - wr[a].d / wr[a].t);
+  if (ks.length < 2) return '';
+  const pc = k => Math.round(wr[k].d / wr[k].t * 100), best = ks[0], worst = ks[ks.length - 1];
+  return '<div class="sleep"><h2>Your energy, from your data</h2><p class="wn">You finish the most in ' + esc(WB[best].name) + ' (' + pc(best) + '%) and the least in ' + esc(WB[worst].name) + ' (' + pc(worst) + '%). Try putting your hardest tasks in your strongest window.</p>' +
+    ks.map(k => '<div class="trow"><span class="tlab wide">' + esc(WB[k].name) + '</span><div class="tbar"><div class="tfill" style="width:' + pc(k) + '%"></div></div><span class="tpct">' + pc(k) + '%</span></div>').join('') + '</div>';
+}
+
+// ---- calendar (.ics) import ----
+function icsDate(v){
+  const m = /^(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})?)?(Z)?$/.exec(v.trim()); if (!m) return null;
+  if (m[4] === undefined) return { allDay:true };
+  return { d: m[7] ? new Date(Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5])) : new Date(+m[1], +m[2] - 1, +m[3], +m[4], +m[5]) };
+}
+function parseICS(txt){
+  const L = txt.replace(/\r/g, '').replace(/\n[ \t]/g, '').split('\n'), ev = []; let c = null;
+  L.forEach(l => {
+    if (l === 'BEGIN:VEVENT') c = {};
+    else if (l === 'END:VEVENT'){ if (c) ev.push(c); c = null; }
+    else if (c){
+      const i = l.indexOf(':'); if (i < 0) return;
+      const key = l.slice(0, i).split(';')[0].toUpperCase(), val = l.slice(i + 1);
+      if (key === 'DTSTART') c.s = icsDate(val); else if (key === 'DTEND') c.e = icsDate(val);
+      else if (key === 'SUMMARY') c.t = val.replace(/\\n/gi, ' ').replace(/\\([,;])/g, '$1').replace(/\\\\/g, '\\');
+      else if (key === 'RRULE') c.r = true;
+    }
+  });
+  return ev;
+}
+function importICS(txt){
+  const today = new Date(todayStr()), lo = new Date(today), hi = new Date(today);
+  lo.setDate(lo.getDate() - 30); hi.setDate(hi.getDate() + 90);
+  const r = { added:0, allDay:0, rec:0, out:0 }, WB = wins();
+  parseICS(txt).forEach(e => {
+    if (!e.s || !e.t) return;
+    if (e.s.allDay){ r.allDay++; return; }
+    if (e.r) r.rec++;
+    if (e.s.d < lo || e.s.d > hi){ r.out++; return; }
+    const ds = e.s.d.toDateString(), start = e.s.d.getHours() * 60 + e.s.d.getMinutes();
+    let dur = e.e && e.e.d ? Math.round((e.e.d - e.s.d) / 60000) : 30; if (!(dur > 0)) dur = 30; dur = Math.min(dur, 600);
+    const p = plans[ds] || planFor(ds) || { w:defWake(), d:[], t:{}, a:false, n:'' }, n = start - p.w;
+    let w = 'climb1'; for (const k of Object.keys(WB)) if (n >= WB[k].from && n < WB[k].to) w = k;
+    const id = 'ics' + [...(ds + start + e.t)].reduce((a, ch) => (a * 31 + ch.charCodeAt(0)) | 0, 7).toString(36);
+    p.o = (p.o || []).filter(x => x.id !== id).concat({ id, t:e.t.slice(0, 80), d:dur, m:dur, p:'core', fixed:start, w, icon:'calendar' });
+    plans[ds] = p; r.added++;
+  });
+  store.set('plans', plans); loadDay(viewDate); render();
+  return r;
+}
+
+// ---- appearance + settings cards ----
+function applyLook(){
+  const T = store.get('theme', 'dark'), th = T === 'auto' ? (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark') : T;
+  document.documentElement.dataset.theme = th; document.documentElement.dataset.text = store.get('text', 'normal');
+  const m = document.querySelector('meta[name=theme-color]'); if (m) m.content = th === 'light' ? '#f3f5fb' : '#080d1a';
+}
+const selOpts = (arr, cur) => arr.map(o => '<option value="' + o[0] + '"' + (o[0] === cur ? ' selected' : '') + '>' + o[1] + '</option>').join('');
+$('#tab-settings').insertAdjacentHTML('beforeend',
+  '<div class="sleep"><h2>Energy rhythm</h2><p class="wn">Shifts when your energy windows start: 30 min earlier, as planned, or 45 min later.</p><div class="capRow"><label for="chrSel">Rhythm</label><select id="chrSel">' + selOpts([['early', 'Early bird'], ['normal', 'In between'], ['late', 'Night owl']], store.get('chrono', 'normal')) + '</select></div></div>' +
+  '<div class="sleep"><h2>Appearance</h2><div class="capRow"><label for="thSel">Theme</label><select id="thSel">' + selOpts([['dark', 'Dark'], ['light', 'Light'], ['auto', 'Match device']], store.get('theme', 'dark')) + '</select></div><div class="capRow"><label for="txSel">Text size</label><select id="txSel">' + selOpts([['normal', 'Normal'], ['large', 'Large']], store.get('text', 'normal')) + '</select></div></div>' +
+  '<div class="sleep"><h2>Calendar import</h2><p class="wn">Import a .ics file from Google, Apple or Outlook calendar. Timed events become fixed-time one-off tasks (30 days back, 90 ahead, in your device time zone). All-day events are skipped, and recurring events import only their first occurrence.</p><button class="add" id="icsBtn">Choose .ics file</button><input type="file" id="icsF" accept=".ics,text/calendar" hidden></div>');
+$('#tab-settings').addEventListener('change', e => {
+  if (e.target.id === 'chrSel'){ store.set('chrono', e.target.value); render(); }
+  else if (e.target.id === 'thSel'){ store.set('theme', e.target.value); applyLook(); }
+  else if (e.target.id === 'txSel'){ store.set('text', e.target.value); applyLook(); }
+});
+$('#icsBtn').addEventListener('click', () => $('#icsF').click());
+$('#icsF').addEventListener('change', e => {
+  const f = e.target.files[0]; if (!f) return;
+  const rd = new FileReader();
+  rd.onload = () => {
+    const r = importICS(String(rd.result));
+    alert('Imported ' + r.added + ' event' + (r.added === 1 ? '' : 's') + '.' + (r.allDay ? ' Skipped ' + r.allDay + ' all-day.' : '') + (r.out ? ' Skipped ' + r.out + ' outside the date range.' : '') + (r.rec ? ' ' + r.rec + ' recurring (first occurrence only).' : ''));
+  };
+  rd.readAsText(f); e.target.value = '';
+});
+applyLook();
+
+// ---- first-run setup ----
+function openSetup(){
+  const opt = l => '<option value="">Keep the default</option>' + Object.keys(TPL[l].sets).map(n => '<option>' + n + '</option>').join('');
+  $('#su_pre').innerHTML = opt('pre'); $('#su_night').innerHTML = opt('night');
+  $('#setupDlg').showModal();
+}
+$('#su_ok').onclick = () => {
+  const [h, m] = ($('#su_wake').value || '05:00').split(':').map(Number);
+  store.set('wake', h * 60 + m); store.set('chrono', $('#su_chrono').value); $('#chrSel').value = $('#su_chrono').value;
+  if ($('#su_pre').value) tplApply('pre', $('#su_pre').value);
+  if ($('#su_night').value) tplApply('night', $('#su_night').value);
+  store.set('setup', true); $('#setupDlg').close(); goDate(todayStr());
+};
+$('#su_skip').onclick = () => { store.set('setup', true); $('#setupDlg').close(); };
+
+const APP_VERSION = '2.3';
 const FEATURES = [
   'A daily timeline built from your wake time, split into seven energy windows',
   'Morning and Night Routines that shrink (optional, then flexible, then core) to fit',
   'Home, School and Away modes for each window of the day',
   'Every day is usable: plan upcoming days and update past ones',
-  'Tasks with colors, icons, subtasks, notes, fixed times and weekday rules',
+  'Tasks with colors, 100 icons, subtasks, notes, fixed times and weekday rules',
   'Edit, reorder, duplicate or delete tasks and blocks (long-press to edit)',
   'Editable sleep caps with a short-sleep warning',
   'History and trends for the last 90 days',
+  'Run mode that counts you through a routine step by step',
+  'Streaks, a weekly view, routine templates and reminders',
+  'One-off tasks and an inbox for things that happen once',
+  'Past days stay as they were recorded',
+  'Calendar (.ics) import, light theme and larger text',
   'Backup and restore, installable and works offline'
 ];
 const LIMITS = [
   'Your data lives in this browser only, so export a backup now and then',
   'Past days are rebuilt from your current task list, so they can differ from how that day originally looked',
+  'Reminders only fire while Yotei is open or running in the background',
+  'Calendar import is a one-time copy of timed events, not a live sync',
   'Fonts need one online load before they work offline'
 ];
 const CHANGELOG = [
+  { v:'2.3', date:'Oct 2026',
+    added:['One-off tasks for a single date, plus an Inbox for quick capture', 'Calendar import from .ics files', 'Energy rhythm setting (early bird, in between, night owl) and a History card showing which window you finish the most in', 'First-run setup for wake time, rhythm and routine templates', 'Home screen shortcuts: Start morning routine, Today and Inbox', 'Light theme and a larger text option'],
+    changed:['Past days now show the saved record of that day, with a button to rebuild from your current routines'],
+    fixed:['Missing chevron on History day rows'] },
+  { v:'2.2', date:'Oct 2026',
+    added:['Run mode: start the Morning or Night Routine and a countdown walks you through each step', 'Streaks and a weekly view in History', 'Routine templates for the Morning and Night Routines', 'Task reminders, at the start or 5 or 10 minutes before'],
+    changed:['History now opens with your streak and the week at a glance'] },
+  { v:'2.1', date:'Oct 2026',
+    added:['Away day suggestions for Second Climb and Wake Maintenance Zone', '100 icons in total (54 new), grouped by theme in the icon picker', 'Smarter automatic icon picks from the task name, such as sunset, stargaze, meditation and laundry'],
+    changed:['Redrew the bland icons: broom, bike, people, stretch, shower, game controller and TV', 'Existing custom Away lists get the new suggestions added automatically', 'Icon picker scrolls when it is taller than the screen'] },
   { v:'2.0', date:'Oct 2026',
     added:['Night Routine, same every night and shrinks to finish before lights-out', 'Plan and edit any day, past or upcoming, with a Back to today button', 'Installable offline app: manifest, service worker and icons', 'Editable sleep caps with a warning under 7 h', 'Mark done button in the task sheet', 'Backup reminder and persistent storage request', 'Task notes in History', 'About and Changelog in Settings'],
     changed:['Wind-Down is now the Night Routine', 'Settings merged into one tab', 'Away day moved next to wake time', 'Window notes reworded as tendencies, not facts', 'Larger tap targets and text, better icon contrast, screen reader labels'],
@@ -1346,9 +1856,18 @@ function setTab(t){
 }
 tabs.forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
 setTab(store.get('tab', 'home'));
+const FRESH = ['hist', 'plans', 'blocks', 'day', 'wake', 'setup'].every(k => store.get(k, null) === null);
 migrateFields();
 migrateV2();
+migrateV3();
 render();
+if (FRESH) openSetup();
+(function(){
+  const a = new URLSearchParams(location.search).get('action'); if (!a) return;
+  try{ history.replaceState(null, '', location.pathname); }catch{}
+  setTab('home'); goDate(todayStr());
+  if (a === 'morning') runStart('sleep'); else if (a === 'inbox') setTimeout(() => $('#inT') && $('#inT').focus(), 60);
+})();
 function migrateV2(){
   if (store.get('schemaV', 0) >= 2) return;
   const bl = store.get('blocks', null);
@@ -1362,6 +1881,15 @@ function migrateV2(){
     store.set('blocks', bl);
   }
   store.set('schemaV', 2);
+}
+function migrateV3(){  // add the new Away suggestions to an Away list you already customised
+  if (store.get('schemaV', 0) >= 3) return;
+  const bl = store.get('blocks', null);
+  if (bl && Array.isArray(bl.away)){
+    const add = MODES.away.post.filter(d => /^a[cm]\d/.test(d.id) && !bl.away.some(x => x.id === d.id));
+    if (add.length){ bl.away = bl.away.concat(add); store.set('blocks', bl); }
+  }
+  store.set('schemaV', 3);
 }
 function updateBackupInfo(){
   const t = store.get('lastBackup', 0), d = t ? Math.floor((Date.now() - t) / 864e5) : null;

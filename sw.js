@@ -1,4 +1,4 @@
-const CACHE = 'yotei-v2-3';
+const CACHE = 'yotei-v2-6';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/icon-180.png', './icons/icon-maskable-512.png', './icon.svg'];
 
 self.addEventListener('install', e => {
@@ -39,4 +39,9 @@ self.addEventListener('fetch', e => {
       return hit || net;
     })));
   }
+});
+
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  e.waitUntil(clients.matchAll({ type: 'window', includeUncontrolled: true }).then(cs => cs.length ? cs[0].focus() : clients.openWindow('./')));
 });
