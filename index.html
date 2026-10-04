@@ -214,7 +214,6 @@ html[data-text=large] body{zoom:1.15}
 .hday summary::after{content:'';position:absolute;right:14px;top:50%;width:8px;height:8px;border:solid var(--sec);border-width:0 2px 2px 0;transform:translateY(-70%) rotate(45deg);transition:transform .15s}
 .hday[open] summary::after{transform:translateY(-30%) rotate(-135deg)}
 #liveBtn{width:100%;margin-bottom:12px}
-body.snap .mode{opacity:.45;pointer-events:none}
 .ef select{width:100%;font:600 15px 'Manrope',sans-serif;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:9px 10px}
 .inbox .inRow{gap:8px}
 #inT{flex:1;min-width:0;font:500 14px 'Manrope',sans-serif;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:9px 10px}
@@ -243,6 +242,28 @@ body.snap .mode{opacity:.45;pointer-events:none}
 #dropBar button.over{outline:2px solid var(--accent);background:var(--accent);color:#06121f}
 #dragGhost{position:fixed;z-index:70;pointer-events:none;display:none;max-width:70vw;background:var(--accent);color:#06121f;border-radius:10px;padding:8px 12px;font:700 13px 'Manrope',sans-serif;box-shadow:var(--shadow);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tlrow.dropRow{outline:2px dashed var(--accent);outline-offset:2px}
+.colorRow{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x proximity;padding:14px 18px;background:var(--card2);border-radius:14px;scrollbar-width:none;-webkit-overflow-scrolling:touch;margin-top:6px}
+.colorRow::-webkit-scrollbar{display:none}
+.cring{--c:var(--sec);flex:0 0 auto;position:relative;width:38px;height:38px;border-radius:50%;border:3px solid var(--c);background:transparent;padding:0;cursor:pointer;scroll-snap-align:center}
+.cring.on::after{content:'';position:absolute;inset:4px;border-radius:50%;background:var(--c)}
+.cauto{border-style:dashed;font:700 9px 'Manrope',sans-serif;color:var(--sec)}
+.cauto.on{background:var(--card);color:var(--text);border-style:solid}
+.cauto.on::after{display:none}
+.ccustom{border:0;background:linear-gradient(135deg,#3b2fd6 0%,#e8d83a 100%)}
+.ccustom.has{border:3px solid var(--c);background:transparent}
+:root[data-theme=light] .cring[data-c="#ffffff"]{--c:#b9c2d3}
+#colorSheet{width:100%;max-width:430px;margin:auto auto 0;border:0;border-radius:26px 26px 0 0;padding:0;background:var(--card);color:var(--text);max-height:94vh;overflow:auto}
+#colorSheet::backdrop{background:rgba(0,0,0,.55)}
+.csIn{padding:10px 20px calc(20px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;align-items:center;gap:20px}
+.csHandle{width:44px;height:5px;border-radius:5px;background:var(--accent);touch-action:none;margin:4px 0 2px;cursor:grab;padding:8px 0;background-clip:content-box;box-sizing:content-box;height:5px}
+.csRecent{display:flex;gap:16px}
+.csRecent button{width:44px;height:44px;border-radius:50%;border:0;padding:0;cursor:pointer}
+.csWheel{position:relative;width:min(74vw,300px);height:min(74vw,300px);touch-action:none}
+.csWheel canvas{width:100%;height:100%;display:block;border-radius:50%}
+#cs_knob{position:absolute;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;border:4px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.25),0 2px 8px rgba(0,0,0,.35);pointer-events:none}
+.csBright{position:relative;width:100%;height:34px;border-radius:12px;border:2px solid var(--line);touch-action:none;overflow:hidden;box-sizing:border-box}
+#cs_bthumb{position:absolute;top:50%;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:#fff;box-shadow:0 1px 6px rgba(0,0,0,.4);pointer-events:none}
+.csPrev{width:112px;height:112px;border-radius:26px}
 #iconPick{max-height:85vh;overflow:auto}
 .runBtn{display:block;margin:-4px 0 10px auto;padding:8px 14px;font-size:13px;position:relative;z-index:1}
 #runDlg .rStep{color:var(--sec);font-size:13px}
@@ -328,7 +349,7 @@ body.snap .mode{opacity:.45;pointer-events:none}
 <dialog id="ed"><div class="ef">
   <label>Task<div class="taskRow"><input id="e_t"><button type="button" id="e_iconBtn" class="iconPreview" aria-label="Choose icon">+</button><input type="hidden" id="e_icon"></div></label>
   <label id="e_wrap" style="display:none">Window<select id="e_w"></select></label>
-  <label>Color<div class="chips" id="e_colors"></div><input type="hidden" id="e_color"></label>
+  <label>What color?<div class="colorRow" id="e_colors" role="radiogroup" aria-label="Color"></div><input type="hidden" id="e_color"></label>
   <label>Kind<select id="e_k">
     <option value="core">Core (shrinks last)</option><option value="flex">Flexible (shrinks first)</option><option value="opt">Optional (cut first)</option>
     <option value="fixedlen">Fixed length</option><option value="sug">Suggestion, no time</option><option value="fixedtime">Fixed clock time</option><option value="open">Open slot</option>
@@ -350,6 +371,14 @@ body.snap .mode{opacity:.45;pointer-events:none}
 </div></dialog>
 <div id="toast" role="status" aria-live="polite"><span id="toastMsg"></span><button id="toastBtn"></button></div>
 <div id="dropBar"></div><div id="dragGhost"></div>
+<dialog id="colorSheet"><div class="csIn">
+  <div class="csHandle" id="cs_handle"></div>
+  <div class="csRecent" id="cs_recent"></div>
+  <div class="csWheel" id="cs_wheel"><canvas id="cs_canvas" width="560" height="560"></canvas><i id="cs_knob"></i></div>
+  <div class="csBright" id="cs_bright"><i id="cs_bthumb"></i></div>
+  <div class="csPrev" id="cs_prev"></div>
+  <button class="add" id="cs_done">Done</button>
+</div></dialog>
 <dialog id="scopeDlg"><div class="ef">
   <h2 id="sc_h"></h2>
   <p class="wn">Optional: limit it to certain days. Leave empty to cover every day.</p>
@@ -855,17 +884,20 @@ function buildSpine(){
   });
   if (nodes.length < 2) return;
   const GRAY = 'var(--graydot)', y0 = nodes[0].mid, stops = [];
+  const okc = c => (c && CSS.supports('color', c)) ? String(c).trim() : GRAY;
+  nodes.forEach(n => { n.c = okc(n.c); n.f = isFinite(n.f) ? n.f : 0; });
+  const same = (p, q) => p.toLowerCase() === q.toLowerCase();
   const push = (p, c) => stops.push([Math.max(p - y0, stops.length ? stops[stops.length - 1][0] : 0), c]);
+  const blend = (g0, g1, from, to) => {  // the mix plays out in the middle of the visible gap
+    if (same(from, to)) return;
+    const gap = Math.max(g1 - g0, 0), mid = (g0 + g1) / 2, half = gap <= 14 ? gap / 2 : gap * .36;
+    push(mid - half, from); push(mid + half, to);
+  };
   for (let k = 0; k < nodes.length - 1; k++){
-    const a = nodes[k], b = nodes[k + 1], A = a.mid, B = b.mid;
+    const a = nodes[k], b = nodes[k + 1], A = a.mid, B = b.mid, E = b.f > 0 ? b.c : GRAY;
     push(A, a.f > 0 ? a.c : GRAY);
-    let endCol = a.f >= 1 ? a.c : GRAY;
-    if (a.f > 0 && a.f < 1){
-      const front = A + a.f * (B - A);
-      push(front - 6, a.c); push(front + 6, GRAY);
-    }
-    const E = b.f > 0 ? b.c : GRAY;
-    if (endCol !== E){ const mid = (a.bottom + b.top) / 2; push(mid - 8, endCol); push(mid + 8, E); }
+    if (a.f > 0 && a.f < 1){ const front = A + a.f * (B - A); push(front - 6, a.c); push(front + 6, GRAY); }
+    blend(a.bottom, b.top, a.f >= 1 ? a.c : GRAY, E);
     push(B, E);
   }
   const spine = document.createElement('div');
@@ -878,7 +910,8 @@ function buildSpine(){
     if (m) end = Math.max(end, yIn(m) - 5);
   }
   spine.style.height = (end - y0) + 'px';
-  spine.style.background = 'linear-gradient(to bottom,' + stops.map(([p, c]) => c + ' ' + p.toFixed(1) + 'px').join(',') + ')';
+  const interp = CSS.supports('background-image', 'linear-gradient(in oklab to bottom, red, blue)') ? 'in oklab to bottom' : 'to bottom';
+  spine.style.background = 'linear-gradient(' + interp + ',' + stops.map(([p, c]) => c + ' ' + p.toFixed(1) + 'px').join(',') + ')';
   wrap.insertBefore(spine, wrap.firstChild);
 }
 window.addEventListener('resize', buildSpine);
@@ -920,10 +953,10 @@ function typeOf(k){
 }
 function schedule(){
   const sn = snapRows();
-  if (sn) return { rows:sn, msg:'This is the saved record of this day. Times and modes are locked.', tone:'ok' };
+  if (sn) return { rows:sn, msg:'Saved record of this day. Edit anything and it rebuilds from your current routines.', tone:'ok' };
   return build(new Date(viewDate).getDay());
 }
-function pickType(k, m){ day.types[k] = m; saveDay(); render(); }
+function pickType(k, m){ needLive(); day.types[k] = m; saveDay(); render(); }
 // ============================================================
 // WINDOW-BLOCK EDITOR (the settings dialog for one window)
 // ============================================================
@@ -982,7 +1015,7 @@ function drawDays(){
 }
 function openEd(l, id, w, startAt){
   const b = id ? getBlocks(l).find(x => x.id === id) : null;
-  if (id && !b) return;
+  if (id && !b){ toast('That task is no longer in your routines. Use Rebuild this day to work with your current ones.'); return; }
   cur = { l, id, w };
   $('#e_wrap').style.display = l === 'oo' ? '' : 'none';
   if (l === 'oo'){ const WB = wins(); $('#e_w').innerHTML = Object.keys(WB).map(k => '<option value="' + k + '">' + esc(WB[k].name) + '</option>').join(''); $('#e_w').value = (b && b.w) || w || 'climb1'; }
@@ -991,7 +1024,7 @@ function openEd(l, id, w, startAt){
   $('#e_k').value = x.sug ? 'sug' : x.fixed !== undefined ? 'fixedtime' : x.p === 'open' ? 'open' : ['core','flex','opt'].includes(x.p) ? x.p : 'fixedlen';
   $('#e_d').value = x.d; $('#e_m').value = x.m ?? ''; highlightChip();
   $('#e_icon').value = x.icon || ''; updateIconBtn();
-  $('#e_color').value = x.color || ''; $('#e_colorCustom').value = x.color || '#4d8ef7'; highlightColor();
+  $('#e_color').value = x.color || ''; drawColorRow();
   $('#e_f').value = x.fixed !== undefined ? toVal(x.fixed) : '';
   if (startAt !== undefined && !b){ $('#e_k').value = 'fixedtime'; $('#e_f').value = toVal(startAt); }
   $('#e_details').value = x.details || ''; $('#e_p').value = (x.steps || []).join('\n');
@@ -1027,21 +1060,6 @@ $('#ip_x').onclick = () => $('#iconPick').close();
 $('#ip_ok').onclick = () => {
   $('#e_icon').value = $('#e_icon_custom').value.trim(); updateIconBtn(); $('#iconPick').close();
 };
-function highlightColor(){
-  const v = $('#e_color').value;
-  document.querySelectorAll('#e_colors button').forEach(b => b.classList.toggle('on', b.dataset.c === v));
-}
-$('#e_colors').innerHTML = '<button type="button" class="colorAuto" data-c="">Auto</button>' +
-  COLOR_SWATCHES.map(c => '<button type="button" class="colorSwatch" data-c="' + c + '" style="background:' + c + '"></button>').join('') +
-  '<input type="color" id="e_colorCustom" title="Custom color">';
-$('#e_colors').addEventListener('click', e => {
-  const b = e.target.closest('button'); if (!b) return;
-  $('#e_color').value = b.dataset.c; highlightColor();
-});
-$('#e_colors').addEventListener('input', e => {
-  if (e.target.id !== 'e_colorCustom') return;
-  $('#e_color').value = e.target.value; highlightColor();
-});
 // ============================================================
 // TASK DETAIL SHEET — opens on tap, shows name/time + actions
 // (Delete / Duplicate / Edit). Deliberately excludes Details —
@@ -1053,7 +1071,7 @@ function openTaskSheet(l, id){
   const r = rows.find(x => x.id === id);
   if (!r) return;
   sheetCtx = { l, id };
-  ['ts_edit', 'ts_del', 'ts_dup', 'ts_move'].forEach(i => { $('#' + i).hidden = snapMode(); });
+  ['ts_edit', 'ts_del', 'ts_dup', 'ts_move'].forEach(i => { $('#' + i).hidden = false; });
   $('#ts_timer').hidden = !(r.use > 0) || r.sug || viewDate !== todayStr() || snapMode();
   const ins = taskInsight(id); $('#ts_insight').textContent = ins; $('#ts_insight').hidden = !ins;
   const st = WIN_STYLE[r.w] || WIN_STYLE.climb1;
@@ -1161,6 +1179,7 @@ $('#e_ok').onclick = () => {
     else if (k !== 'fixedlen'){ b.p = k; b.m = Math.min(d, isNaN(m) ? d : m); }
   }
   if (cur.l !== 'oo'){ askScope(old ? 'edit' : 'add', { l:cur.l, id:b.id, b, old, w:cur.w }); return; }
+  needLive();
   if (old) arr[arr.indexOf(old)] = b; else arr.push(b);
   if (cur.fromInbox) store.set('inbox', store.get('inbox', []).filter(x => x.id !== cur.fromInbox));
   setBlocks(cur.l, arr); $('#ed').close(); render();
@@ -1252,7 +1271,7 @@ function render(){
   drawNav();
   if (document.activeElement !== $('#dnote')) $('#dnote').value = day.note || '';
   drawInbox(); drawEnergy();
-  document.body.classList.toggle('snap', snapMode()); $('#wake').disabled = snapMode(); $('#awayBtn').disabled = snapMode();
+  document.body.classList.toggle('snap', snapMode());
   draw();
   $('#trends').innerHTML = trendsHtml();
   $('#histbox').innerHTML = histHtml();
@@ -1296,7 +1315,7 @@ function draw(){
     const check = r.sug ? '' : '<span class="tlcheck"></span>';
     return '<div class="blk" data-c="' + dotColor + '" data-f="' + frac.toFixed(3) + '"><button class="tlrow' + (dn ? ' done' : '') + (isNow ? ' now' : '') + (cut ? ' cut' : '') + (r.sug ? ' sug' : '') + '" style="--dot:' + dotColor + '" data-id="' + r.id + '" data-l="' + (r.post ? r.md : 'pre') + '" data-locked="' + ((cut || r.fixed !== undefined || r.sug) ? 1 : 0) + '" aria-label="' + esc(r.t) + (cut ? ', skipped' : r.sug ? ', suggestion' : dn ? ', done' : ', not done') + '">'
       + '<span class="tltime">' + timeLbl + '</span><span class="tldot" style="' + dotStyle + '">' + dotIcon + '</span><span class="tlbody"><span class="time">' + (cut ? 'Skipped' : r.sug ? 'Suggestion' : r.fixed !== undefined ? fmt(r.start).join(' ') : range(r.start, r.end)) + tag + sw + '</span>'
-      + '<span class="ttl">' + esc(r.t) + stepBadge + (getNote(r.id) ? '<span class="noteMark" aria-label="Has a note">' + ICONS.note + '</span>' : '') + (editing && !snapMode() && !r.snap && r.p !== 'buf' ? '<span class="dragH" aria-label="Drag to move" title="Drag to move">&#8942;&#8942;</span>' : '') + '</span></span>' + check + '</button>' + noteHtml(r) + '</div>';
+      + '<span class="ttl">' + esc(r.t) + stepBadge + (getNote(r.id) ? '<span class="noteMark" aria-label="Has a note">' + ICONS.note + '</span>' : '') + (editing && r.p !== 'buf' ? '<span class="dragH" aria-label="Drag to move" title="Drag to move">&#8942;&#8942;</span>' : '') + '</span></span>' + check + '</button>' + noteHtml(r) + '</div>';
   };
   function gapRows(rs){
     let out = '';
@@ -1306,7 +1325,7 @@ function draw(){
       if (cur.use > 0 && !cur.sug && next && next.use > 0 && !next.sug && next.start > cur.end){
         const mins = next.start - cur.end, h = Math.floor(mins / 60), m = mins % 60;
         const dur = (h ? h + 'h ' : '') + (m || !h ? m + 'm' : '');
-        out += '<div class="gap"><span class="gaptxt">' + dur + ' free</span>' + (!editing || snapMode() ? '' : '<button class="add" data-l="' + (cur.md || 'pre') + '" data-w="' + cur.w + '" data-s="' + cur.end + '">+ Add task</button>') + '</div>';
+        out += '<div class="gap"><span class="gaptxt">' + dur + ' free</span>' + (!editing ? '' : '<button class="add" data-l="' + (cur.md || 'pre') + '" data-w="' + cur.w + '" data-s="' + cur.end + '">+ Add task</button>') + '</div>';
       }
     }
     return out;
@@ -1330,7 +1349,7 @@ function draw(){
     if ((k === 'sleep' || k === 'wind') && isToday && rs.some(r => r.use > 0 && !r.sug && !done.ids.includes(r.id))) html += '<button class="add runBtn" data-run="' + k + '">Start ' + esc(WB[k].name.toLowerCase()) + '</button>';
     if (k === 'sleep' || k === 'wind' || t || rs.length){
       html += rs.length ? gapRows(rs) : '<p class="wn">No tasks yet.</p>';
-      if (editing && !snapMode()) html += '<button class="add" data-l="' + (k === 'sleep' ? 'pre' : k === 'wind' ? 'night' : t || 'oo') + '" data-w="' + k + '">+ Add task</button>';
+      if (editing) html += '<button class="add" data-l="' + (k === 'sleep' ? 'pre' : k === 'wind' ? 'night' : t || 'oo') + '" data-w="' + k + '">+ Add task</button>';
     } else html += '<p class="wn">Choose where you are for this stretch and its tasks appear here.</p>';
     if (editing) html += '<button class="add" data-eb="' + k + '">Edit block</button>';
     return html;
@@ -1347,7 +1366,7 @@ function draw(){
 $('#wake').addEventListener('change', e => {
   if (!e.target.value) return;
   const [h, m] = e.target.value.split(':').map(Number);
-  wake = h*60 + m; saveDay(); render();
+  needLive(); wake = h*60 + m; saveDay(); render();
 });
 $('#reset').addEventListener('click', () => { wake = DEF_WAKE; saveDay(); render(); });
 $('#reset').setAttribute('aria-label', 'Reset wake time to ' + fmt(DEF_WAKE).join(' '));
@@ -1359,6 +1378,7 @@ $('#sleep').addEventListener('change', e => {
   render();
 });
 $('#awayBtn').addEventListener('click', () => {
+  needLive();
   day.away = !day.away;
   if (day.away){ day.prevTypes = { ...day.types }; Object.keys(WIN).forEach(k => { if (k !== 'sleep' && k !== 'wind') day.types[k] = 'away'; }); }
   else { day.types = day.prevTypes || {}; delete day.prevTypes; }
@@ -1386,7 +1406,7 @@ $('#tl').addEventListener('click', e => {
   const sb = e.target.closest('.stepsBtn');
   if (sb){ openStepsSheet(sb.dataset.sid); return; }
   const row = e.target.closest('.tlrow'); if (!row) return;
-  if (editing && !snapMode()){ openEd(row.dataset.l, row.dataset.id); return; }
+  if (editing){ openEd(row.dataset.l, row.dataset.id); return; }
   const chk = e.target.closest('.tlcheck');
   if (chk){
     if (row.dataset.locked === '1') return;
@@ -1510,7 +1530,6 @@ $('#tl').addEventListener('pointerdown', e => {
   lpTimer = setTimeout(() => {
     lpFired = true;
     if (navigator.vibrate) navigator.vibrate(12);
-    if (snapMode()) return;
     if (row) openEd(row.dataset.l, row.dataset.id); else openBlockEd(head.dataset.k);
   }, 480);
 });
@@ -1747,7 +1766,7 @@ function drawInbox(){
   const keep = $('#inT') ? $('#inT').value : '', list = store.get('inbox', []);
   el.innerHTML = '<h2>Inbox</h2><p class="wn">Capture a task now. Schedule it when you know when.</p><div class="inRow"><input id="inT" placeholder="Add a task" maxlength="80" aria-label="New inbox task"><button id="inAdd">Add</button></div>' +
     list.map(x => '<div class="inItem"><span>' + esc(x.t) + '</span><span class="inAct"><button data-sch="' + x.id + '">Schedule</button><button data-rm="' + x.id + '" aria-label="Delete ' + esc(x.t) + '">&times;</button></span></div>').join('') +
-    (snapMode() ? '' : '<button class="add" id="ooNew">New one-off task for this day</button><div class="inRow dayTools"><button id="cpDay">Copy this day</button><button id="lateBtn">' + (day.shift ? 'Pushed ' + day.shift.by + ' min later' : 'Running late?') + '</button></div>');
+    ('' + '<button class="add" id="ooNew">New one-off task for this day</button><div class="inRow dayTools"><button id="cpDay">Copy this day</button><button id="lateBtn">' + (day.shift ? 'Pushed ' + day.shift.by + ' min later' : 'Running late?') + '</button></div>');
   $('#inT').value = keep;
 }
 $('#inboxCard').addEventListener('click', e => {
@@ -1896,7 +1915,7 @@ function askScope(type, ctx){
   $('#sc_modes').style.display = (ctx.l === 'pre' || ctx.l === 'night') ? '' : 'none';
   drawScChips(); $('#scopeDlg').showModal();
 }
-function applyScope(sc){ const _s = grab(), ty = scopeCtx && scopeCtx.type; applyScope0(sc); showUndo(ty === 'delete' ? 'Task deleted' : ty === 'add' ? 'Task added' : 'Task updated', _s); }
+function applyScope(sc){ const _s = grab(), ty = scopeCtx && scopeCtx.type; needLive(); applyScope0(sc); showUndo(ty === 'delete' ? 'Task deleted' : ty === 'add' ? 'Task added' : 'Task updated', _s); }
 function applyScope0(sc){
   const c = scopeCtx; if (!c) return;
   const iso = isoLocal(new Date(viewDate)), filt = {}, OV = store.get('ovr', {}), arr = clone(getBlocks(c.l));
@@ -1934,11 +1953,11 @@ $('#sc_modes').addEventListener('click', e => { const b = e.target.closest('butt
 $('#sc_opts').addEventListener('click', e => { const b = e.target.closest('button'); if (b) applyScope(b.dataset.sc); });
 $('#sc_x').onclick = () => $('#scopeDlg').close();
 $('#e_del').onclick = () => {
-  if (cur.l === 'oo'){ const _s = grab(); setBlocks('oo', clone(getBlocks('oo')).filter(x => x.id !== cur.id)); $('#ed').close(); render(); showUndo('Task deleted', _s); return; }
+  if (cur.l === 'oo'){ const _s = grab(); needLive(); setBlocks('oo', clone(getBlocks('oo')).filter(x => x.id !== cur.id)); $('#ed').close(); render(); showUndo('Task deleted', _s); return; }
   askScope('delete', { l:cur.l, id:cur.id });
 };
 $('#ts_del').onclick = () => {
-  if (sheetCtx.l === 'oo'){ if (!confirm('Delete this task?')) return; const _s = grab(); setBlocks('oo', clone(getBlocks('oo')).filter(x => x.id !== sheetCtx.id)); $('#taskSheet').close(); render(); showUndo('Task deleted', _s); return; }
+  if (sheetCtx.l === 'oo'){ if (!confirm('Delete this task?')) return; const _s = grab(); needLive(); setBlocks('oo', clone(getBlocks('oo')).filter(x => x.id !== sheetCtx.id)); $('#taskSheet').close(); render(); showUndo('Task deleted', _s); return; }
   $('#taskSheet').close(); askScope('delete', { l:sheetCtx.l, id:sheetCtx.id });
 };
 
@@ -1960,7 +1979,7 @@ function openMv(mode){
   $('#mvDlg').showModal();
 }
 function mvDate(){ const v = $('#mv_d').value; if (!v) return null; const [y, m, d] = v.split('-').map(Number); return new Date(y, m - 1, d).toDateString(); }
-function mvDo(kind){ const _s = grab(); mvDo0(kind); showUndo(kind === 'copy' ? 'Copied' : kind === 'inbox' ? 'Moved to inbox' : 'Moved', _s); }
+function mvDo(kind){ const _s = grab(); needLive(); mvDo0(kind); showUndo(kind === 'copy' ? 'Copied' : kind === 'inbox' ? 'Moved to inbox' : 'Moved', _s); }
 function mvDo0(kind){
   const r = schedule().rows.find(x => x.id === sheetCtx.id); if (!r) return;
   const ds = kind === 'inbox' ? null : mvDate(); if (kind !== 'inbox' && !ds) return;
@@ -2005,8 +2024,8 @@ function openShift(){
   $('#shDlg').showModal();
 }
 $('#sh_chips').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; shBy = Number(b.dataset.m); document.querySelectorAll('#sh_chips button').forEach(x => x.classList.toggle('on', x === b)); });
-$('#sh_ok').onclick = () => { const [h, m] = ($('#sh_from').value || '00:00').split(':').map(Number); day.shift = { from:h * 60 + m, by:shBy }; saveDay(); $('#shDlg').close(); render(); };
-$('#sh_clear').onclick = () => { day.shift = null; saveDay(); $('#shDlg').close(); render(); };
+$('#sh_ok').onclick = () => { const [h, m] = ($('#sh_from').value || '00:00').split(':').map(Number); needLive(); day.shift = { from:h * 60 + m, by:shBy }; saveDay(); $('#shDlg').close(); render(); };
+$('#sh_clear').onclick = () => { needLive(); day.shift = null; saveDay(); $('#shDlg').close(); render(); };
 $('#sh_x').onclick = () => $('#shDlg').close();
 
 // ============================================================
@@ -2020,7 +2039,7 @@ function toast(msg, label, fn){
   b.onclick = () => { $('#toast').classList.remove('show'); if (fn) fn(); };
   $('#toast').classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => $('#toast').classList.remove('show'), 7000);
 }
-const UNDO_KEYS = ['blocks', 'ovr', 'plans', 'inbox', 'taskNotes'];
+const UNDO_KEYS = ['blocks', 'ovr', 'plans', 'inbox', 'taskNotes', 'hist'];
 function grab(){ const s = {}; UNDO_KEYS.forEach(k => { s[k] = localStorage.getItem('yotei_v2_' + k); }); return s; }
 function showUndo(msg, s){
   toast(msg, 'Undo', () => {
@@ -2175,11 +2194,96 @@ function reorderBlock(l, id, beforeId, tl){
   if (l !== tl){ toast('Drop it on a task in the same list.'); return; }
   const _s = grab(), arr = clone(getBlocks(l)), i = arr.findIndex(x => x.id === id), j = arr.findIndex(x => x.id === beforeId), wk = x => x.w || 'climb1';
   if (i < 0 || j < 0 || wk(arr[i]) !== wk(arr[j])){ toast('Drop it on a task in the same window.'); return; }
-  const [x] = arr.splice(i, 1); arr.splice(arr.findIndex(z => z.id === beforeId), 0, x);
+  needLive(); const [x] = arr.splice(i, 1); arr.splice(arr.findIndex(z => z.id === beforeId), 0, x);
   setBlocks(l, arr); render(); showUndo(l === 'oo' ? 'Reordered' : 'Reordered for all days', _s);
 }
 
-const APP_VERSION = '2.5';
+// ============================================================
+// EDITABLE PAST DAYS + COLOR PICKER
+// ============================================================
+function needLive(){
+  if (!snapMode()) return false;
+  day.live = true; saveDay();
+  toast('Rebuilt this day from your current routines so it can be edited.');
+  return true;
+}
+const RING = ['#f28b95', '#e9804d', '#fbc531', '#7cb342', '#5b8fc9', '#0f8a5f', '#d94452', '#1565c0', '#ffffff'];
+const RECENT0 = ['#a86c3c', '#8a8a8a', '#31b5d6', '#ffd966', '#5b78b4'];
+const hex2 = n => Math.round(n).toString(16).padStart(2, '0');
+function hsv2hex(h, s, v){
+  const f = n => { const k = (n + h / 60) % 6; return v - v * s * Math.max(0, Math.min(k, 4 - k, 1)); };
+  return '#' + hex2(f(5) * 255) + hex2(f(3) * 255) + hex2(f(1) * 255);
+}
+function hex2hsv(hx){
+  const m = /^#?([0-9a-f]{6})$/i.exec(hx || ''); if (!m) return null;
+  const n = parseInt(m[1], 16), r = (n >> 16) / 255, g = ((n >> 8) & 255) / 255, b = (n & 255) / 255, mx = Math.max(r, g, b), d = mx - Math.min(r, g, b);
+  let h = 0; if (d){ h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; h *= 60; if (h < 0) h += 360; }
+  return { h, s:mx ? d / mx : 0, v:mx };
+}
+function drawColorRow(){
+  const v = ($('#e_color').value || '').toLowerCase(), inList = RING.includes(v), custom = v && !inList;
+  $('#e_colors').innerHTML = '<button type="button" class="cring cauto' + (!v ? ' on' : '') + '" data-c="" role="radio" aria-checked="' + !v + '" aria-label="Automatic color">Auto</button>' +
+    RING.map(c => '<button type="button" class="cring' + (v === c ? ' on' : '') + '" data-c="' + c + '" style="--c:' + c + '" role="radio" aria-checked="' + (v === c) + '" aria-label="Color ' + c + '"></button>').join('') +
+    '<button type="button" class="cring ccustom' + (custom ? ' has on' : '') + '" data-custom="1" style="--c:' + (custom ? v : 'transparent') + '" role="radio" aria-checked="' + !!custom + '" aria-label="Pick a custom color"></button>';
+}
+function highlightColor(){ drawColorRow(); }
+$('#e_colors').addEventListener('click', e => {
+  e.preventDefault();   // stop the wrapping label from re-clicking the first swatch
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.custom){ openColorSheet(); return; }
+  $('#e_color').value = b.dataset.c; drawColorRow();
+});
+
+let hsv = { h:45, s:.8, v:1 }, wheelDrawn = false, csDrag = null;
+function drawWheel(){
+  const c = $('#cs_canvas'), x = c.getContext('2d'), n = c.width, R = n / 2, img = x.createImageData(n, n), d = img.data;
+  for (let py = 0; py < n; py++) for (let px = 0; px < n; px++){
+    const dx = px - R + .5, dy = py - R + .5, r = Math.hypot(dx, dy); if (r > R) continue;
+    const h = (Math.atan2(-dy, dx) * 180 / Math.PI + 360) % 360, s = r / R, i = (py * n + px) * 4;
+    const f = k => { const q = (k + h / 60) % 6; return 1 - s * Math.max(0, Math.min(q, 4 - q, 1)); };
+    d[i] = f(5) * 255; d[i + 1] = f(3) * 255; d[i + 2] = f(1) * 255; d[i + 3] = r > R - 1 ? (R - r) * 255 : 255;
+  }
+  x.putImageData(img, 0, 0);
+}
+function csApply(){
+  const hx = hsv2hex(hsv.h, hsv.s, hsv.v), R = $('#cs_wheel').clientWidth / 2, a = hsv.h * Math.PI / 180, kn = $('#cs_knob');
+  kn.style.left = (R + Math.cos(a) * hsv.s * R) + 'px'; kn.style.top = (R - Math.sin(a) * hsv.s * R) + 'px'; kn.style.background = hx;
+  $('#cs_bright').style.background = 'linear-gradient(to right,#000,' + hsv2hex(hsv.h, hsv.s, 1) + ')';
+  $('#cs_bthumb').style.left = (hsv.v * $('#cs_bright').clientWidth) + 'px';
+  $('#cs_prev').style.background = hx;
+  $('#e_color').value = hx; drawColorRow();
+}
+function drawRecent(){
+  $('#cs_recent').innerHTML = store.get('recentColors', RECENT0).slice(0, 5).map(c => '<button type="button" data-c="' + c + '" style="background:' + c + '" aria-label="Use ' + c + '"></button>').join('');
+}
+function openColorSheet(){
+  if (!wheelDrawn){ drawWheel(); wheelDrawn = true; }
+  hsv = hex2hsv($('#e_color').value) || hex2hsv('#ffc533');
+  drawRecent(); $('#colorSheet').showModal(); csApply();
+}
+function csClose(){
+  const v = ($('#e_color').value || '').toLowerCase();
+  if (v && !RING.includes(v)){ const L = store.get('recentColors', RECENT0).filter(c => c.toLowerCase() !== v); L.unshift(v); store.set('recentColors', L.slice(0, 5)); }
+  if ($('#colorSheet').open) $('#colorSheet').close();
+}
+const csWheelPt = e => { const r = $('#cs_wheel').getBoundingClientRect(), R = r.width / 2, dx = e.clientX - r.left - R, dy = e.clientY - r.top - R; hsv.h = (Math.atan2(-dy, dx) * 180 / Math.PI + 360) % 360; hsv.s = Math.min(Math.hypot(dx, dy) / R, 1); csApply(); };
+const csBrightPt = e => { const r = $('#cs_bright').getBoundingClientRect(); hsv.v = Math.max(.12, Math.min(1, (e.clientX - r.left) / r.width)); csApply(); };
+[['cs_wheel', 'w', csWheelPt], ['cs_bright', 'b', csBrightPt]].forEach(([id, k, fn]) => {
+  const el = $('#' + id);
+  el.addEventListener('pointerdown', e => { csDrag = k; el.setPointerCapture(e.pointerId); fn(e); });
+  el.addEventListener('pointermove', e => { if (csDrag === k) fn(e); });
+  ['pointerup', 'pointercancel'].forEach(ev => el.addEventListener(ev, () => { csDrag = null; }));
+});
+$('#cs_recent').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; hsv = hex2hsv(b.dataset.c); csApply(); });
+$('#cs_done').onclick = csClose;
+$('#colorSheet').addEventListener('click', e => { if (e.target === $('#colorSheet')) csClose(); });
+(function(){ let y0 = null; const h = $('#cs_handle');
+  h.addEventListener('pointerdown', e => { y0 = e.clientY; h.setPointerCapture(e.pointerId); });
+  h.addEventListener('pointermove', e => { if (y0 !== null && e.clientY - y0 > 60){ y0 = null; csClose(); } });
+  ['pointerup', 'pointercancel'].forEach(ev => h.addEventListener(ev, () => { y0 = null; }));
+})();
+
+const APP_VERSION = '2.6';
 const FEATURES = [
   'A daily timeline built from your wake time, split into seven energy windows',
   'Morning and Night Routines that shrink (optional, then flexible, then core) to fit',
@@ -2195,7 +2299,7 @@ const FEATURES = [
   'Edit a task for one day, from a day onward, or for all days, with weekday and mode limits',
   'Undo, drag and drop, usual day types, energy check-ins and a weekly review',
   'Move, copy, copy a whole day, or push the day later when running late',
-  'Past days stay as they were recorded',
+  'Past days keep their saved record until you edit them',
   'Calendar (.ics) import, light theme and larger text',
   'Backup and restore, installable and works offline'
 ];
@@ -2207,6 +2311,10 @@ const LIMITS = [
   'Fonts need one online load before they work offline'
 ];
 const CHANGELOG = [
+  { v:'2.6', date:'Oct 2026',
+    added:['New color picker: a scrolling row of ring swatches, with a color wheel, brightness slider and recent colors for custom colors'],
+    changed:['Past days can be edited like any other day. The first change rebuilds a saved-record day from your current routines, and Undo brings the record back', 'The line connecting the dots now blends in the middle of the gap, in a smoother color space, and falls back safely for any color'],
+    fixed:['Long-press, tap actions, wake time, modes and Away were locked on past days'] },
   { v:'2.5', date:'Oct 2026',
     added:['Undo bar after deleting, moving, copying or changing a task', 'Usual day types: set Home, School or Away per weekday and new days start with it picked', 'Energy check-ins (1 to 5) with ratings by window and a suggestion for your energy rhythm', 'Task insights: done rate and streak in the task sheet, with a nudge when you skip a task often', 'Timer for any task', 'Weekly review card in History', 'Share backup through the phone share sheet, with a weekly backup reminder', '12-hour or 24-hour clock', 'Drag and drop while editing: drop on a task to reorder, or on the top bar to move to another day or the inbox'],
     changed:['+ Add task shows only while editing is on'] },

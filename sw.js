@@ -1,4 +1,4 @@
-const CACHE = 'yotei-v2-8';
+const CACHE = 'yotei-v2-9';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/icon-180.png', './icons/icon-maskable-512.png', './icon.svg'];
 
 self.addEventListener('install', e => {
