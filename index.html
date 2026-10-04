@@ -223,6 +223,26 @@ body.snap .mode{opacity:.45;pointer-events:none}
 .inbox .inItem>span:first-child{flex:1;text-align:left;font-size:14px}
 .inbox .inAct{display:flex;gap:6px;padding:0}
 .inbox .add{margin-top:10px}
+.scOpts{display:flex;flex-direction:column;gap:8px;margin:12px 0 8px}
+.scOpts button{padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--card2);color:var(--text);font:600 14px 'Manrope',sans-serif;text-align:left;cursor:pointer}
+.noteMark svg{width:14px;height:14px;vertical-align:-2px;margin-left:6px;fill:none;stroke:var(--sec);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sleep .dayTools{margin-top:8px}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(76px + env(safe-area-inset-bottom,0px));z-index:50;max-width:min(92vw,400px);display:none;align-items:center;gap:10px;background:var(--card2);color:var(--text);border:1px solid var(--line);border-radius:12px;padding:10px 8px 10px 16px;box-shadow:var(--shadow);font:600 14px 'Manrope',sans-serif}
+#toast.show{display:flex}
+#toast button{background:none;border:0;color:var(--accent);font:700 14px 'Manrope',sans-serif;padding:6px 10px;cursor:pointer}
+#taskSheet .ea{flex-wrap:wrap}
+#taskSheet .ea button{flex:1 1 30%}
+.sleep .enRow{display:flex;gap:6px;padding:0}
+.enRow button{flex:1;padding:12px 0;border-radius:10px;border:1px solid var(--line);background:var(--card2);color:var(--text);font:700 16px 'Manrope',sans-serif;cursor:pointer}
+.uwb{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:8px 2px;color:var(--text);font:700 12px 'Manrope',sans-serif;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}
+.uwb span{color:var(--sec);font-weight:500;font-size:10px}
+.dragH{touch-action:none;cursor:grab;color:var(--sec);margin-left:8px;padding:6px 4px;letter-spacing:-3px;font-size:16px;user-select:none}
+#dropBar{position:fixed;top:0;left:0;right:0;z-index:60;display:none;gap:6px;padding:calc(8px + env(safe-area-inset-top,0px)) 8px 8px;background:var(--card);border-bottom:1px solid var(--line);overflow-x:auto}
+#dropBar.show{display:flex}
+#dropBar button{flex:0 0 auto;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card2);color:var(--text);font:700 13px 'Manrope',sans-serif}
+#dropBar button.over{outline:2px solid var(--accent);background:var(--accent);color:#06121f}
+#dragGhost{position:fixed;z-index:70;pointer-events:none;display:none;max-width:70vw;background:var(--accent);color:#06121f;border-radius:10px;padding:8px 12px;font:700 13px 'Manrope',sans-serif;box-shadow:var(--shadow);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tlrow.dropRow{outline:2px dashed var(--accent);outline-offset:2px}
 #iconPick{max-height:85vh;overflow:auto}
 .runBtn{display:block;margin:-4px 0 10px auto;padding:8px 14px;font-size:13px;position:relative;z-index:1}
 #runDlg .rStep{color:var(--sec);font-size:13px}
@@ -286,8 +306,8 @@ body.snap .mode{opacity:.45;pointer-events:none}
   </section>
 
   <section id="tab-settings" class="tab" hidden>
-    <div class="sleep"><h2>Editing</h2><p class="wn">Add, change or reorder tasks and blocks from the Home tab. Long-press any task or block to edit it.</p><button class="add" id="editToggle">Turn on editing</button></div>
-    <div class="sleep"><h2>Backup</h2><p class="wn">Your tasks, blocks and history live in this browser only. Export a copy so clearing the browser does not erase them.</p><p class="wn" id="bkInfo"></p><div class="ea"><button id="exp">Export</button><button id="imp">Import</button></div><input type="file" id="impf" accept=".json,application/json" hidden></div>
+    <div class="sleep"><h2>Editing</h2><p class="wn">Tap any task to edit, move, copy or delete it. Turn this on to also show + Add task, Edit block and drag handles, and to open the editor straight from a tap.</p><button class="add" id="editToggle">Turn on editing</button></div>
+    <div class="sleep"><h2>Backup</h2><p class="wn">Your tasks, blocks and history live in this browser only. Export a copy so clearing the browser does not erase them.</p><p class="wn" id="bkInfo"></p><div class="ea"><button id="exp">Export</button><button id="shareBk">Share</button><button id="imp">Import</button></div><input type="file" id="impf" accept=".json,application/json" hidden></div>
     <div class="sleep">
       <h2>Sleep caps</h2>
       <div id="sleep"></div>
@@ -328,6 +348,30 @@ body.snap .mode{opacity:.45;pointer-events:none}
   <label>Custom<input id="e_icon_custom" placeholder="Type a key like 'book', or paste an emoji" maxlength="16"></label>
   <div class="ea"><button id="ip_x">Cancel</button><button id="ip_ok">Use custom</button></div>
 </div></dialog>
+<div id="toast" role="status" aria-live="polite"><span id="toastMsg"></span><button id="toastBtn"></button></div>
+<div id="dropBar"></div><div id="dragGhost"></div>
+<dialog id="scopeDlg"><div class="ef">
+  <h2 id="sc_h"></h2>
+  <p class="wn">Optional: limit it to certain days. Leave empty to cover every day.</p>
+  <div class="days" id="sc_days"></div>
+  <div class="chips" id="sc_modes"></div>
+  <div class="scOpts" id="sc_opts"></div>
+  <div class="ea"><button id="sc_x">Cancel</button></div>
+</div></dialog>
+<dialog id="mvDlg"><div class="ef">
+  <h2 id="mv_h">Move or copy to</h2>
+  <label>Day<input type="date" id="mv_d"></label>
+  <label id="mv_tw">At (optional)<input type="time" id="mv_t"></label>
+  <div class="ea"><button id="mv_inbox">To inbox</button><button id="mv_copy">Copy</button><button id="mv_go">Move</button></div>
+  <div class="ea"><button id="mv_x">Cancel</button></div>
+</div></dialog>
+<dialog id="shDlg"><div class="ef">
+  <h2>Running late?</h2>
+  <p class="wn">Pushes the rest of the day later. Fixed-time tasks stay where they are.</p>
+  <label>Push later by<div class="chips" id="sh_chips"><button type="button" data-m="15">15m</button><button type="button" data-m="30">30m</button><button type="button" data-m="45">45m</button><button type="button" data-m="60">1h</button></div></label>
+  <label>Starting from<input type="time" id="sh_from"></label>
+  <div class="ea"><button id="sh_clear">Clear</button><button id="sh_x">Cancel</button><button id="sh_ok">Apply</button></div>
+</div></dialog>
 <dialog id="setupDlg"><div class="ef">
   <h2>Welcome to Yotei</h2>
   <p class="wn">A few quick choices to get started. You can change all of it later in Settings.</p>
@@ -351,7 +395,8 @@ body.snap .mode{opacity:.45;pointer-events:none}
   <div class="tsHead"><span class="tsIcon" id="ts_icon"></span><div><b id="ts_title"></b><div class="wn" id="ts_time"></div></div></div>
   <p id="ts_details" hidden></p>
   <p class="wn" id="ts_stepsline" hidden></p>
-  <div class="ea"><button id="ts_done"></button><button id="ts_del">Delete</button><button id="ts_dup">Duplicate</button><button id="ts_edit">Edit</button><button id="ts_close">Close</button></div>
+  <p class="wn" id="ts_insight" hidden></p>
+  <div class="ea"><button id="ts_done"></button><button id="ts_timer">Timer</button><button id="ts_move">Move</button><button id="ts_del">Delete</button><button id="ts_dup">Duplicate</button><button id="ts_edit">Edit</button><button id="ts_close">Close</button></div>
 </div></dialog>
 <dialog id="stepsSheet"><div class="ef">
   <b id="ss_title"></b>
@@ -527,11 +572,11 @@ function loadDay(ds){
   const p = planFor(ds);
   wake = p ? p.w : defWake();
   done = { date:ds, ids:p ? (p.d || []).slice() : [] };
-  day = { date:ds, types:p ? { ...(p.t || {}) } : {}, away:p ? !!p.a : false, note:p ? (p.n || '') : '', oneoffs:p && p.o ? p.o.slice() : [], live:!!(p && p.l) };
+  day = { date:ds, types:p ? { ...(p.t || {}) } : usualTypes(ds), away:p ? !!p.a : false, note:p ? (p.n || '') : '', oneoffs:p && p.o ? p.o.slice() : [], live:!!(p && p.l), shift:p && p.s ? p.s : null };
   if (p && p.p) day.prevTypes = p.p;
 }
 function saveDay(){
-  plans[viewDate] = { w:wake, d:done.ids, t:day.types, a:!!day.away, n:day.note || '', p:day.prevTypes || null, o:day.oneoffs || [], l:!!day.live };
+  plans[viewDate] = { w:wake, d:done.ids, t:day.types, a:!!day.away, n:day.note || '', p:day.prevTypes || null, o:day.oneoffs || [], l:!!day.live, s:day.shift || null };
   const ks = Object.keys(plans).sort((a, b) => new Date(a) - new Date(b));
   while (ks.length > 200) delete plans[ks.shift()];
   store.set('plans', plans);
@@ -551,9 +596,11 @@ function setNote(id, txt){
 // ============================================================
 // TIME HELPERS
 // ============================================================
+let CLOCK24 = store.get('clock', '12') === '24';
 function fmt(m){
   m = ((Math.round(m) % 1440) + 1440) % 1440;
   const h = Math.floor(m/60), mm = m % 60;
+  if (CLOCK24) return [String(h).padStart(2,'0') + ':' + String(mm).padStart(2,'0'), ''];
   return [((h+11)%12+1) + ':' + String(mm).padStart(2,'0'), h < 12 ? 'AM' : 'PM'];
 }
 function range(a, b){
@@ -575,9 +622,10 @@ const toVal = m => String(Math.floor(m/60)).padStart(2,'0') + ':' + String(m%60)
 // ============================================================
 function build(dow){
   dow = dow === undefined ? new Date().getDay() : dow;
-  const m1 = typeOf('climb1'), M = MODES[m1 || 'none'], onDay = b => !b.days || b.days.includes(dow);
+  const m1 = typeOf('climb1'), M = MODES[m1 || 'none'], iso = isoLocal(new Date(day.date)), dm = m1 || Object.values(day.types || {})[0] || null, OV = store.get('ovr', {});
+  const eff = b => applyOvr(b, OV, iso, dow, dm), onDay = b => (!b.days || b.days.includes(dow)) && (!b.from || iso >= b.from) && (!b.modes || (dm && b.modes.includes(dm)));
   const ooF = k => (day.oneoffs || []).filter(x => (x.w || 'climb1') === k).map(x => ({ ...x, md:'oo', post:true }));
-  const pre = getBlocks('pre').filter(onDay).concat(ooF('sleep')).map(b => ({ ...b, use:b.d }));
+  const pre = getBlocks('pre').map(eff).filter(Boolean).filter(onDay).concat(ooF('sleep')).map(b => ({ ...b, use:b.d }));
   let msg = M.msg || '', tone = 'ok';
   if (M.deadline !== null){
     const avail = M.deadline - wake, total = pre.reduce((a, b) => a + b.d, 0), leave = fmt(M.deadline).join(' ');
@@ -599,7 +647,9 @@ function build(dow){
     }
   }
   let t = wake; const rows = [];
+  let shd = false; const sh = day.shift, bump = () => { if (sh && !shd && t >= sh.from){ t += sh.by; shd = true; } };
   for (const b of pre){
+    bump();
     const bf = b.p === 'buf';
     rows.push({ ...b, w:bf ? 'climb1' : 'sleep', md:bf ? m1 : b.md, start:t, end:t + b.use }); t += b.use;
   }
@@ -607,7 +657,7 @@ function build(dow){
   for (const k of Object.keys(WIN)){
     const night = k === 'wind', tp = night ? 'night' : typeOf(k), oo = ooF(k);
     if (k === 'sleep' || (!tp && !oo.length)) continue;
-    let list = (tp ? getBlocks(tp).filter(x => (night || (x.w || 'climb1') === k) && onDay(x)) : []).concat(oo);
+    let list = (tp ? getBlocks(tp).map(eff).filter(Boolean).filter(x => (night || (x.w || 'climb1') === k) && onDay(x)) : []).concat(oo);
     if (night){
       t = Math.max(t, wake + wins().wind.from);
       list = list.map(b => ({ ...b, use:b.d }));
@@ -619,6 +669,7 @@ function build(dow){
       }
     }
     for (const b of list){
+      bump();
       const at = b.fixed !== undefined ? b.fixed : t;
       if (b.fixed !== undefined && t > b.fixed){ tone = 'bad'; msg = 'The routine runs past the ' + fmt(b.fixed).join(' ') + ' start. Trim it or wake earlier.'; }
       let use = b.use !== undefined ? b.use : b.d, capCut = false;
@@ -929,7 +980,7 @@ function setBlocks(l, arr){ if (l === 'oo'){ day.oneoffs = arr; saveDay(); retur
 function drawDays(){
   $('#e_days').innerHTML = ['Su','Mo','Tu','We','Th','Fr','Sa'].map((n, i) => '<button type="button" data-i="' + i + '"' + (edDays.includes(i) ? ' class="on"' : '') + '>' + n + '</button>').join('');
 }
-function openEd(l, id, w){
+function openEd(l, id, w, startAt){
   const b = id ? getBlocks(l).find(x => x.id === id) : null;
   if (id && !b) return;
   cur = { l, id, w };
@@ -942,6 +993,7 @@ function openEd(l, id, w){
   $('#e_icon').value = x.icon || ''; updateIconBtn();
   $('#e_color').value = x.color || ''; $('#e_colorCustom').value = x.color || '#4d8ef7'; highlightColor();
   $('#e_f').value = x.fixed !== undefined ? toVal(x.fixed) : '';
+  if (startAt !== undefined && !b){ $('#e_k').value = 'fixedtime'; $('#e_f').value = toVal(startAt); }
   $('#e_details').value = x.details || ''; $('#e_p').value = (x.steps || []).join('\n');
   edDays = x.days ? x.days.slice() : [0,1,2,3,4,5,6]; drawDays();
   ['e_del','e_up','e_dn'].forEach(i => { $('#' + i).style.display = b ? '' : 'none'; });
@@ -1001,6 +1053,9 @@ function openTaskSheet(l, id){
   const r = rows.find(x => x.id === id);
   if (!r) return;
   sheetCtx = { l, id };
+  ['ts_edit', 'ts_del', 'ts_dup', 'ts_move'].forEach(i => { $('#' + i).hidden = snapMode(); });
+  $('#ts_timer').hidden = !(r.use > 0) || r.sug || viewDate !== todayStr() || snapMode();
+  const ins = taskInsight(id); $('#ts_insight').textContent = ins; $('#ts_insight').hidden = !ins;
   const st = WIN_STYLE[r.w] || WIN_STYLE.climb1;
   const cut = r.use === 0 && !r.sug && r.fixed === undefined;
   $('#ts_icon').innerHTML = iconMarkup(r.icon || guessIcon(r.t) || st.i);
@@ -1105,6 +1160,7 @@ $('#e_ok').onclick = () => {
     if (k === 'open') b.p = 'open';
     else if (k !== 'fixedlen'){ b.p = k; b.m = Math.min(d, isNaN(m) ? d : m); }
   }
+  if (cur.l !== 'oo'){ askScope(old ? 'edit' : 'add', { l:cur.l, id:b.id, b, old, w:cur.w }); return; }
   if (old) arr[arr.indexOf(old)] = b; else arr.push(b);
   if (cur.fromInbox) store.set('inbox', store.get('inbox', []).filter(x => x.id !== cur.fromInbox));
   setBlocks(cur.l, arr); $('#ed').close(); render();
@@ -1145,7 +1201,7 @@ function trendsHtml(){
   const top = Object.values(counts).filter(c => c.total >= 2).sort((a, b) => b.done / b.total - a.done / a.total || b.total - a.total).slice(0, 6)
     .map(c => '<div class="trow"><span class="tlab wide">' + esc(c.t) + '</span><div class="tbar"><div class="tfill" style="width:' + Math.round(c.done / c.total * 100) + '%"></div></div><span class="tpct">' + c.done + '/' + c.total + '</span></div>').join('');
   const sk = streaks(H);
-  return '<div class="sleep"><h2>Streaks</h2><p class="streak"><b>' + sk.cur + '</b>day streak, best ' + sk.best + '</p><p class="wn">A day counts when you finish 70% or more of its tasks.</p></div>' + weekHtml(H) + energyHtml(H) + '<div class="sleep"><h2>Completion, last ' + days.length + ' day' + (days.length === 1 ? '' : 's') + '</h2>' + dayRows + '</div>' + (top ? '<div class="sleep"><h2>Most consistent tasks</h2>' + top + '</div>' : '');
+  return '<div class="sleep"><h2>Streaks</h2><p class="streak"><b>' + sk.cur + '</b>day streak, best ' + sk.best + '</p><p class="wn">A day counts when you finish 70% or more of its tasks.</p></div>' + weekHtml(H) + reviewHtml(H) + energyHtml(H) + ratingsHtml() + '<div class="sleep"><h2>Completion, last ' + days.length + ' day' + (days.length === 1 ? '' : 's') + '</h2>' + dayRows + '</div>' + (top ? '<div class="sleep"><h2>Most consistent tasks</h2>' + top + '</div>' : '');
 }
 function histHtml(){
   const H = store.get('hist', {});
@@ -1195,7 +1251,7 @@ function saveHist(){
 function render(){
   drawNav();
   if (document.activeElement !== $('#dnote')) $('#dnote').value = day.note || '';
-  drawInbox();
+  drawInbox(); drawEnergy();
   document.body.classList.toggle('snap', snapMode()); $('#wake').disabled = snapMode(); $('#awayBtn').disabled = snapMode();
   draw();
   $('#trends').innerHTML = trendsHtml();
@@ -1240,7 +1296,7 @@ function draw(){
     const check = r.sug ? '' : '<span class="tlcheck"></span>';
     return '<div class="blk" data-c="' + dotColor + '" data-f="' + frac.toFixed(3) + '"><button class="tlrow' + (dn ? ' done' : '') + (isNow ? ' now' : '') + (cut ? ' cut' : '') + (r.sug ? ' sug' : '') + '" style="--dot:' + dotColor + '" data-id="' + r.id + '" data-l="' + (r.post ? r.md : 'pre') + '" data-locked="' + ((cut || r.fixed !== undefined || r.sug) ? 1 : 0) + '" aria-label="' + esc(r.t) + (cut ? ', skipped' : r.sug ? ', suggestion' : dn ? ', done' : ', not done') + '">'
       + '<span class="tltime">' + timeLbl + '</span><span class="tldot" style="' + dotStyle + '">' + dotIcon + '</span><span class="tlbody"><span class="time">' + (cut ? 'Skipped' : r.sug ? 'Suggestion' : r.fixed !== undefined ? fmt(r.start).join(' ') : range(r.start, r.end)) + tag + sw + '</span>'
-      + '<span class="ttl">' + esc(r.t) + stepBadge + '</span></span>' + check + '</button>' + noteHtml(r) + '</div>';
+      + '<span class="ttl">' + esc(r.t) + stepBadge + (getNote(r.id) ? '<span class="noteMark" aria-label="Has a note">' + ICONS.note + '</span>' : '') + (editing && !snapMode() && !r.snap && r.p !== 'buf' ? '<span class="dragH" aria-label="Drag to move" title="Drag to move">&#8942;&#8942;</span>' : '') + '</span></span>' + check + '</button>' + noteHtml(r) + '</div>';
   };
   function gapRows(rs){
     let out = '';
@@ -1250,7 +1306,7 @@ function draw(){
       if (cur.use > 0 && !cur.sug && next && next.use > 0 && !next.sug && next.start > cur.end){
         const mins = next.start - cur.end, h = Math.floor(mins / 60), m = mins % 60;
         const dur = (h ? h + 'h ' : '') + (m || !h ? m + 'm' : '');
-        out += '<div class="gap"><span class="gaptxt">' + dur + ' free</span>' + (editing ? '<button class="add" data-l="' + (cur.md || 'pre') + '" data-w="' + cur.w + '">+ Add task</button>' : '') + '</div>';
+        out += '<div class="gap"><span class="gaptxt">' + dur + ' free</span>' + (!editing || snapMode() ? '' : '<button class="add" data-l="' + (cur.md || 'pre') + '" data-w="' + cur.w + '" data-s="' + cur.end + '">+ Add task</button>') + '</div>';
       }
     }
     return out;
@@ -1274,7 +1330,7 @@ function draw(){
     if ((k === 'sleep' || k === 'wind') && isToday && rs.some(r => r.use > 0 && !r.sug && !done.ids.includes(r.id))) html += '<button class="add runBtn" data-run="' + k + '">Start ' + esc(WB[k].name.toLowerCase()) + '</button>';
     if (k === 'sleep' || k === 'wind' || t || rs.length){
       html += rs.length ? gapRows(rs) : '<p class="wn">No tasks yet.</p>';
-      if (editing) html += '<button class="add" data-l="' + (k === 'sleep' ? 'pre' : k === 'wind' ? 'night' : t) + '" data-w="' + k + '">+ Add task</button>';
+      if (editing && !snapMode()) html += '<button class="add" data-l="' + (k === 'sleep' ? 'pre' : k === 'wind' ? 'night' : t || 'oo') + '" data-w="' + k + '">+ Add task</button>';
     } else html += '<p class="wn">Choose where you are for this stretch and its tasks appear here.</p>';
     if (editing) html += '<button class="add" data-eb="' + k + '">Edit block</button>';
     return html;
@@ -1324,13 +1380,13 @@ $('#tl').addEventListener('click', e => {
   const ad = e.target.closest('.add');
   if (ad){
     if (ad.dataset.eb) openBlockEd(ad.dataset.eb);
-    else openEd(ad.dataset.l, null, ad.dataset.w);
+    else openEd(ad.dataset.l, null, ad.dataset.w, ad.dataset.s === undefined ? undefined : Number(ad.dataset.s));
     return;
   }
   const sb = e.target.closest('.stepsBtn');
   if (sb){ openStepsSheet(sb.dataset.sid); return; }
   const row = e.target.closest('.tlrow'); if (!row) return;
-  if (editing){ openEd(row.dataset.l, row.dataset.id); return; }
+  if (editing && !snapMode()){ openEd(row.dataset.l, row.dataset.id); return; }
   const chk = e.target.closest('.tlcheck');
   if (chk){
     if (row.dataset.locked === '1') return;
@@ -1447,12 +1503,14 @@ let lpTimer = null, lpFired = false, lpX = 0, lpY = 0;
 function lpClear(){ clearTimeout(lpTimer); lpTimer = null; }
 $('#tl').addEventListener('pointerdown', e => {
   if (e.pointerType === 'mouse' && e.button !== 0) return;
+  if (e.target.closest('.dragH')) return;
   const row = e.target.closest('.tlrow'), head = e.target.closest('.tlhead');
   if (!row && !head) return;
   lpFired = false; lpX = e.clientX; lpY = e.clientY;
   lpTimer = setTimeout(() => {
     lpFired = true;
     if (navigator.vibrate) navigator.vibrate(12);
+    if (snapMode()) return;
     if (row) openEd(row.dataset.l, row.dataset.id); else openBlockEd(head.dataset.k);
   }, 480);
 });
@@ -1583,6 +1641,8 @@ function weekHtml(H){
   return '<div class="sleep"><h2>' + (weekOff === 0 ? 'This week' : weekOff === -1 ? 'Last week' : 'Week view') + '</h2><div class="wkNav"><button data-wk="-1" aria-label="Previous week">&lsaquo;</button><span>' + f(base) + ' to ' + f(end) + '</span><button data-wk="1" aria-label="Next week"' + (weekOff >= 0 ? ' disabled' : '') + '>&rsaquo;</button></div><div class="wk">' + cols + '</div><p class="wn">' + (cnt ? 'Average ' + Math.round(sum / cnt) + '% over ' + cnt + ' tracked day' + (cnt === 1 ? '' : 's') + '. Tap a day to open it.' : 'No tracked days this week.') + '</p></div>';
 }
 $('#trends').addEventListener('click', e => {
+  const ch = e.target.closest('[data-chr]');
+  if (ch){ store.set('chrono', ch.dataset.chr); if ($('#chrSel')) $('#chrSel').value = ch.dataset.chr; render(); $('#trends').innerHTML = trendsHtml(); toast('Energy rhythm updated'); return; }
   const n = e.target.closest('[data-wk]');
   if (n){ if (!n.disabled){ weekOff = Math.min(0, weekOff + Number(n.dataset.wk)); $('#trends').innerHTML = trendsHtml(); } return; }
   const c = e.target.closest('.wcol');
@@ -1687,7 +1747,7 @@ function drawInbox(){
   const keep = $('#inT') ? $('#inT').value : '', list = store.get('inbox', []);
   el.innerHTML = '<h2>Inbox</h2><p class="wn">Capture a task now. Schedule it when you know when.</p><div class="inRow"><input id="inT" placeholder="Add a task" maxlength="80" aria-label="New inbox task"><button id="inAdd">Add</button></div>' +
     list.map(x => '<div class="inItem"><span>' + esc(x.t) + '</span><span class="inAct"><button data-sch="' + x.id + '">Schedule</button><button data-rm="' + x.id + '" aria-label="Delete ' + esc(x.t) + '">&times;</button></span></div>').join('') +
-    '<button class="add" id="ooNew">New one-off task for this day</button>';
+    (snapMode() ? '' : '<button class="add" id="ooNew">New one-off task for this day</button><div class="inRow dayTools"><button id="cpDay">Copy this day</button><button id="lateBtn">' + (day.shift ? 'Pushed ' + day.shift.by + ' min later' : 'Running late?') + '</button></div>');
   $('#inT').value = keep;
 }
 $('#inboxCard').addEventListener('click', e => {
@@ -1696,11 +1756,13 @@ $('#inboxCard').addEventListener('click', e => {
     const v = $('#inT').value.trim(); if (!v) return;
     const l = store.get('inbox', []); l.push({ id:'i' + Date.now().toString(36), t:v }); store.set('inbox', l);
     $('#inT').value = ''; drawInbox();
-  } else if (b.dataset.rm){ store.set('inbox', store.get('inbox', []).filter(x => x.id !== b.dataset.rm)); drawInbox(); }
+  } else if (b.dataset.rm){ const _s = grab(); store.set('inbox', store.get('inbox', []).filter(x => x.id !== b.dataset.rm)); drawInbox(); showUndo('Removed from inbox', _s); }
   else if (b.dataset.sch){
     const it = store.get('inbox', []).find(x => x.id === b.dataset.sch);
     if (it){ openEd('oo', null, defaultWin()); $('#e_t').value = it.t; cur.fromInbox = it.id; }
   } else if (b.id === 'ooNew') openEd('oo', null, defaultWin());
+  else if (b.id === 'cpDay') openMv('day');
+  else if (b.id === 'lateBtn') openShift();
 });
 $('#inboxCard').addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.id === 'inT'){ e.preventDefault(); $('#inAdd').click(); } });
 
@@ -1765,12 +1827,13 @@ function applyLook(){
 const selOpts = (arr, cur) => arr.map(o => '<option value="' + o[0] + '"' + (o[0] === cur ? ' selected' : '') + '>' + o[1] + '</option>').join('');
 $('#tab-settings').insertAdjacentHTML('beforeend',
   '<div class="sleep"><h2>Energy rhythm</h2><p class="wn">Shifts when your energy windows start: 30 min earlier, as planned, or 45 min later.</p><div class="capRow"><label for="chrSel">Rhythm</label><select id="chrSel">' + selOpts([['early', 'Early bird'], ['normal', 'In between'], ['late', 'Night owl']], store.get('chrono', 'normal')) + '</select></div></div>' +
-  '<div class="sleep"><h2>Appearance</h2><div class="capRow"><label for="thSel">Theme</label><select id="thSel">' + selOpts([['dark', 'Dark'], ['light', 'Light'], ['auto', 'Match device']], store.get('theme', 'dark')) + '</select></div><div class="capRow"><label for="txSel">Text size</label><select id="txSel">' + selOpts([['normal', 'Normal'], ['large', 'Large']], store.get('text', 'normal')) + '</select></div></div>' +
+  '<div class="sleep"><h2>Appearance</h2><div class="capRow"><label for="thSel">Theme</label><select id="thSel">' + selOpts([['dark', 'Dark'], ['light', 'Light'], ['auto', 'Match device']], store.get('theme', 'dark')) + '</select></div><div class="capRow"><label for="clkSel">Clock</label><select id="clkSel">' + selOpts([['12', '12-hour'], ['24', '24-hour']], store.get('clock', '12')) + '</select></div><div class="capRow"><label for="txSel">Text size</label><select id="txSel">' + selOpts([['normal', 'Normal'], ['large', 'Large']], store.get('text', 'normal')) + '</select></div></div>' +
   '<div class="sleep"><h2>Calendar import</h2><p class="wn">Import a .ics file from Google, Apple or Outlook calendar. Timed events become fixed-time one-off tasks (30 days back, 90 ahead, in your device time zone). All-day events are skipped, and recurring events import only their first occurrence.</p><button class="add" id="icsBtn">Choose .ics file</button><input type="file" id="icsF" accept=".ics,text/calendar" hidden></div>');
 $('#tab-settings').addEventListener('change', e => {
   if (e.target.id === 'chrSel'){ store.set('chrono', e.target.value); render(); }
   else if (e.target.id === 'thSel'){ store.set('theme', e.target.value); applyLook(); }
   else if (e.target.id === 'txSel'){ store.set('text', e.target.value); applyLook(); }
+  else if (e.target.id === 'clkSel'){ store.set('clock', e.target.value); CLOCK24 = e.target.value === '24'; drawClock(); render(); }
 });
 $('#icsBtn').addEventListener('click', () => $('#icsF').click());
 $('#icsF').addEventListener('change', e => {
@@ -1799,7 +1862,324 @@ $('#su_ok').onclick = () => {
 };
 $('#su_skip').onclick = () => { store.set('setup', true); $('#setupDlg').close(); };
 
-const APP_VERSION = '2.3';
+// ============================================================
+// SCOPED EDITS, MOVE / COPY, COPY DAY, RUNNING LATE
+// ============================================================
+function applyOvr(b, OV, iso, dow, dm){
+  const L = OV[b.id]; if (!L) return b;
+  let x = b, ch = false;
+  for (const e of L){
+    if ((e.from && iso < e.from) || (e.to && iso > e.to) || (e.days && !e.days.includes(dow)) || (e.modes && !(dm && e.modes.includes(dm)))) continue;
+    if (e.patch === null) return null;
+    x = { ...x, ...e.patch }; ch = true;
+  }
+  if (ch) Object.keys(x).forEach(k => { if (x[k] === null) delete x[k]; });
+  return x;
+}
+function diffBlock(o, n){
+  const p = {};
+  new Set([...Object.keys(o), ...Object.keys(n)]).forEach(k => {
+    if (k !== 'id' && JSON.stringify(o[k]) !== JSON.stringify(n[k])) p[k] = n[k] === undefined ? null : n[k];
+  });
+  return p;
+}
+let scopeCtx = null, scDays = [], scModes = [];
+function drawScChips(){
+  $('#sc_days').innerHTML = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((n, i) => '<button type="button" data-i="' + i + '"' + (scDays.includes(i) ? ' class="on"' : '') + '>' + n + '</button>').join('');
+  $('#sc_modes').innerHTML = ['home', 'school', 'away'].map(m => '<button type="button" data-m="' + m + '"' + (scModes.includes(m) ? ' class="on"' : '') + '>' + MODE_LABEL[m] + ' days</button>').join('');
+}
+function askScope(type, ctx){
+  scopeCtx = { type, ...ctx }; scDays = []; scModes = [];
+  const when = new Date(viewDate).toLocaleDateString(undefined, { weekday:'short', month:'short', day:'numeric' });
+  $('#sc_h').textContent = type === 'delete' ? 'Delete this task for' : type === 'add' ? 'Add this task to' : 'Apply this change to';
+  $('#sc_opts').innerHTML = [['day', 'Only this day (' + when + ')'], ['from', 'This day and the days after'], ['all', 'All days']].map(a => '<button data-sc="' + a[0] + '">' + a[1] + '</button>').join('');
+  $('#sc_modes').style.display = (ctx.l === 'pre' || ctx.l === 'night') ? '' : 'none';
+  drawScChips(); $('#scopeDlg').showModal();
+}
+function applyScope(sc){ const _s = grab(), ty = scopeCtx && scopeCtx.type; applyScope0(sc); showUndo(ty === 'delete' ? 'Task deleted' : ty === 'add' ? 'Task added' : 'Task updated', _s); }
+function applyScope0(sc){
+  const c = scopeCtx; if (!c) return;
+  const iso = isoLocal(new Date(viewDate)), filt = {}, OV = store.get('ovr', {}), arr = clone(getBlocks(c.l));
+  if (scDays.length) filt.days = scDays.slice().sort();
+  if (scModes.length && (c.l === 'pre' || c.l === 'night')) filt.modes = scModes.slice();
+  const hasFilt = !!(filt.days || filt.modes), push = (id, e) => { (OV[id] = OV[id] || []).push(e); };
+  const range_ = { from:sc === 'all' ? null : iso, to:sc === 'day' ? iso : null };
+  if (c.type === 'add'){
+    if (sc === 'day'){
+      const o = { ...c.b, w:c.w || (c.l === 'pre' ? 'sleep' : c.l === 'night' ? 'wind' : 'climb1') };
+      delete o.days; delete o.modes;
+      day.oneoffs = (day.oneoffs || []).concat(o); saveDay();
+    } else {
+      const b = { ...c.b, ...filt }; if (sc === 'from') b.from = iso;
+      arr.push(b); setBlocks(c.l, arr);
+    }
+  } else if (c.type === 'delete'){
+    if (sc === 'all' && !hasFilt){ setBlocks(c.l, arr.filter(x => x.id !== c.id)); delete OV[c.id]; }
+    else push(c.id, { ...range_, ...filt, patch:null });
+  } else {
+    const patch = diffBlock(c.old, c.b);
+    if (Object.keys(patch).length){
+      if (sc === 'all' && !hasFilt){
+        arr[arr.findIndex(x => x.id === c.id)] = c.b; setBlocks(c.l, arr);
+        (OV[c.id] || []).forEach(e => { if (e.patch) Object.keys(patch).forEach(k => delete e.patch[k]); });
+        OV[c.id] = (OV[c.id] || []).filter(e => e.patch === null || Object.keys(e.patch).length);
+        if (!OV[c.id].length) delete OV[c.id];
+      } else push(c.id, { ...range_, ...filt, patch });
+    }
+  }
+  store.set('ovr', OV); scopeCtx = null; $('#scopeDlg').close(); $('#ed').close(); render();
+}
+$('#sc_days').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; const i = Number(b.dataset.i); scDays = scDays.includes(i) ? scDays.filter(x => x !== i) : scDays.concat(i); drawScChips(); });
+$('#sc_modes').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; const m = b.dataset.m; scModes = scModes.includes(m) ? scModes.filter(x => x !== m) : scModes.concat(m); drawScChips(); });
+$('#sc_opts').addEventListener('click', e => { const b = e.target.closest('button'); if (b) applyScope(b.dataset.sc); });
+$('#sc_x').onclick = () => $('#scopeDlg').close();
+$('#e_del').onclick = () => {
+  if (cur.l === 'oo'){ const _s = grab(); setBlocks('oo', clone(getBlocks('oo')).filter(x => x.id !== cur.id)); $('#ed').close(); render(); showUndo('Task deleted', _s); return; }
+  askScope('delete', { l:cur.l, id:cur.id });
+};
+$('#ts_del').onclick = () => {
+  if (sheetCtx.l === 'oo'){ if (!confirm('Delete this task?')) return; const _s = grab(); setBlocks('oo', clone(getBlocks('oo')).filter(x => x.id !== sheetCtx.id)); $('#taskSheet').close(); render(); showUndo('Task deleted', _s); return; }
+  $('#taskSheet').close(); askScope('delete', { l:sheetCtx.l, id:sheetCtx.id });
+};
+
+// ---- move / copy a task, copy a day ----
+function winAt(n){ const WB = wins(); let w = 'climb1'; for (const k of Object.keys(WB)) if (n >= WB[k].from && n < WB[k].to) w = k; return w; }
+function addOneOff(ds, o){
+  if (ds === viewDate){ day.oneoffs = (day.oneoffs || []).concat(o); saveDay(); return; }
+  const p = plans[ds] || planFor(ds) || { w:defWake(), d:[], t:{}, a:false, n:'' };
+  p.o = (p.o || []).concat(o); plans[ds] = p; store.set('plans', plans);
+}
+let mvMode = 'task', shBy = 15;
+function openMv(mode){
+  mvMode = mode;
+  const t = new Date(viewDate); t.setDate(t.getDate() + 1);
+  $('#mv_d').value = isoLocal(t); $('#mv_t').value = '';
+  $('#mv_h').textContent = mode === 'day' ? 'Copy this day to' : 'Move or copy to';
+  ['mv_tw', 'mv_inbox', 'mv_copy'].forEach(i => { $('#' + i).style.display = mode === 'day' ? 'none' : ''; });
+  $('#mv_go').textContent = mode === 'day' ? 'Copy day' : 'Move';
+  $('#mvDlg').showModal();
+}
+function mvDate(){ const v = $('#mv_d').value; if (!v) return null; const [y, m, d] = v.split('-').map(Number); return new Date(y, m - 1, d).toDateString(); }
+function mvDo(kind){ const _s = grab(); mvDo0(kind); showUndo(kind === 'copy' ? 'Copied' : kind === 'inbox' ? 'Moved to inbox' : 'Moved', _s); }
+function mvDo0(kind){
+  const r = schedule().rows.find(x => x.id === sheetCtx.id); if (!r) return;
+  const ds = kind === 'inbox' ? null : mvDate(); if (kind !== 'inbox' && !ds) return;
+  const o = { id:'o' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), t:r.t, d:r.d !== undefined ? r.d : r.use };
+  ['m', 'p', 'sug', 'icon', 'color', 'details', 'steps', 'fixed'].forEach(k => { if (r[k] !== undefined) o[k] = r[k]; });
+  const tm = $('#mv_t').value;
+  if (tm){ const [h, mi] = tm.split(':').map(Number); o.fixed = h * 60 + mi; if (!o.d) o.d = 20; }
+  if (ds) o.w = o.fixed !== undefined ? winAt(o.fixed - ((planFor(ds) || {}).w ?? defWake())) : (r.w || 'climb1');
+  const removeHere = () => {
+    if (sheetCtx.l === 'oo') day.oneoffs = (day.oneoffs || []).filter(x => x.id !== sheetCtx.id);
+    else { const OV = store.get('ovr', {}), iso = isoLocal(new Date(viewDate)); (OV[sheetCtx.id] = OV[sheetCtx.id] || []).push({ from:iso, to:iso, patch:null }); store.set('ovr', OV); }
+  };
+  if (kind === 'inbox'){ const l = store.get('inbox', []); l.push({ id:'i' + Date.now().toString(36), t:r.t }); store.set('inbox', l); removeHere(); }
+  else { if (kind === 'move') removeHere(); addOneOff(ds, o); }
+  saveDay(); $('#mvDlg').close(); render();
+}
+function copyDay(src, dst){
+  const p = src === viewDate ? { w:wake, t:day.types, a:day.away, o:day.oneoffs || [], s:day.shift } : (planFor(src) || {});
+  plans[dst] = { w:p.w ?? defWake(), d:[], t:{ ...(p.t || {}) }, a:!!p.a, n:'', p:null, o:(p.o || []).map(x => ({ ...x, id:x.id + 'c' + Math.random().toString(36).slice(2, 5) })), l:false, s:p.s || null };
+  const OV = store.get('ovr', {}), si = isoLocal(new Date(src)), di = isoLocal(new Date(dst));
+  Object.keys(OV).forEach(id => OV[id].filter(e => e.from === si && e.to === si).forEach(e => OV[id].push({ ...e, from:di, to:di })));
+  store.set('ovr', OV); store.set('plans', plans);
+}
+$('#ts_move').onclick = () => { $('#taskSheet').close(); openMv('task'); };
+$('#mv_go').onclick = () => {
+  if (mvMode === 'task'){ mvDo('move'); return; }
+  const ds = mvDate(); if (!ds) return;
+  if (ds === viewDate){ alert('Pick a different day.'); return; }
+  if (plans[ds] && !confirm('That day already has a plan. Replace it?')) return;
+  const _s = grab(); copyDay(viewDate, ds); $('#mvDlg').close(); goDate(ds); showUndo('Day copied', _s);
+};
+$('#mv_copy').onclick = () => mvDo('copy');
+$('#mv_inbox').onclick = () => mvDo('inbox');
+$('#mv_x').onclick = () => $('#mvDlg').close();
+
+// ---- running late ----
+function openShift(){
+  shBy = day.shift ? day.shift.by : 15;
+  $('#sh_from').value = toVal(day.shift ? day.shift.from : (viewDate === todayStr() ? nowM() : wake));
+  document.querySelectorAll('#sh_chips button').forEach(b => b.classList.toggle('on', Number(b.dataset.m) === shBy));
+  $('#sh_clear').style.display = day.shift ? '' : 'none';
+  $('#shDlg').showModal();
+}
+$('#sh_chips').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; shBy = Number(b.dataset.m); document.querySelectorAll('#sh_chips button').forEach(x => x.classList.toggle('on', x === b)); });
+$('#sh_ok').onclick = () => { const [h, m] = ($('#sh_from').value || '00:00').split(':').map(Number); day.shift = { from:h * 60 + m, by:shBy }; saveDay(); $('#shDlg').close(); render(); };
+$('#sh_clear').onclick = () => { day.shift = null; saveDay(); $('#shDlg').close(); render(); };
+$('#sh_x').onclick = () => $('#shDlg').close();
+
+// ============================================================
+// UNDO + TOASTS, USUAL DAYS, ENERGY CHECK-INS, TASK INSIGHTS,
+// ANY-TASK TIMER, WEEKLY REVIEW, SHARE BACKUP, DRAG AND DROP
+// ============================================================
+let toastT = null;
+function toast(msg, label, fn){
+  $('#toastMsg').textContent = msg;
+  const b = $('#toastBtn'); b.style.display = label ? '' : 'none'; b.textContent = label || '';
+  b.onclick = () => { $('#toast').classList.remove('show'); if (fn) fn(); };
+  $('#toast').classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => $('#toast').classList.remove('show'), 7000);
+}
+const UNDO_KEYS = ['blocks', 'ovr', 'plans', 'inbox', 'taskNotes'];
+function grab(){ const s = {}; UNDO_KEYS.forEach(k => { s[k] = localStorage.getItem('yotei_v2_' + k); }); return s; }
+function showUndo(msg, s){
+  toast(msg, 'Undo', () => {
+    UNDO_KEYS.forEach(k => { if (s[k] === null) localStorage.removeItem('yotei_v2_' + k); else localStorage.setItem('yotei_v2_' + k, s[k]); });
+    plans = store.get('plans', {}); loadDay(viewDate); render();
+  });
+}
+
+function usualTypes(ds){
+  const m = store.get('usual', {})[new Date(ds).getDay()]; if (!m) return {};
+  const t = {}; ['climb1', 'peak', 'trough', 'climb2', 'wmz'].forEach(k => { t[k] = k === 'wmz' && m === 'school' ? 'home' : m; }); return t;
+}
+function drawUsual(){
+  const U = store.get('usual', {}), nm = { '': 'None', home:'Home', school:'School', away:'Away' };
+  $('#usualGrid').innerHTML = [1, 2, 3, 4, 5, 6, 0].map(i => '<button class="uwb" data-i="' + i + '"><b>' + ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'][i] + '</b><span>' + nm[U[i] || ''] + '</span></button>').join('');
+}
+$('#tab-settings').insertAdjacentHTML('beforeend', '<div class="sleep"><h2>Usual days</h2><p class="wn">Tap a weekday to set where you usually are. New days start with it already picked.</p><div class="wk" id="usualGrid"></div></div>');
+drawUsual();
+$('#usualGrid').addEventListener('click', e => {
+  const b = e.target.closest('.uwb'); if (!b) return;
+  const U = store.get('usual', {}), order = ['', 'home', 'school', 'away'], i = b.dataset.i;
+  U[i] = order[(order.indexOf(U[i] || '') + 1) % 4]; if (!U[i]) delete U[i];
+  store.set('usual', U); drawUsual();
+});
+
+$('#inboxCard').insertAdjacentHTML('beforebegin', '<div class="sleep" id="energyCard"></div>');
+function drawEnergy(){
+  const el = $('#energyCard'); if (!el) return;
+  if (viewDate !== todayStr() || snapMode()){ el.style.display = 'none'; return; }
+  el.style.display = '';
+  const L = store.get('energy', []), last = L[L.length - 1], names = ['Drained', 'Low', 'Okay', 'Good', 'Great'];
+  el.innerHTML = '<h2>How is your energy?</h2><div class="enRow">' + names.map((n, i) => '<button data-en="' + (i + 1) + '" aria-label="' + (i + 1) + ', ' + n + '">' + (i + 1) + '</button>').join('') + '</div><p class="wn">1 is drained, 5 is great. ' + (last ? 'Last: ' + last.v + ' at ' + fmt(last.at).join(' ') + '.' : 'A few ratings a day teach Yotei your rhythm.') + '</p>';
+}
+$('#energyCard').addEventListener('click', e => {
+  const b = e.target.closest('[data-en]'); if (!b) return;
+  const L = store.get('energy', []); L.push({ v:Number(b.dataset.en), at:nowM(), o:nowM() - wake, w:defaultWin(), d:todayStr() });
+  store.set('energy', L.slice(-500)); toast('Energy ' + b.dataset.en + ' saved'); drawEnergy();
+});
+function ratingsHtml(){
+  const L = store.get('energy', []); if (L.length < 5) return '';
+  const WB = wins(), by = {};
+  L.forEach(r => { const o = by[r.w] || (by[r.w] = { s:0, n:0 }); o.s += r.v; o.n++; });
+  const ks = Object.keys(by).filter(k => WB[k] && by[k].n >= 2).sort((a, b) => by[b].s / by[b].n - by[a].s / by[a].n);
+  if (ks.length < 2) return '';
+  const av = k => by[k].s / by[k].n, hi = L.filter(r => r.v >= 4); let sug = '';
+  if (hi.length >= 6){
+    const diff = hi.reduce((a, r) => a + r.o, 0) / hi.length - (WIN.peak.from + WIN.peak.to) / 2, want = diff <= -25 ? 'early' : diff >= 30 ? 'late' : 'normal';
+    if (want !== store.get('chrono', 'normal')) sug = '<p class="wn">Your high-energy ratings cluster ' + (diff < 0 ? 'earlier' : 'later') + ' than the default. <button class="add" data-chr="' + want + '">Use ' + ({ early:'Early bird', normal:'In between', late:'Night owl' })[want] + '</button></p>';
+  }
+  return '<div class="sleep"><h2>Your energy ratings</h2><p class="wn">Strongest in ' + esc(WB[ks[0]].name) + ' (' + av(ks[0]).toFixed(1) + ' of 5), weakest in ' + esc(WB[ks[ks.length - 1]].name) + '.</p>' +
+    ks.map(k => '<div class="trow"><span class="tlab wide">' + esc(WB[k].name) + '</span><div class="tbar"><div class="tfill" style="width:' + Math.round(av(k) / 5 * 100) + '%"></div></div><span class="tpct">' + av(k).toFixed(1) + '</span></div>').join('') + sug + '</div>';
+}
+
+function taskInsight(id){
+  const H = store.get('hist', {}), days = Object.keys(H).sort((a, b) => new Date(b) - new Date(a));
+  let tot = 0, dn = 0, streak = 0, live = true;
+  days.forEach(d => {
+    const r = (H[d].rows || []).find(x => x.id === id && x.u > 0 && !x.sug); if (!r) return;
+    if (d === todayStr() && !r.done) return;
+    tot++; if (r.done){ dn++; if (live) streak++; } else live = false;
+  });
+  if (tot < 3) return '';
+  const pc = Math.round(dn / tot * 100);
+  return 'Done ' + dn + ' of ' + tot + ' days (' + pc + '%)' + (streak > 1 ? ', ' + streak + ' in a row' : '') + '.' + (tot >= 5 && pc < 40 ? ' You skip this often. Try shortening it or moving it to another window.' : '');
+}
+$('#ts_timer').onclick = () => {
+  const r = schedule().rows.find(x => x.id === sheetCtx.id); $('#taskSheet').close();
+  if (!r || !(r.use > 0)) return;
+  run = { k:r.w, q:[r], i:0, left:r.use * 60, paused:false, last:Date.now(), beeped:false };
+  runDraw(); $('#runDlg').showModal();
+  clearInterval(runTimer); runTimer = setInterval(runTick, 250);
+  try{ if (navigator.wakeLock) navigator.wakeLock.request('screen').then(l => { wakeLock = l; }).catch(() => {}); }catch{}
+};
+
+function reviewHtml(H){
+  const base = new Date(mondayOf(todayStr())); base.setDate(base.getDate() + weekOff * 7);
+  let sum = 0, cnt = 0, bestD = null, bestP = -1; const skip = {}, win = {};
+  for (let i = 0; i < 7; i++){
+    const d = new Date(base); d.setDate(base.getDate() + i);
+    const h = H[d.toDateString()]; if (!h) continue;
+    const p = dayPct(h); if (p === null) continue;
+    sum += p; cnt++; if (p > bestP){ bestP = p; bestD = d; }
+    (h.rows || []).forEach(r => {
+      if (r.u <= 0 || r.sug) return;
+      if (!r.done) skip[r.t] = (skip[r.t] || 0) + 1;
+      if (r.w){ const o = win[r.w] || (win[r.w] = { d:0, t:0 }); o.t++; if (r.done) o.d++; }
+    });
+  }
+  if (cnt < 3) return '';
+  const WB = wins(), avg = Math.round(sum / cnt * 100);
+  const sk = Object.entries(skip).filter(x => x[1] >= 2).sort((a, b) => b[1] - a[1]).slice(0, 3);
+  const wk = Object.keys(win).filter(k => win[k].t >= 3 && WB[k]).sort((a, b) => win[b].d / win[b].t - win[a].d / win[a].t);
+  const tip = avg < 50 ? 'A lighter plan might serve you better. Shorten or drop the most-skipped tasks.' : avg >= 80 ? 'Strong week. Keep what works, and maybe add one stretch goal.' : 'Solid. Put your hardest task in your strongest window.';
+  return '<div class="sleep about"><h2>Weekly review</h2><ul><li>Average completion ' + avg + '% over ' + cnt + ' tracked days.</li><li>Best day: ' + bestD.toLocaleDateString(undefined, { weekday:'long' }) + ' (' + Math.round(bestP * 100) + '%).</li>' +
+    (wk.length ? '<li>Strongest window: ' + esc(WB[wk[0]].name) + '.</li>' : '') + (sk.length ? '<li>Most skipped: ' + sk.map(x => esc(x[0]) + ' (' + x[1] + 'x)').join(', ') + '.</li>' : '') + '</ul><p>' + tip + '</p></div>';
+}
+
+function backupJson(){
+  const o = {};
+  for (let i = 0; i < localStorage.length; i++){ const k = localStorage.key(i); if (k && k.startsWith('yotei_v2_')) o[k] = localStorage.getItem(k); }
+  return JSON.stringify({ app:'yotei', v:2, data:o });
+}
+async function shareBackup(){
+  const f = new File([backupJson()], 'yotei-backup-' + new Date().toISOString().slice(0, 10) + '.json', { type:'application/json' });
+  if (navigator.canShare && navigator.canShare({ files:[f] })){
+    try{ await navigator.share({ files:[f], title:'Yotei backup' }); store.set('lastBackup', Date.now()); updateBackupInfo(); return; }
+    catch(e){ if (e && e.name === 'AbortError') return; }
+  }
+  exportData();
+}
+$('#shareBk').addEventListener('click', shareBackup);
+
+// ---- drag and drop (edit mode): drop on a task to reorder, on the top bar to move ----
+let drag = null;
+const dragMove = e => { const g = $('#dragGhost'); g.style.left = (e.clientX - 20) + 'px'; g.style.top = (e.clientY - 46) + 'px'; };
+document.addEventListener('pointerdown', e => {
+  const h = e.target.closest && e.target.closest('.dragH'); if (!h) return;
+  if (e.pointerType === 'mouse' && e.button !== 0) return;
+  const row = h.closest('.tlrow'); e.preventDefault(); lpClear(); lpFired = true;
+  drag = { id:row.dataset.id, l:row.dataset.l };
+  const base = new Date(viewDate);
+  $('#dropBar').innerHTML = '<button data-inbox="1">Inbox</button>' + [1, 2, 3, 4, 5, 6, 7].map(i => { const d = new Date(base); d.setDate(base.getDate() + i); return '<button data-day="' + isoLocal(d) + '">' + d.toLocaleDateString(undefined, { weekday:'short' }) + ' ' + d.getDate() + '</button>'; }).join('');
+  $('#dropBar').classList.add('show');
+  const g = $('#dragGhost'); g.textContent = row.querySelector('.ttl').textContent.replace(/\s+/g, ' ').trim(); g.style.display = 'block'; dragMove(e);
+});
+document.addEventListener('pointermove', e => {
+  if (!drag) return;
+  e.preventDefault(); dragMove(e);
+  if (e.clientY < 120) window.scrollBy(0, -12); else if (e.clientY > innerHeight - 140) window.scrollBy(0, 12);
+  document.querySelectorAll('#dropBar .over, .dropRow').forEach(x => x.classList.remove('over', 'dropRow'));
+  const el = document.elementFromPoint(e.clientX, e.clientY); if (!el) return;
+  const chip = el.closest('#dropBar button'), row = el.closest('.tlrow');
+  if (chip) chip.classList.add('over'); else if (row && row.dataset.id !== drag.id) row.classList.add('dropRow');
+}, { passive:false });
+function dragEnd(e, cancel){
+  if (!drag) return;
+  const d = drag; drag = null;
+  const el = cancel ? null : document.elementFromPoint(e.clientX, e.clientY);
+  const chip = el && el.closest('#dropBar button'), tgt = el && el.closest('.tlrow');
+  $('#dropBar').classList.remove('show'); $('#dragGhost').style.display = 'none';
+  document.querySelectorAll('#dropBar .over, .dropRow').forEach(x => x.classList.remove('over', 'dropRow'));
+  if (!el) return;
+  if (chip){
+    sheetCtx = { l:d.l, id:d.id };
+    if (chip.dataset.inbox) mvDo('inbox');
+    else { if (chip.dataset.day === isoLocal(new Date(viewDate))) return; $('#mv_d').value = chip.dataset.day; $('#mv_t').value = ''; mvDo('move'); }
+  } else if (tgt && tgt.dataset.id !== d.id) reorderBlock(d.l, d.id, tgt.dataset.id, tgt.dataset.l);
+}
+document.addEventListener('pointerup', e => dragEnd(e, false));
+document.addEventListener('pointercancel', e => dragEnd(e, true));
+function reorderBlock(l, id, beforeId, tl){
+  if (l !== tl){ toast('Drop it on a task in the same list.'); return; }
+  const _s = grab(), arr = clone(getBlocks(l)), i = arr.findIndex(x => x.id === id), j = arr.findIndex(x => x.id === beforeId), wk = x => x.w || 'climb1';
+  if (i < 0 || j < 0 || wk(arr[i]) !== wk(arr[j])){ toast('Drop it on a task in the same window.'); return; }
+  const [x] = arr.splice(i, 1); arr.splice(arr.findIndex(z => z.id === beforeId), 0, x);
+  setBlocks(l, arr); render(); showUndo(l === 'oo' ? 'Reordered' : 'Reordered for all days', _s);
+}
+
+const APP_VERSION = '2.5';
 const FEATURES = [
   'A daily timeline built from your wake time, split into seven energy windows',
   'Morning and Night Routines that shrink (optional, then flexible, then core) to fit',
@@ -1812,6 +2192,9 @@ const FEATURES = [
   'Run mode that counts you through a routine step by step',
   'Streaks, a weekly view, routine templates and reminders',
   'One-off tasks and an inbox for things that happen once',
+  'Edit a task for one day, from a day onward, or for all days, with weekday and mode limits',
+  'Undo, drag and drop, usual day types, energy check-ins and a weekly review',
+  'Move, copy, copy a whole day, or push the day later when running late',
   'Past days stay as they were recorded',
   'Calendar (.ics) import, light theme and larger text',
   'Backup and restore, installable and works offline'
@@ -1824,6 +2207,12 @@ const LIMITS = [
   'Fonts need one online load before they work offline'
 ];
 const CHANGELOG = [
+  { v:'2.5', date:'Oct 2026',
+    added:['Undo bar after deleting, moving, copying or changing a task', 'Usual day types: set Home, School or Away per weekday and new days start with it picked', 'Energy check-ins (1 to 5) with ratings by window and a suggestion for your energy rhythm', 'Task insights: done rate and streak in the task sheet, with a nudge when you skip a task often', 'Timer for any task', 'Weekly review card in History', 'Share backup through the phone share sheet, with a weekly backup reminder', '12-hour or 24-hour clock', 'Drag and drop while editing: drop on a task to reorder, or on the top bar to move to another day or the inbox'],
+    changed:['+ Add task shows only while editing is on'] },
+  { v:'2.4', date:'Oct 2026',
+    added:['Scoped edits: changing or deleting a routine task asks whether it applies to only this day, this day and the days after, or all days', 'Limit a change to certain weekdays, or to Home, School or Away days', 'Adding a task asks the same, so a one-day task becomes a one-off', '+ Add task in a free gap starts with the gap time filled in (while editing is on)', 'Move or copy a task to another day, a new time, or the inbox', 'Copy a whole day to another date', 'Running late: push the rest of the day later', 'A small note symbol on tasks that have a note'],
+    changed:['Tasks can be edited by tapping them, with no editing mode needed', 'Past days with a saved record are protected from edits until you rebuild them'] },
   { v:'2.3', date:'Oct 2026',
     added:['One-off tasks for a single date, plus an Inbox for quick capture', 'Calendar import from .ics files', 'Energy rhythm setting (early bird, in between, night owl) and a History card showing which window you finish the most in', 'First-run setup for wake time, rhythm and routine templates', 'Home screen shortcuts: Start morning routine, Today and Inbox', 'Light theme and a larger text option'],
     changed:['Past days now show the saved record of that day, with a button to rebuild from your current routines'],
@@ -1893,12 +2282,13 @@ function migrateV3(){  // add the new Away suggestions to an Away list you alrea
 }
 function updateBackupInfo(){
   const t = store.get('lastBackup', 0), d = t ? Math.floor((Date.now() - t) / 864e5) : null;
-  const needs = (d === null || d >= 14) && Object.keys(store.get('hist', {})).length >= 3;
+  const needs = (d === null || d >= 7) && Object.keys(store.get('hist', {})).length >= 3;
   $('#bkInfo').textContent = d === null ? 'No backup yet.' : d === 0 ? 'Last backup: today.' : 'Last backup: ' + d + ' day' + (d === 1 ? '' : 's') + ' ago.';
   $('#settingsBtn').classList.toggle('nudge', needs);
   $('#settingsBtn').setAttribute('aria-label', needs ? 'Settings, backup suggested' : 'Settings');
 }
 updateBackupInfo();
+if ($('#settingsBtn').classList.contains('nudge') && store.get('bkAsk', '') !== todayStr()){ store.set('bkAsk', todayStr()); setTimeout(() => toast('Time for a backup. Your data lives only on this device.', 'Back up', shareBackup), 1500); }
 if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
 
 if ('serviceWorker' in navigator){
