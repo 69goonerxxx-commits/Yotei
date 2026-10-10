@@ -426,6 +426,75 @@ svg.pi{fill:currentColor!important;stroke:none!important}
 [hidden]{display:none!important}
 .tlwrap>.add:not(.runBtn){display:block;margin:6px 0 8px 142px;width:auto;text-align:center;padding:8px 14px;font-size:13px}
 .capRow i{white-space:normal;text-align:right;max-width:96px;font-size:12px;line-height:1.3}
+/* v2.6.3: sticky header, gap dashes */
+.top{position:sticky;top:0;z-index:30;background:var(--bg)}
+#tab-home .weekstrip{position:sticky;top:var(--topH,60px);z-index:29;background:var(--bg)}
+.panel{touch-action:pan-y}
+.tlseg.dash{-webkit-mask-image:repeating-linear-gradient(to bottom,#000 0 7px,transparent 7px 14px);mask-image:repeating-linear-gradient(to bottom,#000 0 7px,transparent 7px 14px)}
+#taskSheet{width:100%;max-width:430px;margin:auto auto 0;border:0;border-radius:26px 26px 0 0;padding:0;background:var(--bg);color:var(--text);--tc:var(--accent);--tcon:#06121f}
+#taskSheet::backdrop{background:rgba(0,0,0,.5)}
+#taskSheet[open]{animation:tsUp .22s ease-out}
+@keyframes tsUp{from{transform:translateY(100%)}to{transform:none}}
+.tsIn{padding:10px 18px calc(18px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:14px}
+#taskSheet .csHandle{align-self:center;background:var(--tc);background-clip:content-box;margin:0}
+.tsHead2{display:flex;gap:14px;align-items:center}
+.tsHead2 .tsIcon{width:48px;height:48px;flex:0 0 48px}
+.tsHT{min-width:0}
+.tsHT b{font:600 19px/1.25 'Poppins',sans-serif;display:block;overflow-wrap:anywhere}
+.tsHT b svg{width:14px;height:14px;color:var(--sec);vertical-align:-1px;margin-left:8px}
+.tsWhen{font-size:12.5px;color:var(--sec);margin-bottom:1px}
+.tsSep{height:1px;background:var(--line);margin:0 -18px}
+.tsBody p{margin:0;font-size:14px;line-height:1.5;color:var(--text);white-space:pre-wrap;overflow-wrap:anywhere}
+.tsBody p.none{color:var(--sec)}
+.tsBody .tsIns{margin-top:8px;font-size:12.5px;color:var(--sec)}
+.tsTiles{display:flex;gap:10px}
+.tsTiles button{flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;padding:15px 4px 12px;border-radius:16px;border:0;background:var(--card);color:var(--text);font:600 12.5px 'Poppins',sans-serif;cursor:pointer}
+.tsTiles button[hidden]{display:none}
+.tsTiles svg{width:24px;height:24px;color:var(--tc)}
+.tsTiles #ts_del svg{color:#ef5b5b}
+.tsEdit{display:flex;align-items:center;justify-content:center;gap:10px;padding:15px;border-radius:16px;border:0;background:var(--tc);color:var(--tcon);font:700 15px 'Poppins',sans-serif;cursor:pointer}
+.tsEdit svg{width:20px;height:20px}
+html[data-text=large] .tsIn{zoom:1.15}
+#blockInfo{width:100%;max-width:430px;margin:auto auto 0;border:0;border-radius:26px 26px 0 0;padding:0;background:var(--bg);color:var(--text);--tc:var(--accent);overflow:hidden}
+#blockInfo::backdrop{background:rgba(0,0,0,.5)}
+#blockInfo[open]{animation:tsUp .22s ease-out}
+.biIn{display:flex;flex-direction:column;max-height:88vh}
+#blockInfo .csHandle{align-self:center;flex:0 0 auto;margin:10px 0 4px;background:var(--tc);background-clip:content-box}
+.biBody{overflow-y:auto;padding:8px 18px calc(22px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:14px;overscroll-behavior:contain}
+.biHead{display:flex;gap:14px;align-items:center}
+.biHead .tsIcon{width:48px;height:48px;flex:0 0 48px}
+.biSci{margin:0;font-size:14.5px;line-height:1.55}
+.biSci sup,.biNote sup,.biCue sup,.biCard p sup{font-size:10px;color:var(--tc);margin-left:1px}
+.biFeels{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+.biFeels span{font-size:12px;color:var(--sec);margin-right:2px}
+.biFeels i{font-style:normal;font-size:12.5px;font-weight:600;padding:5px 11px;border-radius:99px;background:var(--card)}
+.biCard{background:var(--card);border-radius:16px;padding:14px 14px}
+.biCard summary{display:flex;flex-direction:column;gap:2px;cursor:pointer;list-style:none}
+.biCard summary::-webkit-details-marker{display:none}
+.biCard summary em{font-style:normal;font-size:12px;color:var(--sec)}
+.biCard summary::after{content:'+';position:absolute;right:14px;color:var(--tc);font-weight:700}
+.biCard{position:relative}
+.biCard[open] summary::after{content:'\2212'}
+.biCard details p,.biCard>p{margin:10px 0 0;font-size:13.5px;line-height:1.55}
+.biT{font:700 13px 'Poppins',sans-serif;color:var(--text);margin-bottom:8px}
+.biCard summary .biT{margin-bottom:0}
+.biCard>p:not(.biNote):not(.biCue){margin:10px 0 0}
+.biLv{display:flex;align-items:center;gap:10px;font-size:12.5px;font-weight:600}
+.biLv span{flex:0 0 112px}
+.biBar{flex:1;height:8px;border-radius:4px;background:var(--card2);overflow:hidden}
+.biBar i{display:block;height:100%;border-radius:4px;background:var(--tc)}
+.biNote{margin:4px 0 10px;font-size:12px;line-height:1.5;color:var(--sec)}
+.biCue{margin:0 0 10px;font-size:13.5px;line-height:1.55}
+.biCue:last-child{margin-bottom:0}
+.biCue b{display:block;font-size:12px;color:var(--tc);margin-bottom:1px}
+.biFoot{margin:0;font-size:11.5px;color:var(--sec);line-height:1.5}
+.srcDet summary{cursor:pointer;color:var(--accent);font-weight:600;font-size:13px;padding:6px 0}
+#srcList{margin:6px 0 0;padding-left:26px;font-size:12px;color:var(--sec);line-height:1.45}
+#srcList li{margin-bottom:8px}
+#srcList span{display:block}
+#srcList a{color:var(--accent);overflow-wrap:anywhere}
+html[data-text=large] .biIn{zoom:1.15}
+#energyCard .enRow+.wn{margin:10px 0 0}
 </style>
 </head>
 <body>
@@ -467,6 +536,11 @@ svg.pi{fill:currentColor!important;stroke:none!important}
       <div id="sleep"></div>
     </div>
     <div class="sleep">
+      <h2>Science sources</h2>
+      <p class="wn">Tap a block header on the timeline to read what is going on in that window. The research behind it is listed here.</p>
+      <details class="srcDet"><summary>Show all sources</summary><ol id="srcList"></ol></details>
+    </div>
+    <div class="sleep">
       <h2>Reset</h2>
       <p class="wn">Remove every routine task you added and restore the block names, colors and times. Your history is kept. This cannot be undone.</p>
       <button class="add" id="rst">Remove all tasks and reset blocks</button>
@@ -495,6 +569,7 @@ svg.pi{fill:currentColor!important;stroke:none!important}
     <button type="button" data-m="5">5m</button><button type="button" data-m="15">15m</button><button type="button" data-m="20">20m</button>
     <button type="button" data-m="30">30m</button><button type="button" data-m="45">45m</button><button type="button" data-m="60">1h</button><button type="button" data-m="90">1.5h</button>
   </div></label>
+  <div class="er taskOnly" id="e_se"><label>Starts<input id="e_s" type="time"></label><label>Ends<input id="e_e" type="time"></label></div>
   <div class="er taskOnly"><label>Minutes<input id="e_d" type="number" min="0"></label><label>Shortest<input id="e_m" type="number" min="0"></label><label>Fixed at<input id="e_f" type="time"></label></div>
   <div class="days taskOnly" id="e_days"></div>
   <div class="er winOnly"><label>Starts<input id="e_bs" type="time"></label><label>Ends<input id="e_be" type="time"></label></div>
@@ -566,18 +641,21 @@ svg.pi{fill:currentColor!important;stroke:none!important}
   <div class="ea"><button id="runPause">Pause</button><button id="runPlus">+1 min</button><button id="runSkip">Skip</button></div>
   <div class="ea"><button id="runClose">Close</button><button id="runDone">Done</button></div>
 </div></dialog>
-<dialog id="taskSheet"><div class="ef">
-  <div class="tsHead"><span class="tsIcon" id="ts_icon"></span><div><b id="ts_title"></b><div class="wn" id="ts_time"></div></div></div>
-  <p id="ts_details" hidden></p>
-  <p class="wn" id="ts_stepsline" hidden></p>
-  <p class="wn" id="ts_insight" hidden></p>
-  <p class="wn" id="ts_note" hidden></p>
-  <div class="ea"><button id="ts_done"></button><button id="ts_noteb">Note</button><button id="ts_timer">Timer</button><button id="ts_move">Move</button><button id="ts_del">Delete</button><button id="ts_dup">Duplicate</button><button id="ts_edit">Edit</button><button id="ts_close">Close</button></div>
+<dialog id="blockInfo"><div class="biIn"><div class="csHandle" id="bi_handle"></div><div class="biBody" id="bi_body"></div></div></dialog>
+<dialog id="taskSheet"><div class="tsIn">
+  <div class="csHandle" id="ts_handle"></div>
+  <div class="tsHead2"><span class="tsIcon" id="ts_icon"></span><div class="tsHT"><div class="tsWhen" id="ts_time"></div><b id="ts_title"></b></div></div>
+  <div class="tsSep"></div>
+  <div class="tsBody"><p id="ts_details"></p><p class="tsIns" id="ts_insight" hidden></p></div>
+  <div class="tsSep"></div>
+  <div class="tsTiles"><button id="ts_del"></button><button id="ts_dup"></button><button id="ts_done"></button></div>
+  <div class="tsTiles"><button id="ts_noteb"></button><button id="ts_timer"></button><button id="ts_move"></button></div>
+  <button id="ts_edit" class="tsEdit"></button>
 </div></dialog>
 <dialog id="stepsSheet"><div class="ef">
   <b id="ss_title"></b>
   <div id="ss_list"></div>
-  <div class="ea"><button id="ss_close">Close</button></div>
+  <div class="ea"><button id="ss_all">Tick all</button><button id="ss_close">Close</button></div>
 </div></dialog>
 <script>
 // ============================================================
@@ -669,6 +747,7 @@ function saveDay(){
   if (new Date(viewDate) <= new Date(todayStr())) saveHist();
 }
 function goDate(ds){ viewDate = ds; noteEditing = null; loadDay(ds); render(); }
+const shownNotes = new Set();
 function noteKey(id){ return viewDate + '_' + id; }
 function getNote(id){ return store.get('taskNotes', {})[noteKey(id)] || ''; }
 function setNote(id, txt){
@@ -1227,6 +1306,7 @@ function buildSpine(){
   const wr = wrap.getBoundingClientRect(), GRAY = 'var(--graydot)', nodes = [], sc = (wr.width / (wrap.offsetWidth || wr.width)) || 1;   // sc corrects for large-text zoom
   const okc = c => (c && CSS.supports('color', c)) ? String(c).trim() : GRAY;
   Array.from(wrap.children).forEach(el => {
+    if (el.matches('.gap') && nodes.length){ nodes[nodes.length - 1].gap = true; return; }
     if (!el.matches('.blk,.tlhead')) return;
     const dot = el.querySelector('.tldot'); if (!dot) return;
     const r = dot.getBoundingClientRect(), f = parseFloat(el.dataset.f);
@@ -1237,7 +1317,7 @@ function buildSpine(){
     const a = nodes[k], b = nodes[k + 1];
     const from = a.f >= 1 ? a.c : GRAY, to = b.f > 0 ? b.c : GRAY, top = a.bottom - 3, h = b.top - a.bottom + 6;
     if (h <= 0) continue;
-    const seg = document.createElement('i'); seg.className = 'tlseg';
+    const seg = document.createElement('i'); seg.className = 'tlseg' + (a.gap ? ' dash' : '');
     seg.style.cssText = 'left:' + (a.x - 2) + 'px;top:' + top + 'px;height:' + h + 'px;background:' + (from.toLowerCase() === to.toLowerCase() ? from : 'linear-gradient(' + oklab + 'to bottom,' + from + ' 0%,' + from + ' 16%,' + to + ' 84%,' + to + ' 100%)');
     wrap.appendChild(seg);   // appended last: inserting it first would flip .tlhead:first-child and shift everything 10px
   }
@@ -1376,6 +1456,8 @@ function openEd(l, id, w, startAt){
   $('#e_color').value = x.color || ''; CT = 'e'; drawColorRow('e'); setEdAccent();
   $('#e_f').value = x.fixed !== undefined ? toVal(x.fixed) : '';
   if (startAt !== undefined && !b){ $('#e_k').value = 'fixedtime'; $('#e_f').value = toVal(startAt); }
+  $('#e_s').value = $('#e_f').value; $('#e_e').value = '';
+  syncEnd();
   $('#e_details').value = x.details || ''; $('#e_p').value = (x.steps || []).join('\n');
   edDays = x.days ? x.days.slice() : [0,1,2,3,4,5,6]; drawDays();
   ['e_del','e_up','e_dn'].forEach(i => { $('#' + i).style.display = b ? '' : 'none'; });
@@ -1388,6 +1470,12 @@ function moveBlock(d){
   if (i < 0 || j < 0 || j >= arr.length) return;
   [arr[i], arr[j]] = [arr[j], arr[i]];
   setBlocks(cur.l, arr); $('#ed').close(); render();
+}
+function syncEnd(){
+  const s = $('#e_s').value, d = parseInt($('#e_d').value) || 0;
+  if (!s || !d){ $('#e_e').value = ''; return; }
+  const [h, mi] = s.split(':').map(Number), t = h*60 + mi + d;
+  $('#e_e').value = t <= 1439 ? toVal(t) : '';
 }
 function highlightChip(){ const v = $('#e_d').value; document.querySelectorAll('#e_presets button').forEach(b => b.classList.toggle('on', b.dataset.m === v)); }
 function updateIconBtn(){ const v = $('#e_icon').value; $('#e_iconBtn').innerHTML = v ? iconMarkup(v) : '+'; }
@@ -1414,43 +1502,86 @@ $('#ip_x').onclick = () => $('#iconPick').close();
 $('#ip_ok').onclick = () => {
   $('#e_icon').value = $('#e_icon_custom').value.trim(); updateIconBtn(); $('#iconPick').close();
 };
+const BLOCK_INFO = {"sleep": {"dn": "Sleep Inertia", "from": 0.0, "to": 1.0, "sci": "Grogginess and slowed thinking right after waking typically clear within 15–30 minutes, though some measures of alertness keep improving for up to two hours<sup>[1]</sup>.", "feels": ["Foggy", "Heavy-limbed", "Slow to focus"], "myth": {"hint": "coffee fixes it instantly", "text": "Myth: a shot of caffeine the second you're up erases the grogginess. Reality: caffeine works on a different lever — it blocks a buildup you'd otherwise feel, and it takes a while to kick in — but it doesn't clear the inertia already in your system, which fades on its own timeline regardless<sup>[1]</sup>."}, "cues": [{"l": "Light", "t": "Get bright light now if you can, ideally outdoors — morning light is the strongest lever for anchoring your clock to this wake time, especially for teens<sup>[8]</sup>."}, {"l": "Temperature", "t": "Core body temperature is near its 24-hour low right now — part of why waking up feels cold and slow — and it's about to start climbing for the rest of the day."}, {"l": "Food", "t": "Eating something within an hour or so of waking helps synchronize your peripheral clocks — liver, gut, and other metabolic tissues run on feeding schedules the same way your central clock runs on light<sup>[18]</sup>."}], "notes": ["Low — just reset by sleep.", "Near its daily low, close to habitual wake time<sup>[7]</sup>."], "push": {"hint": "hard decisions", "text": "Push a big decision, exam, or safety-critical task into this window and expect the biggest hit to complex judgment specifically — sleep inertia's toll on higher-order cognition is well-documented enough that fields where people get woken to make sudden calls (emergency responders, pilots, military officers) treat it as a real operational risk, not just morning grogginess<sup>[20]</sup>. If it's unavoidable, get light and movement going first rather than starting cold."}}, "climb1": {"dn": "First Climb", "from": 1.0, "to": 3.0, "sci": "Body temperature is rising and sleep pressure is still low. For most people, alertness climbs to its first daily peak somewhere in this window<sup>[2]</sup>.", "feels": ["Waking up for real", "Sharpening", "Steadier"], "myth": {"hint": "mornings are everyone's peak", "text": "Myth: school starting early is fine, since mornings are naturally everyone's best time to think. Reality: during adolescence the internal clock shifts later by design — a well-documented \"phase delay\" that pushes many teens' biological morning later than a typical first bell<sup>[26]</sup>."}, "cues": [{"l": "Light", "t": "Still in the clock-advancing part of the morning — daylight here reinforces the earlier dose. Outdoor light easily reaches 10,000+ lux versus a few hundred indoors, so stepping outside matters more than sitting near a window."}, {"l": "Caffeine", "t": "A relatively low-risk window for it — early enough that it'll have mostly cleared by bedtime given caffeine's roughly 5–6 hour half-life<sup>[10]</sup>."}], "notes": ["Low, building steadily.", "Rising through the morning<sup>[7]</sup>."], "push": {"hint": "wasting the peak", "text": "Spend this window on something low-effort instead — scrolling, a show, busywork — and nothing breaks, but you're likely trading away one of your best-aligned hours for analytical work. Performance on effortful, focus-heavy tasks tends to track how close you are to your circadian peak, not just whether you're technically awake<sup>[25]</sup>."}}, "peak": {"dn": "Sustained Peak", "from": 3.0, "to": 6.0, "sci": "Not a formally named phase the way inertia or the maintenance zone are — but research on attention and working memory describes them staying strong into the late morning before easing off ahead of the midday dip<sup>[3]</sup>. Temperature is still climbing and sleep pressure is still low, so the first peak's benefits tend to carry over rather than drop off sharply.", "feels": ["Clear-headed", "In the zone", "Locked in"], "myth": {"hint": "peak means no decline", "text": "Myth: since this is a high-arousal window, you can grind on one task for hours without losing steam. Reality: sustained, unbroken focus degrades over time no matter what part of the day it is — the \"time-on-task\" decline is just less steep here than it would be at a low point<sup>[27]</sup>."}, "cues": [{"l": "Light", "t": "You're entering the middle of the day, where light has the least effect on shifting the clock either way<sup>[9]</sup> — worth having for alertness and mood, but it's no longer doing much clock-setting work."}], "notes": ["Building, but still moderate.", "Still climbing, near a late-morning high<sup>[7]</sup>."], "push": {"hint": "saving hard stuff for later", "text": "Pushing your hardest task past this window and into the trough instead trades a high-arousal window for a low one — the same effort usually goes further here than it will an hour or two from now<sup>[25]</sup>."}}, "trough": {"dn": "Trough", "from": 6.0, "to": 8.0, "sci": "The well-documented \"post-lunch dip\" — a genuine drop in alertness and performance in the early-to-mid afternoon that shows up even without a meal or awareness of the time<sup>[4]</sup>.", "feels": ["Sluggish", "Unmotivated", "Eyelids heavy"], "myth": {"hint": "caffeine fully fixes it", "text": "Myth: a coffee or energy drink at this point cancels the dip out completely. Reality: caffeine offsets some of it, but part of this slump is circadian, not just caffeine level or sleep debt — the timing itself is working against you a bit, not only how tired you happen to be<sup>[6]</sup>."}, "cues": [{"l": "Light", "t": "A short walk outside won't shift your clock much here, but it's a reasonable, non-clock way to push back against the dip while you wait for it to pass."}, {"l": "Nap", "t": "If it's an option, 10–20 minutes is usually long enough to help without the grogginess a longer nap can cause<sup>[13]</sup> — since this dip is partly circadian, caffeine alone doesn't fully fix it<sup>[6]</sup>. More on nap timing and length in the reference section further down."}], "notes": ["Moderate and climbing.", "Dips here too — part of what drives the trough, alongside the rising pressure<sup>[6]</sup>."], "push": {"hint": "driving, hard tasks", "text": "This window is one of two daily peaks for drowsy-driving crashes — the other is the middle of the night — so of everything you could push into this dip, driving is the one worth actively planning around<sup>[21]</sup>. Hard problem sets pushed in anyway don't become dangerous, just measurably slower and more error-prone, consistent with the dip itself<sup>[4]</sup>."}}, "climb2": {"dn": "Second Climb(candidate peak)", "from": 8.0, "to": 12.0, "sci": "Attention recovers from the dip into a second daily peak later on — research on this rhythm often finds it as strong as, or stronger than, the morning one<sup>[5]</sup>.", "feels": ["Re-energized", "Sharp again", "Productive"], "myth": {"hint": "second peak is a weaker echo", "text": "Myth: this window is just a fading copy of the morning, not worth your best work. Reality: which peak is stronger varies by person — for some, especially more evening-leaning chronotypes, this second climb can be just as strong as the first, or stronger<sup>[5]</sup>."}, "cues": [{"l": "Light", "t": "You're crossing into the part of the day where bright light starts to delay tomorrow's clock instead of advancing it<sup>[9]</sup> — fine for now, but worth noticing if you want an earlier wake time."}, {"l": "Exercise", "t": "Core body temperature is climbing toward its daily peak, and physical performance — strength, reaction time — tends to track it, which is part of why this window often tests well for exercise<sup>[14]</sup>."}, {"l": "Caffeine", "t": "Starting to cut it close — a cup now can still be measurably active at bedtime given its half-life<sup>[10]</sup>."}], "notes": ["Getting high — but the circadian rise offsets it.", "Recovering, climbing toward its evening peak<sup>[7]</sup>."], "push": {"hint": "napping this late", "text": "A nap squeezed into the back half of this window can work against you: naps reduce the same sleep pressure that's supposed to be building toward tonight, and the later or longer the nap, the more of tonight's sleep drive it can eat into<sup>[22]</sup>."}}, "wmz": {"dn": "Wake Maintenance Zone", "from": 12.0, "to": 15.0, "sci": "A stretch of low sleep propensity a few hours before habitual bedtime — the circadian system is actively opposing sleep here, part of why it's hard to wind down too early even after a long day<sup>[6]</sup>.", "feels": ["Wired", "Restless energy", "Hard to slow down"], "myth": {"hint": "nap now to catch up", "text": "Myth: if you're behind on sleep, napping in this window will help you catch up. Reality: this stretch is specifically the part of the day when your circadian clock pushes hardest against sleep — even sleep-deprived people often can't fall asleep here, which is the whole reason it's called a \"maintenance zone\"<sup>[6]</sup>."}, "cues": [{"l": "Light", "t": "Bright light and screens now actively delay your clock<sup>[9]</sup> — a big, well-lit evening here is a common reason bedtime keeps creeping later than planned."}, {"l": "Caffeine", "t": "If you haven't already, treat this as your cutoff — from here on, caffeine increasingly overlaps with your sleep period<sup>[10]</sup>."}, {"l": "Food", "t": "If dinner's still ahead, earlier tends to be metabolically kinder than later — later eating is consistently linked to worse glucose and insulin response, independent of what or how much you eat<sup>[19]</sup>."}], "notes": ["High.", "Near its peak — this is what makes the wake maintenance zone possible even with pressure this high<sup>[6]</sup>."], "push": {"hint": "workouts too close to bedtime", "text": "The workout suggested for this window is fine earlier on — it's specifically high-strain exercise ending within about four hours of bedtime that's linked to worse sleep and disrupted nighttime recovery, in data drawn from millions of tracked nights<sup>[23]</sup>. Push a hard session to the tail end of this window and you're closing that gap."}}, "wind": {"dn": "Wind-Down", "from": 15.0, "to": 18.0, "sci": "As bedtime nears, the wake-promoting signal that powered the maintenance zone eases off and accumulated sleep pressure takes over<sup>[7]</sup>.", "feels": ["Winding down", "Heavy-eyed", "Ready for bed"], "myth": {"hint": "screens are fine if it feels relaxing", "text": "Myth: scrolling your phone in bed is fine as long as it feels relaxing. Reality: feeling calm doesn't cancel the effect — the light itself delays your clock and suppresses the signal that tells your body it's time for sleep, independent of how relaxed the content makes you feel<sup>[9]</sup>."}, "cues": [{"l": "Light", "t": "Dim, warm light and dimmed screens here reduce melatonin suppression and let the clock's evening delay signal fade instead of fighting it<sup>[9]</sup>."}, {"l": "Temperature", "t": "A warm shower or bath 1–2 hours before bed can help sleep onset — it triggers a rebound cooling of core body temperature afterward, which is part of the body's own falling-asleep signal<sup>[11]</sup>."}, {"l": "Food", "t": "A large meal or snack close to bedtime works against this window rather than with it — late eating is linked to worse metabolic outcomes even holding total intake and diet composition constant<sup>[19]</sup>."}], "notes": ["Highest point of the day.", "Dropping sharply as bedtime nears."], "push": {"hint": "starting demanding work", "text": "Opening a new hard problem, essay, or difficult conversation here does the opposite of what this window is for: unresolved, effortful thinking right before bed is one of the most consistent predictors of taking longer to fall asleep, across studies of both good sleepers and people with insomnia<sup>[24]</sup>."}}};
+const SCI_SRC = [{"n": 1, "what": "Sleep inertia recovery timeline", "title": "Sleep inertia: current insights, Nature and Science of Sleep", "url": "https://www.dovepress.com/sleep-inertia-current-insights-peer-reviewed-fulltext-article-NSS"}, {"n": 2, "what": "Daily attention/alertness rhythm and first peak", "title": "Circadian Rhythms in Attention, PMC", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6430172/"}, {"n": 3, "what": "Attention and working memory peaking mid-to-late morning", "title": "School-Based Physical Activity, Cognitive Performance and Circadian Rhythms, PMC", "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12562565/"}, {"n": 4, "what": "Post-lunch dip", "title": "Monk, The post-lunch dip in performance, PubMed", "url": "https://pubmed.ncbi.nlm.nih.gov/15892914/"}, {"n": 5, "what": "Second, late-day attention peak", "title": "Blatter & Cajochen, Circadian rhythms in cognitive performance, Physiology & Behavior, 2007", "url": "https://www.sciencedirect.com/science/article/abs/pii/S0031938406003945"}, {"n": 6, "what": "Wake maintenance zone & circadian contribution to the post-lunch dip", "title": "Modeling Napping, Post-Lunch Dip, and Other Variations in Human Sleep Propensity, PMC", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2647793/"}, {"n": 7, "what": "Two-process model (Process S homeostatic pressure, Process C circadian drive)", "title": "Borbély, The two-process model of sleep regulation: Beginnings and outlook, J Sleep Res, 2022", "url": "https://onlinelibrary.wiley.com/doi/full/10.1111/jsr.13598"}, {"n": 8, "what": "Morning bright light and circadian phase advance in adolescents", "title": "Circadian Phase Advances in Response to Weekend Morning Light in Adolescents, Frontiers", "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7029701/"}, {"n": 9, "what": "Evening/late light delays circadian phase and suppresses melatonin", "title": "Chang et al., Evening use of light-emitting eReaders negatively affects sleep, circadian timing, and next-morning alertness, PNAS, 2015", "url": "https://www.pnas.org/doi/10.1073/pnas.1418490112"}, {"n": 10, "what": "Caffeine timing before bed and sleep disruption", "title": "Drake et al., Caffeine Effects on Sleep Taken 0, 3, or 6 Hours before Going to Bed, J Clin Sleep Med, 2013", "url": "https://pubmed.ncbi.nlm.nih.gov/24235903/"}, {"n": 11, "what": "Warm shower/bath before bed and sleep onset", "title": "Haghayegh et al., Before-bedtime passive body heating by warm shower or bath to improve sleep, Sleep Med Rev, 2019", "url": "https://pubmed.ncbi.nlm.nih.gov/31102877/"}, {"n": 12, "what": "Social jetlag", "title": "Wittmann et al., Social Jetlag: Misalignment of Biological and Social Time, Chronobiology International, 2006", "url": "https://www.tandfonline.com/doi/full/10.1080/07420520500545979"}, {"n": 13, "what": "Short-nap duration and next-nap sleep inertia", "title": "Brooks & Lack, Brief Afternoon Nap Following Nocturnal Sleep Restriction, SLEEP, 2006", "url": "https://academic.oup.com/sleep/article-pdf/29/6/831/13663418/sleep-29-6-831.pdf"}, {"n": 14, "what": "Circadian rhythm and physical/sports performance", "title": "Narrative review: circadian rhythm on sports performance, PMC", "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10558889/"}, {"n": 15, "what": "Peak mental activation timing differs by chronotype", "title": "Time of day and chronotype in the assessment of cognitive functions, PMC", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10683050/"}, {"n": 16, "what": "Habitual sleep timing and melatonin onset differ by hours between extreme chronotypes", "title": "Maierová et al., Diurnal variations of hormonal secretion, alertness and cognition in extreme chronotypes, Scientific Reports, 2016", "url": "https://www.nature.com/articles/srep33591"}, {"n": 17, "what": "Free-day vs. work-day sleep timing as a chronotype proxy (Munich ChronoType Questionnaire approach)", "title": "Zavada et al., Comparison of the Munich Chronotype Questionnaire with the Horne-Östberg Morningness-Eveningness Score, Chronobiology International, 2005", "url": "https://www.tandfonline.com/doi/full/10.1081/CBI-200053536"}, {"n": 18, "what": "Feeding schedules synchronize peripheral circadian clocks (liver, gut, metabolic tissue), separately from light and the central clock", "title": "Chrononutrition and Energy Balance: How Meal Timing and Circadian Rhythms Shape Weight Regulation and Metabolic Health, PMC, 2025", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12252119/"}, {"n": 19, "what": "Later eating linked to worse glucose/insulin response independent of diet composition or amount", "title": "Chrononutrition and cardiometabolic health: circadian timing as a dimension of precision nutrition, Frontiers in Nutrition, 2026", "url": "https://www.frontiersin.org/journals/nutrition/articles/10.3389/fnut.2026.1779033/full"}, {"n": 20, "what": "Sleep inertia's impact on complex judgment as an occupational risk", "title": "Sleep inertia and its relevance for safety-critical operations, PMC", "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9645437/"}, {"n": 21, "what": "Drowsy-driving crashes cluster overnight and in the circadian afternoon dip", "title": "Drowsy Driving, National Highway Traffic Safety Administration", "url": "https://www.nhtsa.gov/risky-driving/drowsy-driving"}, {"n": 22, "what": "Long or late naps reduce homeostatic sleep drive and can delay nighttime sleep onset", "title": "Does Napping Impact Your Sleep at Night?, Sleep Foundation", "url": "https://www.sleepfoundation.org/how-sleep-works/does-napping-impact-sleep-at-night"}, {"n": 23, "what": "High-strain exercise ending within ~4 hours of bedtime linked to disrupted sleep, in objective data from millions of nights", "title": "Dose-response relationship between evening exercise and sleep, Nature Communications, 2025", "url": "https://www.nature.com/articles/s41467-025-58271-x"}, {"n": 24, "what": "Unresolved, effortful pre-sleep thinking predicts delayed sleep onset", "title": "Pre-sleep cognitive activity in adults: A systematic review, Sleep Medicine Reviews, 2020", "url": "https://pubmed.ncbi.nlm.nih.gov/31918338/"}, {"n": 25, "what": "Synchrony effect", "title": "May, Hasher & Healey, For Whom (and When) the Time Bell Tolls: Chronotypes and the Synchrony Effect, Current Directions in Psychological Science, 2023", "url": "https://journals.sagepub.com/doi/10.1177/17456916231178553"}, {"n": 26, "what": "Adolescent circadian phase delay conflicts with early school start times", "title": "School Start Times for Adolescents, Pediatrics (American Academy of Pediatrics), 2014", "url": "https://publications.aap.org/pediatrics/article/134/3/642/74175/School-Start-Times-for-Adolescents"}, {"n": 27, "what": "Time-on-task / vigilance decrement", "title": "Sustaining attention for a prolonged period of time increases temporal variability in cortical responses, Cortex, 2019", "url": "https://www.sciencedirect.com/science/article/abs/pii/S0010945219300681"}, {"n": 28, "what": "Extended-wakefulness performance impairment compared to alcohol intoxication", "title": "Williamson & Feyer, Moderate sleep deprivation produces impairments in cognitive and motor performance equivalent to legally prescribed levels of alcohol intoxication, Occup Environ Med, 2000", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC1739867/"}, {"n": 29, "what": "Subjective sleepiness plateaus while objective performance keeps declining under ongoing sleep loss", "title": "Van Dongen et al., The Cumulative Cost of Additional Wakefulness, SLEEP, 2003", "url": "https://academic.oup.com/sleep/article-abstract/26/2/117/2709164"}, {"n": 30, "what": "Sleep stages, NREM/REM proportions, and cycle length", "title": "Physiology of Sleep, StatPearls, NCBI Bookshelf", "url": "https://www.ncbi.nlm.nih.gov/books/NBK482512/"}, {"n": 31, "what": "Recommended sleep duration for teenagers 13–18: 8–10 hours per 24 hours", "title": "Recharge with Sleep: Pediatric Sleep Recommendations, American Academy of Sleep Medicine", "url": "https://aasm.org/recharge-with-sleep-pediatric-sleep-recommendations-promoting-optimal-health/"}];
+const PRESS_PTS = [[0,5],[1,20],[2,33],[3,44],[4,53],[5,60],[6,66],[7,71],[8,75],[9,78],[10,81],[11,83],[12,85],[13,87],[14,88],[15,89],[16,90],[17,91],[18,92],[19,94],[20,95],[21,96],[22,97],[23,98],[24,99]];
+const CIRC_PTS = [[0,15],[1,30],[2,45],[3,58],[4,65],[5,68],[6,62],[7,55],[8,52],[9,60],[10,70],[11,80],[12,88],[13,93],[14,95],[15,92],[16,75],[17,50],[18,25],[19,15],[20,9],[21,6],[22,5],[23,9],[24,16]];
+function curveAvg(pts, from, to){
+  const at = h => { for (let i = 0; i < pts.length - 1; i++){ const [h0, v0] = pts[i], [h1, v1] = pts[i + 1]; if (h >= h0 && h <= h1) return v0 + (v1 - v0) * (h - h0) / (h1 - h0); } return pts[pts.length - 1][1]; };
+  let t = 0; for (let i = 0; i <= 6; i++) t += at(from + (to - from) * i / 6);
+  return Math.round(t / 7 / 5) * 5;
+}
+function openBlockInfo(k){
+  const I = BLOCK_INFO[k], WB = wins(), W = WB[k]; if (!I || !W) return;
+  const st = WIN_STYLE[k] || WIN_STYLE.climb1, col = safeCol(st.c) || st.c;
+  const bi = $('#blockInfo'); bi.style.setProperty('--tc', col);
+  const h = x => x;   // BLOCK_INFO strings are pre-escaped, with <sup> citations only
+  const bar = (label, pts, note) => { const v = curveAvg(pts, I.from, I.to); return '<div class="biLv"><span>' + label + '</span><div class="biBar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + v + '" aria-label="' + label + ': ' + v + ' percent"><i style="width:' + v + '%"></i></div></div><p class="biNote">' + h(note) + '</p>'; };
+  $('#bi_body').innerHTML =
+    '<div class="biHead"><span class="tsIcon" style="--dot:' + col + ';color:' + onColor(col) + '">' + iconMarkup(st.i) + '</span><div class="tsHT"><div class="tsWhen">' + range(wake + W.from, wake + W.to) + '</div><b>' + esc(W.name) + '</b>' + (I.dn !== W.name ? '<div class="tsWhen">' + esc(I.dn) + '</div>' : '') + '</div></div>' +
+    '<p class="biSci">' + h(I.sci) + '</p>' +
+    '<div class="biFeels"><span>Feels like</span>' + I.feels.map(f => '<i>' + esc(f) + '</i>').join('') + '</div>' +
+    '<div class="biCard"><div class="biT">Levels in this window</div>' + bar('Sleep pressure', PRESS_PTS, I.notes[0]) + bar('Circadian drive', CIRC_PTS, I.notes[1]) + '</div>' +
+    '<div class="biCard"><div class="biT">Cues for this window</div>' + I.cues.map(c => '<p class="biCue"><b>' + esc(c.l) + '</b>' + h(c.t) + '</p>').join('') + '</div>' +
+    '<details class="biCard"><summary><span class="biT">Common myth</span><em>' + esc(I.myth.hint) + '</em></summary><p>' + h(I.myth.text) + '</p></details>' +
+    '<details class="biCard"><summary><span class="biT">If you push against it</span><em>' + esc(I.push.hint) + '</em></summary><p>' + h(I.push.text) + '</p></details>' +
+    '<p class="biFoot">Numbers in brackets point to the sources listed in Settings. These are population averages, so your own rhythm may sit earlier or later.</p>';
+  $('#bi_body').scrollTop = 0;
+  bi.showModal();
+}
+(function(){ let y0 = null; const h = $('#bi_handle'), bi = $('#blockInfo');
+  h.addEventListener('pointerdown', e => { y0 = e.clientY; h.setPointerCapture(e.pointerId); });
+  h.addEventListener('pointermove', e => { if (y0 !== null && e.clientY - y0 > 40){ y0 = null; bi.close(); } });
+  ['pointerup', 'pointercancel'].forEach(ev => h.addEventListener(ev, () => { y0 = null; }));
+  bi.addEventListener('click', e => { if (e.target === bi) bi.close(); });
+})();
+(function(){
+  const el = $('#srcList'); if (!el) return;
+  el.innerHTML = SCI_SRC.map(x => '<li value="' + x.n + '"><span>' + esc(x.what) + '</span>' + (/^https:\/\//.test(x.url) ? '<a href="' + esc(x.url) + '" target="_blank" rel="noopener">' + esc(x.title) + '</a>' : esc(x.title)) + '</li>').join('');
+})();
 // ============================================================
 // TASK DETAIL SHEET — opens on tap, shows name/time + actions
 // (Delete / Duplicate / Edit). Deliberately excludes Details —
 // keep it lean, see the phase history for why.
 // ============================================================
 let sheetCtx = null;
+Object.assign(ICONS, { 'check-circle':'<svg class="pi" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm45.66,85.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z"/></svg>' });
+const tile = (id, ic, label) => { $('#' + id).innerHTML = ICONS[ic] + '<span>' + label + '</span>'; };
 function openTaskSheet(l, id){
   const { rows } = schedule();
   const r = rows.find(x => x.id === id);
   if (!r) return;
   sheetCtx = { l, id };
-  ['ts_edit', 'ts_del', 'ts_dup', 'ts_move'].forEach(i => { $('#' + i).hidden = false; });
-  $('#ts_timer').hidden = !(r.use > 0) || r.sug || viewDate !== todayStr() || snapMode();
-  const ins = taskInsight(id); $('#ts_insight').textContent = ins; $('#ts_insight').hidden = !ins;
-  const nt = getNote(id); $('#ts_note').textContent = nt ? 'Note: ' + nt : ''; $('#ts_note').hidden = !nt; $('#ts_noteb').textContent = nt ? 'Edit note' : 'Add note';
-  const st = WIN_STYLE[r.w] || WIN_STYLE.climb1;
+  const st = WIN_STYLE[r.w] || WIN_STYLE.climb1, col = safeCol(r.color) || st.c;
   const cut = r.use === 0 && !r.sug && r.fixed === undefined;
+  const sh = $('#taskSheet'); sh.style.setProperty('--tc', col); sh.style.setProperty('--tcon', onColor(col));
   $('#ts_icon').innerHTML = iconMarkup(r.icon || guessIcon(r.t) || st.i);
-  $('#ts_icon').style.setProperty('--dot', r.color || st.c); $('#ts_icon').style.color = onColor(r.color || st.c);
-  $('#ts_title').textContent = r.t;
-  $('#ts_done').hidden = cut || r.sug || r.fixed !== undefined;
-  $('#ts_done').textContent = done.ids.includes(r.id) ? 'Mark not done' : 'Mark done';
-  $('#ts_time').textContent = cut ? 'Skipped today' : r.sug ? 'Suggestion' : r.fixed !== undefined ? fmt(r.start).join(' ') : range(r.start, r.end);
-  if (r.details){ $('#ts_details').textContent = r.details; $('#ts_details').hidden = false; } else $('#ts_details').hidden = true;
-  const steps = r.steps || [];
-  if (steps.length){
-    const nDone = steps.filter((z, i) => done.ids.includes(r.id + '#' + i)).length;
-    $('#ts_stepsline').textContent = 'Subtasks: ' + nDone + ' of ' + steps.length + ' done';
-    $('#ts_stepsline').hidden = false;
-  } else $('#ts_stepsline').hidden = true;
-  $('#taskSheet').showModal();
+  $('#ts_icon').style.setProperty('--dot', col); $('#ts_icon').style.color = onColor(col);
+  $('#ts_title').innerHTML = esc(r.t) + (l !== 'oo' ? ICONS['arrows-clockwise'] : '');
+  const dt = new Date(viewDate).toLocaleDateString(undefined, { weekday:'short', month:'short', day:'numeric' });
+  const dur = m => m < 60 ? m + 'm' : Math.floor(m / 60) + 'h' + (m % 60 ? ' ' + (m % 60) + 'm' : '');
+  $('#ts_time').textContent = dt + ' \u00b7 ' + (cut ? 'Skipped today' : r.sug ? 'Suggestion' : range(r.start, r.end) + ' (' + dur(r.use) + ')');
+  const dEl = $('#ts_details'); dEl.textContent = r.details || 'No details yet'; dEl.className = r.details ? '' : 'none';
+  const ins = taskInsight(id); $('#ts_insight').textContent = ins; $('#ts_insight').hidden = !ins;
+  const isDone = done.ids.includes(r.id), nt = getNote(id);
+  tile('ts_del', 'trash', 'Delete'); tile('ts_dup', 'files', 'Duplicate');
+  tile('ts_done', 'check-circle', isDone ? 'Not done' : 'Complete'); $('#ts_done').hidden = cut || r.sug;
+  tile('ts_noteb', 'note', nt ? 'Edit note' : 'Add note');
+  tile('ts_timer', 'timer', 'Timer'); $('#ts_timer').hidden = !(r.use > 0) || r.sug || viewDate !== todayStr() || snapMode();
+  tile('ts_move', 'paper-plane', 'Move');
+  $('#ts_edit').innerHTML = ICONS['pencil-line'] + 'Edit Task';
+  sh.showModal(); if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
 }
-$('#ts_close').onclick = () => $('#taskSheet').close();
+(function(){ let y0 = null; const h = $('#ts_handle'), sh = $('#taskSheet');
+  h.addEventListener('pointerdown', e => { y0 = e.clientY; h.setPointerCapture(e.pointerId); });
+  h.addEventListener('pointermove', e => { if (y0 !== null && e.clientY - y0 > 40){ y0 = null; sh.close(); } });
+  ['pointerup', 'pointercancel'].forEach(ev => h.addEventListener(ev, () => { y0 = null; }));
+  sh.addEventListener('click', e => { if (e.target === sh) sh.close(); });
+})();
 $('#ts_done').onclick = () => {
   const k = sheetCtx.id, i = done.ids.indexOf(k);
   if (i === -1) done.ids.push(k); else done.ids.splice(i, 1);
-  saveDay(); $('#taskSheet').close(); render();
+  saveDay(); $('#taskSheet').close(); render(); if (i === -1) offerTickAll(k);
 };
 $('#ts_edit').onclick = () => { $('#taskSheet').close(); openEd(sheetCtx.l, sheetCtx.id); };
 $('#ts_del').onclick = () => {
@@ -1472,6 +1603,23 @@ $('#ts_dup').onclick = () => {
 // subtask count. Checklist only, no Delete/Duplicate/Edit here.
 // ============================================================
 let stepsSheetId = null;
+function tickAllSteps(id, on = true){
+  const r = schedule().rows.find(x => x.id === id); if (!r || !(r.steps || []).length) return;
+  r.steps.forEach((z, i) => { const k = id + '#' + i, j = done.ids.indexOf(k); if (on && j === -1) done.ids.push(k); if (!on && j !== -1) done.ids.splice(j, 1); });
+  const pi = done.ids.indexOf(id); if (on && pi === -1) done.ids.push(id); if (!on && pi !== -1) done.ids.splice(pi, 1);
+  saveDay(); render();
+}
+function offerTickAll(id){
+  const r = schedule().rows.find(x => x.id === id); if (!r) return;
+  const n = (r.steps || []).filter((z, i) => !done.ids.includes(id + '#' + i)).length;
+  if (n) toast(n === 1 ? 'Tick the subtask too?' : 'Tick all ' + n + ' subtasks too?', 'Tick all', () => tickAllSteps(id));
+}
+function ssRefresh(){
+  const r = schedule().rows.find(x => x.id === stepsSheetId); if (!r) return;
+  $('#ss_list').innerHTML = stepsRowsHtml(r);
+  const all = (r.steps || []).every((z, i) => done.ids.includes(r.id + '#' + i));
+  $('#ss_all').textContent = all ? 'Untick all' : 'Tick all';
+}
 function stepsRowsHtml(r){
   const dot = r.color || (WIN_STYLE[r.w] || WIN_STYLE.climb1).c;
   return (r.steps || []).map((z, i) => {
@@ -1484,10 +1632,11 @@ function openStepsSheet(id){
   if (!r || !(r.steps || []).length) return;
   stepsSheetId = id;
   $('#ss_title').textContent = r.t;
-  $('#ss_list').innerHTML = stepsRowsHtml(r);
+  ssRefresh();
   $('#stepsSheet').showModal();
 }
 $('#ss_close').onclick = () => $('#stepsSheet').close();
+$('#ss_all').onclick = () => { const on = $('#ss_all').textContent === 'Tick all'; tickAllSteps(stepsSheetId, on); ssRefresh(); };
 $('#ss_list').addEventListener('click', e => {
   const st = e.target.closest('.stp'); if (!st) return;
   const k = st.dataset.k, i = done.ids.indexOf(k);
@@ -1496,14 +1645,30 @@ $('#ss_list').addEventListener('click', e => {
   if (all && bi === -1) done.ids.push(b); else if (!all && bi !== -1) done.ids.splice(bi, 1);
   saveDay();
   render();
-  const { rows } = schedule(), r = rows.find(x => x.id === stepsSheetId);
-  if (r) $('#ss_list').innerHTML = stepsRowsHtml(r);
+  ssRefresh();
 });
 $('#e_presets').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
-  $('#e_d').value = b.dataset.m; highlightChip();
+  $('#e_d').value = b.dataset.m; highlightChip(); syncEnd();
 });
-$('#e_d').addEventListener('input', highlightChip);
+$('#e_d').addEventListener('input', () => { highlightChip(); syncEnd(); });
+$('#e_s').addEventListener('input', () => {
+  const s = $('#e_s').value;
+  $('#e_f').value = s;
+  if (s) $('#e_k').value = 'fixedtime';
+  const e = $('#e_e').value;
+  if (s && e){
+    const [h, mi] = s.split(':').map(Number), [h2, m2] = e.split(':').map(Number), d = h2*60 + m2 - (h*60 + mi);
+    if (d > 0){ $('#e_d').value = d; highlightChip(); }
+  } else syncEnd();
+});
+$('#e_e').addEventListener('input', () => {
+  const s = $('#e_s').value, e = $('#e_e').value;
+  if (!s || !e) return;
+  const [h, mi] = s.split(':').map(Number), [h2, m2] = e.split(':').map(Number), d = h2*60 + m2 - (h*60 + mi);
+  if (d > 0){ $('#e_d').value = d; highlightChip(); }
+});
+$('#e_f').addEventListener('input', () => { $('#e_s').value = $('#e_f').value; syncEnd(); });
 $('#e_days').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   const i = +b.dataset.i;
@@ -1516,6 +1681,10 @@ $('#e_del').onclick = () => { setBlocks(cur.l, clone(getBlocks(cur.l)).filter(x 
 $('#e_ok').onclick = () => {
   const t = $('#e_t').value.trim(); if (!t) return;
   if (cur.l === 'win'){ saveWinBlock(t); return; }
+  { const s = $('#e_s').value, e = $('#e_e').value;
+    if (e && !s){ toast('Add a start time too, or clear the end time.'); return; }
+    if (s && e){ const [h, mi] = s.split(':').map(Number), [h2, m2] = e.split(':').map(Number); if (h2*60 + m2 <= h*60 + mi){ toast('End time has to be after the start time.'); return; } }
+    if ($('#e_k').value === 'fixedtime' && !$('#e_f').value && !s){ toast('Fixed clock time needs a start time.'); return; } }
   const k = $('#e_k').value, arr = clone(getBlocks(cur.l)), old = arr.find(x => x.id === cur.id);
   const b = { id: old ? old.id : 'u' + Date.now().toString(36), t };
   if (cur.l === 'oo') b.w = $('#e_w').value || 'climb1'; else if (old && old.w) b.w = old.w; else if (cur.l !== 'pre' && cur.l !== 'night') b.w = cur.w || 'climb1';
@@ -1527,7 +1696,7 @@ $('#e_ok').onclick = () => {
   const d = Math.max(0, parseInt($('#e_d').value) || 0), m = parseInt($('#e_m').value);
   if (k === 'sug'){ b.sug = true; b.d = 0; }
   else if (k === 'fixedtime'){
-    const f = $('#e_f').value; if (!f) return;
+    const f = $('#e_f').value || $('#e_s').value; if (!f) return;
     const [h, mi] = f.split(':').map(Number); b.fixed = h*60 + mi; b.d = d;
   } else {
     b.d = d;
@@ -1660,7 +1829,7 @@ function draw(){
   const rowHtml = (r, prev) => {
     const cut = r.use === 0 && !r.sug && r.fixed === undefined, dn = done.ids.includes(r.id);
     let tag = '';
-    const isNow = r.use > 0 && r.fixed === undefined && !r.sug && NM >= r.start && NM < r.end;
+    const isNow = r.use > 0 && !r.sug && NM >= r.start && NM < r.end;
     const winB = WIN[r.w] ? wins()[r.w] : null;
     const overflow = winB && r.use > 0 && !r.sug && r.start <= w + winB.to && r.end > w + winB.to;
     const sw = (prev && prev.md && r.md !== prev.md && MODE_NAME[r.md] ? '<span class="tag warn">switched to ' + MODE_NAME[r.md] + '</span>' : '') + (r.fixed !== undefined ? '<span class="tag">fixed time</span>' : '') + (overflow ? '<span class="tag warn">runs past window end</span>' : '');
@@ -1684,7 +1853,7 @@ function draw(){
     const metaTxt = cut ? 'Skipped' : r.sug ? 'Suggestion' : r.use > 0 ? (isNow ? (r.end - NM) + 'm remaining' : range(r.start, r.end) + ' (' + dur(r.use) + ')') : fmt(r.start).join(' ');
     const noteIc = getNote(r.id) ? '<span class="noteMark" aria-label="Has a note"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg></span>' : '';
     const chips = (stepBadge || noteIc) ? '<span class="tlchips">' + stepBadge + noteIc + '</span>' : '';
-    return '<div class="blk" data-c="' + dotColor + '" data-f="' + frac.toFixed(3) + '"><button class="tlrow' + (dn ? ' done' : '') + (isNow ? ' now' : '') + (cut ? ' cut' : '') + (r.sug ? ' sug' : '') + '" style="--dot:' + dotColor + ';--h:' + h + 'px" data-id="' + r.id + '" data-l="' + (r.post ? r.md : 'pre') + '" data-locked="' + ((cut || r.fixed !== undefined || r.sug) ? 1 : 0) + '" aria-label="' + esc(r.t) + (cut ? ', skipped' : r.sug ? ', suggestion' : dn ? ', done' : ', not done') + '">' + col1 + '<span class="tldot" style="' + dotStyle + '">' + dotIcon + '</span><span class="tlbody"><span class="time">' + metaTxt + tag + sw + '</span><span class="ttl">' + esc(r.t) + (editing && r.p !== 'buf' ? '<span class="dragH" aria-label="Drag to move" title="Drag to move">&#8942;&#8942;</span>' : '') + '</span>' + chips + '</span>' + check + '</button>' + noteHtml(r) + '</div>';
+    return '<div class="blk" data-c="' + dotColor + '" data-f="' + frac.toFixed(3) + '"><button class="tlrow' + (dn ? ' done' : '') + (isNow ? ' now' : '') + (cut ? ' cut' : '') + (r.sug ? ' sug' : '') + '" style="--dot:' + dotColor + ';--h:' + h + 'px" data-id="' + r.id + '" data-l="' + (r.post ? r.md : 'pre') + '" data-locked="' + ((cut || r.sug) ? 1 : 0) + '" aria-label="' + esc(r.t) + (cut ? ', skipped' : r.sug ? ', suggestion' : dn ? ', done' : ', not done') + '">' + col1 + '<span class="tldot" style="' + dotStyle + '">' + dotIcon + '</span><span class="tlbody"><span class="time">' + metaTxt + tag + sw + '</span><span class="ttl">' + esc(r.t) + (editing && r.p !== 'buf' ? '<span class="dragH" aria-label="Drag to move" title="Drag to move">&#8942;&#8942;</span>' : '') + '</span>' + chips + '</span>' + check + '</button>' + noteHtml(r) + '</div>';
   };
   function gapRows(rs){
     let out = '';
@@ -1702,7 +1871,7 @@ function draw(){
   function noteHtml(r){
     if (noteEditing === r.id && !editing) return '<div class="noteEdit"><textarea class="ntxt">' + esc(getNote(r.id)) + '</textarea><div class="ea"><button class="ncancel">Cancel</button><button class="nsave" data-nid="' + r.id + '">Save</button></div></div>';
     const n = getNote(r.id);
-    return (n ? '<div class="noteShow" data-nid="' + r.id + '" title="Tap to expand, tap again to edit">' + esc(n) + '</div>' : '');
+    return (n && shownNotes.has(noteKey(r.id)) ? '<div class="noteShow open" data-nid="' + r.id + '" title="Tap to edit">' + esc(n) + '</div>' : '');
   }
   const WB = wins();
   const winSection = k => {
@@ -1760,12 +1929,12 @@ $('#tl').addEventListener('click', e => {
   const nmk = e.target.closest('.noteMark');
   if (nmk){
     e.stopPropagation();
-    const el = $('#tl').querySelector('.noteShow[data-nid="' + nmk.closest('.tlrow').dataset.id + '"]');
-    if (el){ el.classList.add('open'); el.scrollIntoView({ block:'center', behavior:'smooth' }); }
-    return;
+    const nk = noteKey(nmk.closest('.tlrow').dataset.id);
+    if (shownNotes.has(nk)) shownNotes.delete(nk); else shownNotes.add(nk);
+    render(); return;
   }
   const nsh = e.target.closest('.noteShow');
-  if (nsh){ if (nsh.classList.contains('open')){ noteEditing = nsh.dataset.nid; render(); } else nsh.classList.add('open'); return; }
+  if (nsh){ noteEditing = nsh.dataset.nid; render(); return; }
   const nb = e.target.closest('.noteBtn');
   if (nb){ noteEditing = nb.dataset.nid; render(); return; }
   if (e.target.closest('.ncancel')){ noteEditing = null; render(); return; }
@@ -1773,7 +1942,8 @@ $('#tl').addEventListener('click', e => {
   if (ns){
     const id = ns.dataset.nid, txt = e.target.closest('.noteEdit').querySelector('.ntxt').value.trim();
     setNote(id, txt);
-    noteEditing = null; render(); return;
+    if (txt) shownNotes.add(noteKey(id)); else shownNotes.delete(noteKey(id));
+    noteEditing = null; render(); if (txt) toast('Note saved'); return;
   }
   const ad = e.target.closest('.add');
   if (ad){
@@ -1781,6 +1951,8 @@ $('#tl').addEventListener('click', e => {
     else openEd(ad.dataset.l, null, ad.dataset.w, ad.dataset.s === undefined ? undefined : Number(ad.dataset.s));
     return;
   }
+  const hd = e.target.closest('.tlhead');
+  if (hd){ openBlockInfo(hd.dataset.k); return; }
   const sb = e.target.closest('.stepsBtn');
   if (sb){ openStepsSheet(sb.dataset.sid); return; }
   const row = e.target.closest('.tlrow'); if (!row) return;
@@ -1791,7 +1963,7 @@ $('#tl').addEventListener('click', e => {
     const key = row.dataset.id, i = done.ids.indexOf(key);
     if (i === -1) done.ids.push(key); else done.ids.splice(i, 1);
     if (navigator.vibrate) navigator.vibrate(i === -1 ? 12 : 6);
-    saveDay(); render(); return;
+    saveDay(); render(); if (i === -1) offerTickAll(key); return;
   }
   openTaskSheet(row.dataset.l, row.dataset.id);
 });
@@ -1812,7 +1984,7 @@ function chime(){
   }catch{}
 }
 function drawNowBanner(rows){
-  const NM = nowM(), cur = rows.find(r => r.use > 0 && r.fixed === undefined && !r.sug && NM >= r.start && NM < r.end);
+  const NM = nowM(), cur = rows.find(r => r.use > 0 && !r.sug && NM >= r.start && NM < r.end);
   if (lastNowId === undefined) lastNowId = cur ? cur.id : null;
   else if ((cur ? cur.id : null) !== lastNowId){ lastNowId = cur ? cur.id : null; chime(); }
   const b = $('#nowBanner');
@@ -1932,6 +2104,27 @@ $('#weekstrip').addEventListener('pointerup', e => {
     goDate(d.toDateString());
   }
 });
+let dsX = null, dsY = null, dsT = 0, dsFired = 0;
+const dsSkip = '.modeWrap,.mode,.noteEdit,.dragH,input,textarea,select,button.add,.wakerow';
+$('.panel').addEventListener('pointerdown', e => {
+  dsX = (drag || dragCand || e.target.closest(dsSkip)) ? null : e.clientX; dsY = e.clientY; dsT = Date.now();
+});
+$('.panel').addEventListener('pointerup', e => {
+  if (dsX === null) return;
+  const dx = e.clientX - dsX, dy = e.clientY - dsY; dsX = null;
+  if (drag || dragCand || Date.now() - dsT > 800) return;
+  if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5){
+    dsFired = Date.now();
+    const d = new Date(viewDate); d.setDate(d.getDate() + (dx < 0 ? 1 : -1));
+    goDate(d.toDateString());
+  }
+});
+$('.panel').addEventListener('pointercancel', () => { dsX = null; });
+$('.panel').addEventListener('click', e => { if (Date.now() - dsFired < 400){ e.stopPropagation(); e.preventDefault(); } }, true);
+function setTopH(){ const t = document.querySelector('.top'); if (t) document.documentElement.style.setProperty('--topH', t.getBoundingClientRect().height + 'px'); }
+setTopH(); window.addEventListener('resize', setTopH);
+if (window.ResizeObserver) new ResizeObserver(setTopH).observe(document.querySelector('.top'));
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(setTopH);
 $('#weekstrip').addEventListener('click', e => {
   if (swFired){ swFired = false; return; }
   const b = e.target.closest('.wd'); if (!b) return;
@@ -2787,7 +2980,7 @@ $('#clr_go').onclick = () => {
 // SAFETY, ACCESSIBILITY, EMPTY STATE
 // ============================================================
 function safeCol(c){ return (typeof c === 'string' && /^#[0-9a-fA-F]{3,8}$/.test(c.trim())) ? c.trim() : null; }
-Object.entries({ ed:'Task editor', fabMenu:'Add', iconPick:'Choose an icon', colorSheet:'Pick a color', scopeDlg:'Apply this change to', mvDlg:'Move or copy', shDlg:'Running late', clrDlg:'Clear all data', setupDlg:'Welcome to Yotei', runDlg:'Routine timer', taskSheet:'Task details', stepsSheet:'Subtasks' })
+Object.entries({ ed:'Task editor', fabMenu:'Add', iconPick:'Choose an icon', colorSheet:'Pick a color', scopeDlg:'Apply this change to', mvDlg:'Move or copy', shDlg:'Running late', clrDlg:'Clear all data', setupDlg:'Welcome to Yotei', runDlg:'Routine timer', taskSheet:'Task details', blockInfo:'Block information', stepsSheet:'Subtasks' })
   .forEach(([id, l]) => { const d = document.getElementById(id); if (d) d.setAttribute('aria-label', l); });
 $('#tl').insertAdjacentHTML('beforebegin', '<div class="sleep emptyCard" id="emptyCard" hidden><h2>Start with your first task</h2><p class="wn">Add what you want to do today. A task added for all days repeats every day. You can use the + button any time.</p><button class="add" id="emptyAdd">Add a task</button></div>');
 function drawEmpty(){
@@ -2798,7 +2991,7 @@ $('#emptyAdd').addEventListener('click', () => { openEd('oo', null, defaultWin()
 $('#hdrTitle').addEventListener('click', () => { if (document.body.dataset.tab === 'home' && viewDate !== todayStr()) goDate(todayStr()); });
 function focusNow(){ if (viewDate !== todayStr()) return; const r = document.querySelector('.tlrow.now'); if (r) r.scrollIntoView({ block:'center' }); }
 
-const APP_VERSION = '2.6.2';
+const APP_VERSION = '2.6.3';
 const FEATURES = [
   'A daily timeline built from your wake time, split into seven energy windows',
   'Morning and Night Routines that shrink (optional, then flexible, then core) to fit',
@@ -2826,6 +3019,10 @@ const LIMITS = [
   'Fonts need one online load before they work offline'
 ];
 const CHANGELOG = [
+  { v:'2.6.3', date:'Oct 2026',
+    added:['Pick a Start and End time for any task in the editor', 'Tap a block header to read what is happening in that window, with the research behind it listed in Settings', 'Swipe left or right on the timeline to change day', 'Ticking a task offers to tick all its subtasks, and the subtask sheet has Tick all', 'A dashed line on the timeline marks free gaps between tasks'],
+    changed:['The header and week strip now stay pinned while the schedule scrolls', 'The task sheet is now a bottom sheet with icons, showing the date, time and details', 'Notes stay hidden until you tap the note symbol next to the task name', 'Tasks with a fixed clock time can now be ticked and show as current'],
+    fixed:['The How is your energy? card no longer overlaps its buttons'] },
   { v:'2.6.2', date:'Oct 2026',
     added:['A friendly empty state with an Add a task button when nothing is planned', 'Tap the month title to jump back to today, and the timeline scrolls to the current task when you open the app', 'A small vibration when you tick a task, and the storage used on this device in Settings', 'Clear data in Settings, next to Export and Import, with a backup option and a confirmation', '388 icons with a search box, all from the Phosphor set', 'Layout copied from Structured: month header with a date button, week strip with colored day dots, and the timeline on a lighter panel with a curved top edge', 'Add button with a menu (new one-off task, inbox, running late, copy day), Inbox as its own tab, and tab icons', 'Block editing now uses the same editor as tasks: name, icon, color, start and end, note, and the this-day, from-here or all-days choice with weekday limits', 'Add note and edit note are in the task sheet, and notes show under their task'],
     changed:['The task and block editor is now full screen, with a header and a bar of buttons that stays at the bottom', 'The app starts with no built-in tasks, and empty windows show a + Add task button', 'The + button now has Add a task, which asks whether it is for this day, from this day on, or all days', 'Poppins is now the font everywhere, in one normal size scale', 'Header, titles, subtask chip and check circle are smaller', 'Times line up with the ends of each dot, and the active task shows the current time without overlapping', 'The connecting line is now drawn one smooth segment per gap, so every color blends cleanly into the next', 'No more gaps in the line around the Home, School and Away picker', 'Editor: smaller color swatches and divider lines between sections'],
