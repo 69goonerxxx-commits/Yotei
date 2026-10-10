@@ -495,6 +495,9 @@ html[data-text=large] .tsIn{zoom:1.15}
 #srcList a{color:var(--accent);overflow-wrap:anywhere}
 html[data-text=large] .biIn{zoom:1.15}
 #energyCard .enRow+.wn{margin:10px 0 0}
+.edErr{margin:0;padding:10px 12px;border-radius:12px;background:var(--card);border:1px solid var(--bad);color:var(--text);font-size:13px;line-height:1.4}
+.edErr[hidden]{display:none}
+.kindHint{display:block;margin-top:6px;font-size:12px;color:var(--sec);line-height:1.4}
 </style>
 </head>
 <body>
@@ -563,18 +566,19 @@ html[data-text=large] .biIn{zoom:1.15}
   <label>What color?<div class="colorRow" id="e_colors" role="radiogroup" aria-label="Color"></div><input type="hidden" id="e_color"></label>
   <label class="taskOnly">Kind<select id="e_k">
     <option value="core">Core (shrinks last)</option><option value="flex">Flexible (shrinks first)</option><option value="opt">Optional (cut first)</option>
-    <option value="fixedlen">Fixed length</option><option value="sug">Suggestion, no time</option><option value="fixedtime">Fixed clock time</option><option value="open">Open slot</option>
-  </select></label>
-  <label class="taskOnly">How long?<div class="chips" id="e_presets">
+    <option value="fixedlen">Fixed length</option><option value="sug">Suggestion, no time</option><option value="open">Open slot</option>
+  </select><span class="kindHint" id="e_khint"></span></label>
+  <label class="taskOnly" id="e_howlong">How long?<div class="chips" id="e_presets">
     <button type="button" data-m="5">5m</button><button type="button" data-m="15">15m</button><button type="button" data-m="20">20m</button>
     <button type="button" data-m="30">30m</button><button type="button" data-m="45">45m</button><button type="button" data-m="60">1h</button><button type="button" data-m="90">1.5h</button>
   </div></label>
   <div class="er taskOnly" id="e_se"><label>Starts<input id="e_s" type="time"></label><label>Ends<input id="e_e" type="time"></label></div>
-  <div class="er taskOnly"><label>Minutes<input id="e_d" type="number" min="0"></label><label>Shortest<input id="e_m" type="number" min="0"></label><label>Fixed at<input id="e_f" type="time"></label></div>
+  <div class="er taskOnly" id="e_mrow"><label>Minutes<input id="e_d" type="number" min="0"></label><label id="e_mwrap">Shortest<input id="e_m" type="number" min="0"></label><label>Fixed at<input id="e_f" type="time"></label></div>
   <div class="days taskOnly" id="e_days"></div>
   <div class="er winOnly"><label>Starts<input id="e_bs" type="time"></label><label>Ends<input id="e_be" type="time"></label></div>
   <label><span id="e_dlab">Details</span><textarea id="e_details" rows="2" placeholder="What this task is, or how to do it"></textarea></label>
   <label class="taskOnly">Subtasks, one per line<textarea id="e_p" rows="3"></textarea></label>
+  <p class="edErr" id="e_err" role="alert" hidden></p>
   <div class="ea"><button id="e_del">Delete</button><button id="e_up">Up</button><button id="e_dn">Down</button><button id="e_x">Cancel</button><button id="e_ok">Save</button></div>
 </div></dialog>
 <dialog id="iconPick"><div class="ef">
@@ -776,6 +780,10 @@ function mondayOf(ds){
   const m = new Date(d); m.setDate(d.getDate() + diff); return m;
 }
 function isoLocal(d){ const p = n => String(n).padStart(2, '0'); return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()); }
+function winFor(clock, wk){
+  const WB = wins(), n = clock - (wk === undefined ? wake : wk), keys = Object.keys(WB); if (n < 0) return 'sleep';
+  let w = keys[0]; for (const k of keys) if (n >= WB[k].from) w = k; return w;
+}
 const toVal = m => String(Math.floor(m/60)).padStart(2,'0') + ':' + String(m%60).padStart(2,'0');
 
 // ============================================================
@@ -789,7 +797,8 @@ function build(dow){
   const m1 = typeOf('climb1'), M = MODES[m1 || 'none'], iso = isoLocal(new Date(day.date)), dm = m1 || Object.values(day.types || {})[0] || null, OV = store.get('ovr', {});
   const eff = b => applyOvr(b, OV, iso, dow, dm), onDay = b => (!b.days || b.days.includes(dow)) && (!b.from || iso >= b.from) && (!b.modes || (dm && b.modes.includes(dm)));
   const ooF = k => (day.oneoffs || []).filter(x => (x.w || 'climb1') === k).map(x => ({ ...x, md:'oo', post:true }));
-  const pre = getBlocks('pre').map(eff).filter(Boolean).filter(onDay).concat(ooF('sleep')).map(b => ({ ...b, use:b.d }));
+  const fixSort = arr => { const ix = [], fx = []; arr.forEach((b, i) => { if (b.fixed !== undefined && !b.sug){ ix.push(i); fx.push(b); } }); fx.sort((a, b) => a.fixed - b.fixed); const out = arr.slice(); ix.forEach((i, j) => { out[i] = fx[j]; }); return out; };
+  const pre = fixSort(getBlocks('pre').map(eff).filter(Boolean).filter(onDay).concat(ooF('sleep'))).map(b => ({ ...b, use:b.d }));
   let msg = M.msg || '', tone = 'ok';
   if (M.deadline !== null){
     const avail = M.deadline - wake, total = pre.reduce((a, b) => a + b.d, 0), leave = fmt(M.deadline).join(' ');
@@ -815,13 +824,14 @@ function build(dow){
   for (const b of pre){
     bump();
     const bf = b.p === 'buf';
-    rows.push({ ...b, w:bf ? 'climb1' : 'sleep', md:bf ? m1 : b.md, start:t, end:t + b.use }); t += b.use;
+    const at0 = (!bf && !b.sug && b.fixed !== undefined) ? b.fixed : t;
+    rows.push({ ...b, w:bf ? 'climb1' : 'sleep', md:bf ? m1 : b.md, start:at0, end:at0 + b.use }); t = Math.max(t, at0 + b.use);
   }
   if (M.deadline !== null) t = Math.max(t, M.deadline);
   for (const k of Object.keys(WIN)){
     const night = k === 'wind', tp = night ? 'night' : typeOf(k), oo = ooF(k);
     if (k === 'sleep' || (!tp && !oo.length)) continue;
-    let list = (tp ? getBlocks(tp).map(eff).filter(Boolean).filter(x => (night || (x.w || 'climb1') === k) && onDay(x)) : []).concat(oo);
+    let list = fixSort((tp ? getBlocks(tp).map(eff).filter(Boolean).filter(x => (night || (x.w || 'climb1') === k) && onDay(x)) : []).concat(oo));
     if (night){
       t = Math.max(t, wake + wins().wind.from);
       list = list.map(b => ({ ...b, use:b.d }));
@@ -835,7 +845,7 @@ function build(dow){
     for (const b of list){
       bump();
       const at = b.fixed !== undefined ? b.fixed : t;
-      if (b.fixed !== undefined && t > b.fixed){ tone = 'bad'; msg = 'The routine runs past the ' + fmt(b.fixed).join(' ') + ' start. Trim it or wake earlier.'; }
+      if (b.fixed !== undefined && !b.sug && t > b.fixed){ tone = 'bad'; msg = 'The tasks before "' + b.t + '" run past its ' + fmt(b.fixed).join(' ') + ' start. Trim them, move it later, or wake earlier.'; }
       let use = b.use !== undefined ? b.use : b.d, capCut = false;
       if (b.fixed === undefined && !b.sug && b.md !== 'oo' && ((at >= CAP.hard && b.p !== 'core') || (at >= CAP.soft && b.p === 'opt'))){ use = 0; capCut = true; }
       rows.push({ ...b, w:k, use, capCut, start:at, end:at + use, post:true, md:b.md === 'oo' ? 'oo' : tp });
@@ -1392,12 +1402,12 @@ function openBlockEd(k){
   $('#e_wrap').style.display = 'none';
   $('#e_del').textContent = 'Reset'; $('#e_del').style.display = '';
   ['e_up', 'e_dn'].forEach(i => { $('#' + i).style.display = 'none'; });
-  $('#ed').showModal();
+  $('#ed').showModal(); $('#ed .ef').scrollTop = 0;
 }
 function saveWinBlock(name){
   const k = cur.id, a = ($('#e_bs').value || '00:00').split(':').map(Number), z = ($('#e_be').value || '00:00').split(':').map(Number);
   let from = a[0] * 60 + a[1] - wake, to = z[0] * 60 + z[1] - wake; if (from < 0) from += 1440; if (to < 0) to += 1440;
-  if (to <= from){ toast('A block has to end after it starts.'); return; }
+  if (to <= from){ edErr('A block has to end after it starts.'); return; }
   const o = wins()[k];
   askScope('edit', { l:'win', id:k,
     b:{ name, note:$('#e_details').value.trim(), color:$('#e_color').value || null, icon:$('#e_icon').value.trim() || WIN_ICON_DEF[k], from, to },
@@ -1440,37 +1450,70 @@ function setBlocks(l, arr){ if (l === 'oo'){ day.oneoffs = arr; saveDay(); retur
 function drawDays(){
   $('#e_days').innerHTML = ['Su','Mo','Tu','We','Th','Fr','Sa'].map((n, i) => '<button type="button" data-i="' + i + '"' + (edDays.includes(i) ? ' class="on"' : '') + '>' + n + '</button>').join('');
 }
+function effBlock(l, b){
+  if (!b || l === 'oo') return b;
+  const m1 = typeOf('climb1'), dm = m1 || Object.values(day.types || {})[0] || null;
+  return applyOvr(b, store.get('ovr', {}), isoLocal(new Date(viewDate)), new Date(viewDate).getDay(), dm) || b;
+}
+const KIND_HINT = {
+  core:'Shrinks last when time is tight. This only matters in the Morning and Night routines.',
+  flex:'Shrinks first when time is tight. This only matters in the Morning and Night routines.',
+  opt:'Cut first when time is tight. This only matters in the Morning and Night routines.',
+  fixedlen:'Keeps its length and never shrinks. Add a Start time to pin it to a clock time.',
+  sug:'A suggestion with no time. It shows on the timeline without taking any.',
+  open:'Keeps its length, like Fixed length. Use it for a slot you will fill in later.'
+};
+function applyKindUI(){
+  const k = $('#e_k').value, sug = k === 'sug', pri = ['core', 'flex', 'opt'].includes(k);
+  $('#e_khint').textContent = KIND_HINT[k] || '';
+  $('#e_howlong').style.display = sug ? 'none' : '';
+  $('#e_se').style.display = sug ? 'none' : '';
+  $('#e_mrow').style.display = sug ? 'none' : '';
+  $('#e_mwrap').style.display = pri ? '' : 'none';
+}
+function setKind(v){ $('#e_k').value = v; applyKindUI(); }
+function refreshWinLock(){
+  const on = !!$('#e_s').value && $('#e_wrap').style.display !== 'none';
+  $('#e_w').disabled = on;
+}
 function openEd(l, id, w, startAt){
-  const b = id ? getBlocks(l).find(x => x.id === id) : null;
+  const b = id ? effBlock(l, getBlocks(l).find(x => x.id === id)) : null;
   if (id && !b){ toast('That task is no longer in your routines. Use Rebuild this day to work with your current ones.'); return; }
   cur = { l, id, w, wk: l === 'pre' ? 'sleep' : l === 'night' ? 'wind' : ((b && b.w) || w || 'climb1') };
   $('#e_title').innerHTML = (b ? 'Edit' : 'New') + ' <em>Task</em>';
+  $('#e_err').hidden = true;
   $('#ed').dataset.mode = 'task'; $('#e_tlab').textContent = 'Task'; $('#e_dlab').textContent = 'Details'; $('#e_del').textContent = 'Delete';
   $('#e_wrap').style.display = l === 'oo' ? '' : 'none';
   if (l === 'oo'){ const WB = wins(); $('#e_w').innerHTML = Object.keys(WB).map(k => '<option value="' + k + '">' + esc(WB[k].name) + '</option>').join(''); $('#e_w').value = (b && b.w) || w || 'climb1'; }
   const x = b || { t:'', d:20 };
   $('#e_t').value = x.t;
-  $('#e_k').value = x.sug ? 'sug' : x.fixed !== undefined ? 'fixedtime' : x.p === 'open' ? 'open' : ['core','flex','opt'].includes(x.p) ? x.p : 'fixedlen';
+  $('#e_k').value = x.sug ? 'sug' : x.p === 'open' ? 'open' : ['core','flex','opt'].includes(x.p) ? x.p : 'fixedlen';
   $('#e_d').value = x.d; $('#e_m').value = x.m ?? ''; highlightChip();
   $('#e_icon').value = x.icon || ''; updateIconBtn();
   $('#e_color').value = x.color || ''; CT = 'e'; drawColorRow('e'); setEdAccent();
   $('#e_f').value = x.fixed !== undefined ? toVal(x.fixed) : '';
-  if (startAt !== undefined && !b){ $('#e_k').value = 'fixedtime'; $('#e_f').value = toVal(startAt); }
+  if (startAt !== undefined && !b){ $('#e_f').value = toVal(startAt); }
   $('#e_s').value = $('#e_f').value; $('#e_e').value = '';
-  syncEnd();
+  syncEnd(); refreshWinLock(); applyKindUI();
+  $('#e_days').style.display = l === 'oo' ? 'none' : '';
   $('#e_details').value = x.details || ''; $('#e_p').value = (x.steps || []).join('\n');
   edDays = x.days ? x.days.slice() : [0,1,2,3,4,5,6]; drawDays();
   ['e_del','e_up','e_dn'].forEach(i => { $('#' + i).style.display = b ? '' : 'none'; });
-  $('#ed').showModal();
+  $('#ed').showModal(); $('#ed .ef').scrollTop = 0;
 }
 function moveBlock(d){
   const arr = clone(getBlocks(cur.l)), i = arr.findIndex(x => x.id === cur.id), wk = x => x.w || 'climb1';
+  if (i < 0) return;
+  if (arr[i].fixed !== undefined){ edErr('This task has a fixed time, so it is ordered by its Start time. Change the Start time instead.'); return; }
+  const vis = new Set(schedule().rows.map(r => r.id));
   let j = i + d;
-  while (i >= 0 && j >= 0 && j < arr.length && wk(arr[j]) !== wk(arr[i])) j += d;
-  if (i < 0 || j < 0 || j >= arr.length) return;
+  while (j >= 0 && j < arr.length && (wk(arr[j]) !== wk(arr[i]) || !vis.has(arr[j].id) || arr[j].fixed !== undefined)) j += d;
+  if (j < 0 || j >= arr.length){ edErr(d < 0 ? 'It is already first in this window.' : 'It is already last in this window.'); return; }
+  needLive();
   [arr[i], arr[j]] = [arr[j], arr[i]];
   setBlocks(cur.l, arr); $('#ed').close(); render();
 }
+function edErr(msg){ const e = $('#e_err'); e.textContent = msg; e.hidden = false; try{ e.scrollIntoView({ block:'center', behavior:'smooth' }); }catch{} }
 function syncEnd(){
   const s = $('#e_s').value, d = parseInt($('#e_d').value) || 0;
   if (!s || !d){ $('#e_e').value = ''; return; }
@@ -1590,13 +1633,16 @@ $('#ts_del').onclick = () => {
   $('#taskSheet').close(); render();
 };
 $('#ts_dup').onclick = () => {
-  const arr = clone(getBlocks(sheetCtx.l)), i = arr.findIndex(x => x.id === sheetCtx.id);
-  if (i === -1) return;
-  const copy = { ...arr[i], id:'u' + Date.now().toString(36) };
-  arr.splice(i + 1, 0, copy);
-  setBlocks(sheetCtx.l, arr);
-  $('#taskSheet').close(); render();
-  openEd(sheetCtx.l, copy.id);
+  const r = schedule().rows.find(x => x.id === sheetCtx.id); if (!r) return;
+  $('#taskSheet').close();
+  openEd('oo', null, r.w); cur.addScope = true;
+  $('#e_t').value = r.t;
+  $('#e_k').value = r.sug ? 'sug' : ['core', 'flex', 'opt'].includes(r.p) ? r.p : r.p === 'open' ? 'open' : 'fixedlen';
+  $('#e_d').value = r.d !== undefined ? r.d : r.use; $('#e_m').value = r.m ?? ''; highlightChip();
+  $('#e_icon').value = r.icon || ''; updateIconBtn();
+  $('#e_color').value = r.color || ''; drawColorRow('e'); setEdAccent();
+  $('#e_details').value = r.details || ''; $('#e_p').value = (r.steps || []).join('\n');
+  $('#e_s').value = ''; $('#e_e').value = ''; $('#e_f').value = ''; refreshWinLock(); applyKindUI();
 };
 // ============================================================
 // SUBTASK SHEET — opens from the small icon next to a task's
@@ -1655,61 +1701,82 @@ $('#e_d').addEventListener('input', () => { highlightChip(); syncEnd(); });
 $('#e_s').addEventListener('input', () => {
   const s = $('#e_s').value;
   $('#e_f').value = s;
-  if (s) $('#e_k').value = 'fixedtime';
-  const e = $('#e_e').value;
-  if (s && e){
-    const [h, mi] = s.split(':').map(Number), [h2, m2] = e.split(':').map(Number), d = h2*60 + m2 - (h*60 + mi);
-    if (d > 0){ $('#e_d').value = d; highlightChip(); }
-  } else syncEnd();
+  if (s){ if ($('#e_k').value === 'sug') setKind('fixedlen'); syncEnd(); syncWinSel(); }
+  else $('#e_e').value = '';
+  refreshWinLock();
 });
 $('#e_e').addEventListener('input', () => {
   const s = $('#e_s').value, e = $('#e_e').value;
-  if (!s || !e) return;
+  if (!e) return;
+  if (!s){ edErr('Pick a start time first.'); $('#e_e').value = ''; return; }
   const [h, mi] = s.split(':').map(Number), [h2, m2] = e.split(':').map(Number), d = h2*60 + m2 - (h*60 + mi);
   if (d > 0){ $('#e_d').value = d; highlightChip(); }
+  else { edErr('End time has to be after the start time.'); syncEnd(); }
 });
-$('#e_f').addEventListener('input', () => { $('#e_s').value = $('#e_f').value; syncEnd(); });
+function syncWinSel(){
+  const f = $('#e_s').value; if (!f || $('#e_wrap').style.display === 'none') return;
+  const [h, mi] = f.split(':').map(Number); $('#e_w').value = winFor(h*60 + mi);
+}
+$('#e_k').addEventListener('change', () => {
+  const k = $('#e_k').value;
+  if (k === 'sug'){ $('#e_s').value = ''; $('#e_e').value = ''; $('#e_f').value = ''; }
+  if (k !== 'sug' && !(parseInt($('#e_d').value) > 0)){ $('#e_d').value = 20; highlightChip(); }
+  if (['core', 'flex', 'opt'].includes(k) && $('#e_m').value === '') $('#e_m').value = $('#e_d').value;
+  applyKindUI(); syncEnd(); refreshWinLock();
+});
+$('#e_f').addEventListener('input', () => { $('#e_s').value = $('#e_f').value; if ($('#e_f').value && $('#e_k').value === 'sug') setKind('fixedlen'); syncEnd(); syncWinSel(); refreshWinLock(); });
 $('#e_days').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   const i = +b.dataset.i;
   edDays = edDays.includes(i) ? edDays.filter(z => z !== i) : edDays.concat(i); drawDays();
 });
 $('#e_x').onclick = () => $('#ed').close();
+$('#ed').addEventListener('input', () => { $('#e_err').hidden = true; });
 $('#e_up').onclick = () => moveBlock(-1);
 $('#e_dn').onclick = () => moveBlock(1);
 $('#e_del').onclick = () => { setBlocks(cur.l, clone(getBlocks(cur.l)).filter(x => x.id !== cur.id)); $('#ed').close(); render(); };
 $('#e_ok').onclick = () => {
-  const t = $('#e_t').value.trim(); if (!t) return;
+  const t = $('#e_t').value.trim();
+  if (!t){ edErr('Give the task a name first.'); return; }
   if (cur.l === 'win'){ saveWinBlock(t); return; }
   { const s = $('#e_s').value, e = $('#e_e').value;
-    if (e && !s){ toast('Add a start time too, or clear the end time.'); return; }
-    if (s && e){ const [h, mi] = s.split(':').map(Number), [h2, m2] = e.split(':').map(Number); if (h2*60 + m2 <= h*60 + mi){ toast('End time has to be after the start time.'); return; } }
-    if ($('#e_k').value === 'fixedtime' && !$('#e_f').value && !s){ toast('Fixed clock time needs a start time.'); return; } }
-  const k = $('#e_k').value, arr = clone(getBlocks(cur.l)), old = arr.find(x => x.id === cur.id);
+    if (e && !s){ edErr('Add a start time too, or clear the end time.'); return; }
+    if (s && e){ const [h, mi] = s.split(':').map(Number), [h2, m2] = e.split(':').map(Number); if (h2*60 + m2 <= h*60 + mi){ edErr('End time has to be after the start time.'); return; } }
+  }
+  let k = $('#e_k').value;
+  if (k !== 'sug' && !(parseInt($('#e_d').value) > 0)){ edErr('Set how long it takes, in minutes.'); return; }
+  const arr = clone(getBlocks(cur.l)), old0 = arr.find(x => x.id === cur.id), old = effBlock(cur.l, old0);
   const b = { id: old ? old.id : 'u' + Date.now().toString(36), t };
+  if (old){ const FORM = ['id','t','d','m','p','sug','fixed','details','color','icon','steps','days','w']; Object.keys(old).forEach(z => { if (!FORM.includes(z)) b[z] = old[z]; }); }
   if (cur.l === 'oo') b.w = $('#e_w').value || 'climb1'; else if (old && old.w) b.w = old.w; else if (cur.l !== 'pre' && cur.l !== 'night') b.w = cur.w || 'climb1';
   const details = $('#e_details').value.trim(); if (details) b.details = details;
   const color = $('#e_color').value.trim(); if (color) b.color = color;
   const icon = $('#e_icon').value.trim(); if (icon) b.icon = icon;
   const steps = $('#e_p').value.split('\n').map(z => z.trim()).filter(Boolean); if (steps.length) b.steps = steps;
-  if (edDays.length && edDays.length < 7) b.days = edDays.slice().sort();
+  if (cur.l !== 'oo'){ if (!edDays.length){ edErr('Pick at least one day.'); return; } if (edDays.length < 7) b.days = edDays.slice().sort(); }
   const d = Math.max(0, parseInt($('#e_d').value) || 0), m = parseInt($('#e_m').value);
   if (k === 'sug'){ b.sug = true; b.d = 0; }
-  else if (k === 'fixedtime'){
-    const f = $('#e_f').value || $('#e_s').value; if (!f) return;
-    const [h, mi] = f.split(':').map(Number); b.fixed = h*60 + mi; b.d = d;
-  } else {
+  else {
     b.d = d;
     if (k === 'open') b.p = 'open';
     else if (k !== 'fixedlen'){ b.p = k; b.m = Math.min(d, isNaN(m) ? d : m); }
+    const f = $('#e_s').value || $('#e_f').value;
+    if (f){
+      const [h, mi] = f.split(':').map(Number); b.fixed = h*60 + mi;
+      if (cur.l !== 'pre' && cur.l !== 'night') b.w = winFor(b.fixed);
+      else { const need = cur.l === 'pre' ? 'sleep' : 'wind', got = winFor(b.fixed); if (got !== need){ edErr('That time falls in ' + wins()[got].name + ', not ' + wins()[need].name + '. Add it from that window instead.'); return; } }
+    }
   }
   if (cur.l === 'oo' && cur.addScope && !old && !cur.fromInbox){
     const w = b.w, l = w === 'sleep' ? 'pre' : w === 'wind' ? 'night' : (typeOf(w) || 'home');
     askScope('add', { l, id:b.id, b, old:null, w }); return;
   }
-  if (cur.l !== 'oo'){ askScope(old ? 'edit' : 'add', { l:cur.l, id:b.id, b, old, w:cur.w }); return; }
+  if (cur.l !== 'oo'){
+    if (old && !Object.keys(diffBlock(old, b)).length){ $('#ed').close(); return; }
+    askScope(old ? 'edit' : 'add', { l:cur.l, id:b.id, b, old, w:cur.w }); return;
+  }
   needLive();
-  if (old) arr[arr.indexOf(old)] = b; else arr.push(b);
+  if (old0) arr[arr.indexOf(old0)] = b; else arr.push(b);
   if (cur.fromInbox) store.set('inbox', store.get('inbox', []).filter(x => x.id !== cur.fromInbox));
   setBlocks(cur.l, arr); $('#ed').close(); render();
 };
@@ -2474,6 +2541,8 @@ function applyOvr(b, OV, iso, dow, dm){
   return x;
 }
 function diffBlock(o, n){
+  const nd = x => { const y = { ...x }; if (Array.isArray(y.days) && y.days.length === 7) delete y.days; return y; };
+  o = nd(o); n = nd(n);
   const p = {};
   new Set([...Object.keys(o), ...Object.keys(n)]).forEach(k => {
     if (k !== 'id' && JSON.stringify(o[k]) !== JSON.stringify(n[k])) p[k] = n[k] === undefined ? null : n[k];
@@ -2519,7 +2588,7 @@ function applyScope0(sc){
     const patch = diffBlock(c.old, c.b);
     if (Object.keys(patch).length){
       if (sc === 'all' && !hasFilt){
-        arr[arr.findIndex(x => x.id === c.id)] = c.b; setBlocks(c.l, arr);
+        { const bi = arr.findIndex(x => x.id === c.id), nb = { ...arr[bi] }; Object.keys(patch).forEach(k => { if (patch[k] === null) delete nb[k]; else nb[k] = patch[k]; }); arr[bi] = nb; } setBlocks(c.l, arr);
         (OV[c.id] || []).forEach(e => { if (e.patch) Object.keys(patch).forEach(k => delete e.patch[k]); });
         OV[c.id] = (OV[c.id] || []).filter(e => e.patch === null || Object.keys(e.patch).length);
         if (!OV[c.id].length) delete OV[c.id];
@@ -2567,7 +2636,7 @@ function mvDo0(kind){
   ['m', 'p', 'sug', 'icon', 'color', 'details', 'steps', 'fixed'].forEach(k => { if (r[k] !== undefined) o[k] = r[k]; });
   const tm = $('#mv_t').value;
   if (tm){ const [h, mi] = tm.split(':').map(Number); o.fixed = h * 60 + mi; if (!o.d) o.d = 20; }
-  if (ds) o.w = o.fixed !== undefined ? winAt(o.fixed - ((planFor(ds) || {}).w ?? defWake())) : (r.w || 'climb1');
+  if (ds) o.w = o.fixed !== undefined ? winFor(o.fixed, (planFor(ds) || {}).w ?? defWake()) : (r.w || 'climb1');
   const removeHere = () => {
     if (sheetCtx.l === 'oo') day.oneoffs = (day.oneoffs || []).filter(x => x.id !== sheetCtx.id);
     else { const OV = store.get('ovr', {}), iso = isoLocal(new Date(viewDate)); (OV[sheetCtx.id] = OV[sheetCtx.id] || []).push({ from:iso, to:iso, patch:null }); store.set('ovr', OV); }
@@ -2785,6 +2854,7 @@ function reorderBlock(l, id, beforeId, tl){
   if (l !== tl){ toast('Drop it on a task in the same list.'); return; }
   const _s = grab(), arr = clone(getBlocks(l)), i = arr.findIndex(x => x.id === id), j = arr.findIndex(x => x.id === beforeId), wk = x => x.w || 'climb1';
   if (i < 0 || j < 0 || wk(arr[i]) !== wk(arr[j])){ toast('Drop it on a task in the same window.'); return; }
+  if (arr[i].fixed !== undefined){ toast('This task has a fixed time. Change its Start time in Edit to move it.'); return; }
   needLive(); const [x] = arr.splice(i, 1); arr.splice(arr.findIndex(z => z.id === beforeId), 0, x);
   setBlocks(l, arr); render(); showUndo(l === 'oo' ? 'Reordered' : 'Reordered for all days', _s);
 }
@@ -2991,7 +3061,7 @@ $('#emptyAdd').addEventListener('click', () => { openEd('oo', null, defaultWin()
 $('#hdrTitle').addEventListener('click', () => { if (document.body.dataset.tab === 'home' && viewDate !== todayStr()) goDate(todayStr()); });
 function focusNow(){ if (viewDate !== todayStr()) return; const r = document.querySelector('.tlrow.now'); if (r) r.scrollIntoView({ block:'center' }); }
 
-const APP_VERSION = '2.6.3';
+const APP_VERSION = '2.6.4';
 const FEATURES = [
   'A daily timeline built from your wake time, split into seven energy windows',
   'Morning and Night Routines that shrink (optional, then flexible, then core) to fit',
@@ -3019,6 +3089,10 @@ const LIMITS = [
   'Fonts need one online load before they work offline'
 ];
 const CHANGELOG = [
+  { v:'2.6.4', date:'Oct 2026',
+    added:['Editor problems (missing name, no duration, end before start) now show a message right above the Save button'],
+    changed:['The Fixed clock time option is gone from Kind, since any task can now have a Start time. Kind now explains what it does and hides the fields that do not apply to it (Shortest only for Core, Flexible and Optional; time fields are hidden for Suggestion)', 'Duplicate opens a new task with the same details and asks which days to add it to', 'The Window picker is locked while a Start time is set, since the time decides the window', 'Changing a task\'s Start time now moves its End time with it and keeps the length', 'A task with a Start time moves into the window that contains that time', 'Tasks with a fixed time are placed in time order, and dragging one to reorder explains that it is fixed'],
+    fixed:['Reopening a task you edited for one day or from a date on showed the old values instead of the current ones', 'Saving a task wiped its hidden filters (start date, school/home days)', 'Saving without changing anything still asked which days to apply it to', 'Up and Down could swap with a task that is not shown today; they now skip it and say when the task is already first or last', 'Choosing All days could copy a one-day change onto every day', 'Deselecting every day saved as all days; it now asks you to pick one', 'The editor opened scrolled down after a long edit', 'Switching Kind from Suggestion left Minutes at 0 and blocked Save', 'Tasks added to the Morning routine ignored their Start time and landed at wake time', 'Editing a task\'s Start and End did nothing visible for tasks in the Morning routine, and the window never followed the new time', 'Setting a Start or End time forced Kind to Fixed clock time, and changing Kind wiped the times. Start and End are now separate from Kind, so a Core, Flexible or Optional task can have a clock time', 'Saving with a blank name or 0 minutes did nothing with no explanation', 'Moving a fixed-time task to another day could place it in the wrong window'] },
   { v:'2.6.3', date:'Oct 2026',
     added:['Pick a Start and End time for any task in the editor', 'Tap a block header to read what is happening in that window, with the research behind it listed in Settings', 'Swipe left or right on the timeline to change day', 'Ticking a task offers to tick all its subtasks, and the subtask sheet has Tick all', 'A dashed line on the timeline marks free gaps between tasks'],
     changed:['The header and week strip now stay pinned while the schedule scrolls', 'The task sheet is now a bottom sheet with icons, showing the date, time and details', 'Notes stay hidden until you tap the note symbol next to the task name', 'Tasks with a fixed clock time can now be ticked and show as current'],
