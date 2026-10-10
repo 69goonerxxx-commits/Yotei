@@ -214,7 +214,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 :root[data-theme=light] .tabs{background:rgba(255,255,255,.82)}
 :root[data-theme=light] body{background:radial-gradient(ellipse 520px 280px at 50% -40px, rgba(37,99,235,.10), transparent 70%), var(--bg)}
 :root[data-theme=light] input,:root[data-theme=light] textarea,:root[data-theme=light] select{color-scheme:light!important}
-html[data-text=large] body{zoom:1.15}
+html[data-text=large] .top,html[data-text=large] .weekstrip,html[data-text=large] .panel,html[data-text=large] .tab:not(#tab-home),html[data-text=large] #todayBtn,html[data-text=large] #liveBtn,html[data-text=large] dialog .ef,html[data-text=large] .fabIn,html[data-text=large] .csIn{zoom:1.15}
 .hday summary::after{content:'';position:absolute;right:14px;top:50%;width:8px;height:8px;border:solid var(--sec);border-width:0 2px 2px 0;transform:translateY(-70%) rotate(45deg);transition:transform .15s}
 .hday[open] summary::after{transform:translateY(-30%) rotate(-135deg)}
 #liveBtn{width:100%;margin-bottom:12px}
@@ -1224,13 +1224,13 @@ function fracFor(r, NM){
 function buildSpine(){
   const wrap = document.querySelector('#tl .tlwrap'); if (!wrap) return;
   wrap.querySelectorAll('.tlseg,.tlspine').forEach(e => e.remove());
-  const wr = wrap.getBoundingClientRect(), GRAY = 'var(--graydot)', nodes = [];
+  const wr = wrap.getBoundingClientRect(), GRAY = 'var(--graydot)', nodes = [], sc = (wr.width / (wrap.offsetWidth || wr.width)) || 1;   // sc corrects for large-text zoom
   const okc = c => (c && CSS.supports('color', c)) ? String(c).trim() : GRAY;
   Array.from(wrap.children).forEach(el => {
     if (!el.matches('.blk,.tlhead')) return;
     const dot = el.querySelector('.tldot'); if (!dot) return;
     const r = dot.getBoundingClientRect(), f = parseFloat(el.dataset.f);
-    nodes.push({ c:okc(el.dataset.c), f:isFinite(f) ? f : 0, top:r.top - wr.top, bottom:r.bottom - wr.top, x:r.left - wr.left + r.width / 2 });
+    nodes.push({ c:okc(el.dataset.c), f:isFinite(f) ? f : 0, top:(r.top - wr.top) / sc, bottom:(r.bottom - wr.top) / sc, x:(r.left - wr.left + r.width / 2) / sc });
   });
   const oklab = CSS.supports('background-image', 'linear-gradient(in oklab to bottom, red, blue)') ? 'in oklab ' : '';
   for (let k = 0; k < nodes.length - 1; k++){
@@ -1616,6 +1616,7 @@ function saveHist(){
   if (sig === lastSig) return;
   lastSig = sig;
   const h = store.get('hist', {});
+  if (!snap.rows.some(r => r.u > 0 && !r.sug)){ if (h[day.date]){ delete h[day.date]; store.set('hist', h); } return; }
   h[day.date] = snap;
   const keys = Object.keys(h).sort((a, b) => new Date(a) - new Date(b));
   while (keys.length > 90) delete h[keys.shift()];
@@ -1633,7 +1634,7 @@ function render(){
   applyWinColors();
   drawNav();
   if (document.activeElement !== $('#dnote')) $('#dnote').value = day.note || '';
-  drawInbox(); drawEnergy();
+  drawInbox(); drawEnergy(); drawEmpty();
   document.body.classList.toggle('snap', snapMode());
   draw();
   $('#trends').innerHTML = trendsHtml();
@@ -1667,7 +1668,7 @@ function draw(){
     else if (r.m !== undefined && r.use < r.d) tag = '<span class="tag warn">' + (r.use - r.d) + ' min</span>';
     else if (r.p === 'buf') tag = '<span class="tag ok">buffer</span>';
     const st = WIN_STYLE[r.w] || WIN_STYLE.climb1;
-    const dotColor = r.color || st.c;
+    const dotColor = safeCol(r.color) || st.c;
     const h = dotHeight(r.use);
     const frac = (r.sug || r.use === 0) ? 0 : fracFor(r, NM);
     const dotIcon = dotFillHtml(r.icon || guessIcon(r.t) || st.i, dotColor, frac, h);
@@ -1789,6 +1790,7 @@ $('#tl').addEventListener('click', e => {
     if (row.dataset.locked === '1') return;
     const key = row.dataset.id, i = done.ids.indexOf(key);
     if (i === -1) done.ids.push(key); else done.ids.splice(i, 1);
+    if (navigator.vibrate) navigator.vibrate(i === -1 ? 12 : 6);
     saveDay(); render(); return;
   }
   openTaskSheet(row.dataset.l, row.dataset.id);
@@ -1824,7 +1826,11 @@ function drawNowBanner(rows){
 }
 function drawClock(){ $('#clk').textContent = fmt(nowM()).join(' '); }
 drawClock(); setInterval(drawClock, 15000);
-setInterval(() => { if (viewDate === todayStr() && !document.querySelector('.hday[open]') && noteEditing === null && !/^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement || {}).tagName || '')) draw(); }, 20000);
+function dayTick(){
+  if (todayStr() !== lastToday){ const was = viewDate === lastToday; lastToday = todayStr(); if (was){ goDate(lastToday); return; } }
+  if (viewDate === todayStr() && !document.querySelector('.hday[open]') && noteEditing === null && !/^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement || {}).tagName || '')) draw();
+}
+setInterval(dayTick, 20000);
 $('#dnote').value = day.note || '';
 $('#dnote').addEventListener('input', e => { day.note = e.target.value; saveDay(); });
 // ============================================================
@@ -2563,7 +2569,7 @@ document.addEventListener('pointermove', e => {
   const chip = el.closest('#dropBar button'), row = el.closest('.tlrow');
   if (chip) chip.classList.add('over'); else if (row && row.dataset.id !== drag.id) row.classList.add('dropRow');
 }, { passive:false });
-document.addEventListener('touchmove', e => { if (drag || dragCand) e.preventDefault(); }, { passive:false });
+$('#tl').addEventListener('touchmove', e => { if (drag || dragCand) e.preventDefault(); }, { passive:false });
 $('#tl').addEventListener('contextmenu', e => { if (e.target.closest('.tlrow')) e.preventDefault(); });
 function dragEnd(e, cancel){
   if (dragCand){ const c = dragCand; dragCand = null; if (!cancel && !drag){ openEd(c.row.dataset.l, c.row.dataset.id); return; } }
@@ -2687,7 +2693,7 @@ $('#colorSheet').addEventListener('click', e => { if (e.target === $('#colorShee
 // ============================================================
 const WIN_DEF = Object.fromEntries(Object.entries(WIN_STYLE).map(([k, v]) => [k, v.c]));
 const WIN_ICON_DEF = Object.fromEntries(Object.entries(WIN_STYLE).map(([k, v]) => [k, v.i]));
-function applyWinColors(){ const W = wins(); for (const k in WIN_STYLE){ WIN_STYLE[k].c = W[k].color || WIN_DEF[k]; WIN_STYLE[k].i = W[k].icon || WIN_ICON_DEF[k]; } }
+function applyWinColors(){ const W = wins(); for (const k in WIN_STYLE){ WIN_STYLE[k].c = safeCol(W[k].color) || WIN_DEF[k]; WIN_STYLE[k].i = W[k].icon || WIN_ICON_DEF[k]; } }
 function applyWinScope(sc, c){
   const iso = isoLocal(new Date(viewDate)), filt = {};
   if (scDays.length) filt.days = scDays.slice().sort();
@@ -2745,7 +2751,7 @@ function dayColors(ds){
   const out = [], seen = new Set();
   rows.forEach(r => {
     if (!(r.use > 0) || r.sug || out.length >= 3) return;
-    const c = r.color || (WIN_STYLE[r.w] || WIN_STYLE.climb1).c, k = String(c).toLowerCase();
+    const c = safeCol(r.color) || (WIN_STYLE[r.w] || WIN_STYLE.climb1).c, k = String(c).toLowerCase();
     if (!seen.has(k)){ seen.add(k); out.push(c); }
   });
   return out;
@@ -2777,6 +2783,21 @@ $('#clr_go').onclick = () => {
   location.replace(location.pathname);
 };
 
+// ============================================================
+// SAFETY, ACCESSIBILITY, EMPTY STATE
+// ============================================================
+function safeCol(c){ return (typeof c === 'string' && /^#[0-9a-fA-F]{3,8}$/.test(c.trim())) ? c.trim() : null; }
+Object.entries({ ed:'Task editor', fabMenu:'Add', iconPick:'Choose an icon', colorSheet:'Pick a color', scopeDlg:'Apply this change to', mvDlg:'Move or copy', shDlg:'Running late', clrDlg:'Clear all data', setupDlg:'Welcome to Yotei', runDlg:'Routine timer', taskSheet:'Task details', stepsSheet:'Subtasks' })
+  .forEach(([id, l]) => { const d = document.getElementById(id); if (d) d.setAttribute('aria-label', l); });
+$('#tl').insertAdjacentHTML('beforebegin', '<div class="sleep emptyCard" id="emptyCard" hidden><h2>Start with your first task</h2><p class="wn">Add what you want to do today. A task added for all days repeats every day. You can use the + button any time.</p><button class="add" id="emptyAdd">Add a task</button></div>');
+function drawEmpty(){
+  const el = $('#emptyCard'); if (!el) return;
+  el.hidden = schedule().rows.some(r => r.use > 0 && !r.sug);
+}
+$('#emptyAdd').addEventListener('click', () => { openEd('oo', null, defaultWin()); cur.addScope = true; });
+$('#hdrTitle').addEventListener('click', () => { if (document.body.dataset.tab === 'home' && viewDate !== todayStr()) goDate(todayStr()); });
+function focusNow(){ if (viewDate !== todayStr()) return; const r = document.querySelector('.tlrow.now'); if (r) r.scrollIntoView({ block:'center' }); }
+
 const APP_VERSION = '2.6.2';
 const FEATURES = [
   'A daily timeline built from your wake time, split into seven energy windows',
@@ -2806,8 +2827,9 @@ const LIMITS = [
 ];
 const CHANGELOG = [
   { v:'2.6.2', date:'Oct 2026',
-    added:['Clear data in Settings, next to Export and Import, with a backup option and a confirmation', '388 icons with a search box, all from the Phosphor set', 'Layout copied from Structured: month header with a date button, week strip with colored day dots, and the timeline on a lighter panel with a curved top edge', 'Add button with a menu (new one-off task, inbox, running late, copy day), Inbox as its own tab, and tab icons', 'Block editing now uses the same editor as tasks: name, icon, color, start and end, note, and the this-day, from-here or all-days choice with weekday limits', 'Add note and edit note are in the task sheet, and notes show under their task'],
-    changed:['The task and block editor is now full screen, with a header and a bar of buttons that stays at the bottom', 'The app starts with no built-in tasks, and empty windows show a + Add task button', 'The + button now has Add a task, which asks whether it is for this day, from this day on, or all days', 'Poppins is now the font everywhere, in one normal size scale', 'Header, titles, subtask chip and check circle are smaller', 'Times line up with the ends of each dot, and the active task shows the current time without overlapping', 'The connecting line is now drawn one smooth segment per gap, so every color blends cleanly into the next', 'No more gaps in the line around the Home, School and Away picker', 'Editor: smaller color swatches and divider lines between sections'] },
+    added:['A friendly empty state with an Add a task button when nothing is planned', 'Tap the month title to jump back to today, and the timeline scrolls to the current task when you open the app', 'A small vibration when you tick a task, and the storage used on this device in Settings', 'Clear data in Settings, next to Export and Import, with a backup option and a confirmation', '388 icons with a search box, all from the Phosphor set', 'Layout copied from Structured: month header with a date button, week strip with colored day dots, and the timeline on a lighter panel with a curved top edge', 'Add button with a menu (new one-off task, inbox, running late, copy day), Inbox as its own tab, and tab icons', 'Block editing now uses the same editor as tasks: name, icon, color, start and end, note, and the this-day, from-here or all-days choice with weekday limits', 'Add note and edit note are in the task sheet, and notes show under their task'],
+    changed:['The task and block editor is now full screen, with a header and a bar of buttons that stays at the bottom', 'The app starts with no built-in tasks, and empty windows show a + Add task button', 'The + button now has Add a task, which asks whether it is for this day, from this day on, or all days', 'Poppins is now the font everywhere, in one normal size scale', 'Header, titles, subtask chip and check circle are smaller', 'Times line up with the ends of each dot, and the active task shows the current time without overlapping', 'The connecting line is now drawn one smooth segment per gap, so every color blends cleanly into the next', 'No more gaps in the line around the Home, School and Away picker', 'Editor: smaller color swatches and divider lines between sections'],
+    fixed:['Large text mode no longer pushes the full-screen editor and bars off the screen', 'The app now moves to the new day after midnight even if it was left open', 'Days with no tasks are no longer recorded in History', 'Dialogs have proper names for screen readers, and colors are checked before use'] },
   { v:'2.6.1', date:'Oct 2026',
     added:['Notes are visible under their task (tap to expand), and the note symbol now opens them', 'Delete a recorded day from History, or delete all recorded history from Settings', 'Window colors: Edit block now has a color picker', 'Press and hold a task, then move your finger to drag it, with no editing mode needed'],
     changed:['Interface colors now follow Structured: neutral charcoal surfaces instead of navy', 'The editor takes on the task color for its highlights, and the Now banner uses the current task color', 'The connecting line now hides behind the Home, School and Away picker and blends below it'],
@@ -2860,6 +2882,7 @@ migrateV2();
 migrateV3();
 render();
 if (FRESH) openSetup();
+setTimeout(focusNow, 150);
 (function(){
   const a = new URLSearchParams(location.search).get('action'); if (!a) return;
   try{ history.replaceState(null, '', location.pathname); }catch{}
@@ -2892,7 +2915,8 @@ function migrateV3(){  // add the new Away suggestions to an Away list you alrea
 function updateBackupInfo(){
   const t = store.get('lastBackup', 0), d = t ? Math.floor((Date.now() - t) / 864e5) : null;
   const needs = (d === null || d >= 7) && Object.keys(store.get('hist', {})).length >= 3;
-  $('#bkInfo').textContent = d === null ? 'No backup yet.' : d === 0 ? 'Last backup: today.' : 'Last backup: ' + d + ' day' + (d === 1 ? '' : 's') + ' ago.';
+  let bytes = 0; for (let i = 0; i < localStorage.length; i++){ const k = localStorage.key(i); if (k && k.startsWith('yotei_v2_')) bytes += (k.length + (localStorage.getItem(k) || '').length) * 2; }
+  $('#bkInfo').textContent = (d === null ? 'No backup yet.' : d === 0 ? 'Last backup: today.' : 'Last backup: ' + d + ' day' + (d === 1 ? '' : 's') + ' ago.') + ' Stored on this device: ' + Math.max(1, Math.round(bytes / 1024)) + ' KB.';
   $('#settingsBtn').classList.toggle('nudge', needs); document.querySelector('.tabs [data-tab=settings]').classList.toggle('nudge', needs);
   $('#settingsBtn').setAttribute('aria-label', needs ? 'Settings, backup suggested' : 'Settings');
 }
