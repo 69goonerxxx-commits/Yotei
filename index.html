@@ -498,6 +498,44 @@ html[data-text=large] .biIn{zoom:1.15}
 .edErr{margin:0;padding:10px 12px;border-radius:12px;background:var(--card);border:1px solid var(--bad);color:var(--text);font-size:13px;line-height:1.4}
 .edErr[hidden]{display:none}
 .kindHint{display:block;margin-top:6px;font-size:12px;color:var(--sec);line-height:1.4}
+
+/* v2.6.5 */
+.fxRow{flex-direction:row!important;align-items:flex-start;gap:12px!important;padding:2px 0 12px}
+.fxRow input{width:22px!important;height:22px;flex:0 0 22px;margin:2px 0 0;accent-color:var(--accent);padding:0}
+.fxTxt{display:flex;flex-direction:column;gap:2px;min-width:0}
+.fxTxt b{font-size:14px;font-weight:600;color:var(--text)}
+.fxTxt small{font-size:12px;line-height:1.4;color:var(--sec)}
+#ed .ef>.fxRow{border-bottom:1px solid var(--line)}
+.tlwrap{margin-left:calc(-1 * var(--tlShift,12px))}
+#tab-home .weekstrip{position:sticky}
+#tab-home .weekstrip::before,#tab-home .weekstrip::after{content:'';position:absolute;top:calc(100% - 1px);width:36px;height:37px;pointer-events:none}
+#tab-home .weekstrip::before{left:0;background:radial-gradient(circle 36px at 36px 36px,transparent 35.5px,var(--bg) 36.5px)}
+#tab-home .weekstrip::after{right:0;background:radial-gradient(circle 36px at 0 36px,transparent 35.5px,var(--bg) 36.5px)}
+#iconPick{position:fixed;inset:calc(env(safe-area-inset-top,0px) + 10px) 0 0 0;width:min(100vw,430px);max-width:none;height:auto;max-height:none;margin:0 auto;border:0;border-radius:16px 16px 0 0;padding:0;background:var(--card);overflow:hidden}
+#iconPick .ef{height:100%;gap:0;padding:0;overflow:hidden;zoom:1!important}
+.ipTop{display:flex;align-items:center;gap:12px;padding:14px 16px 10px;flex:0 0 auto}
+.ipTop>button{flex:0 0 40px;width:40px;height:40px;border-radius:50%;border:0;background:none;color:var(--text);display:grid;place-items:center;padding:0;cursor:pointer}
+.ipTop svg,.ipSearch svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ipSearch{flex:1;min-width:0;display:flex;align-items:center;gap:10px;background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:0 12px;color:var(--sec)}
+.ipSearch input{flex:1;min-width:0;border:0!important;background:none!important;padding:11px 0!important;outline:none}
+#ip_scroll{flex:1 1 auto;overflow-y:auto;padding:4px 16px 16px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+#iconPick .ipGroup{margin:14px 0 6px}
+#iconPick .ipGroup .lbl{display:flex;align-items:center;gap:10px;margin:0 0 10px;font-weight:600;font-size:14px;color:var(--sec)}
+.gi{display:inline-flex;width:20px;height:20px}.gi svg{width:20px;height:20px}
+#iconPick .ipRow{display:grid;grid-template-columns:repeat(auto-fill,40px);gap:10px;justify-content:space-between}
+#iconPick .ipRow button{width:40px;height:40px;border-radius:20px;padding:0}
+#ip_custom label{gap:6px}
+#ip_ok{margin-top:10px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:var(--card2);color:var(--text);font:600 13px 'Poppins',sans-serif;cursor:pointer}
+#ip_tabs{flex:0 0 auto;display:flex;gap:6px;overflow-x:auto;margin:6px 12px calc(10px + env(safe-area-inset-bottom,0px));padding:6px;background:var(--card2);border-radius:16px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+#ip_tabs::-webkit-scrollbar{display:none}
+#ip_tabs button{flex:0 0 46px;height:44px;border:0;border-radius:12px;background:none;color:var(--sec);display:grid;place-items:center;padding:0;cursor:pointer}
+#ip_tabs button svg{width:22px;height:22px}
+#ip_tabs button.on{background:var(--bg);color:var(--accent)}
+
+.fa{display:block;width:20px;height:20px;background:currentColor;-webkit-mask:var(--u) center/contain no-repeat;mask:var(--u) center/contain no-repeat}
+#ip_tabs .fa{width:22px;height:22px}
+.faProbe{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+#iconPick .ipRow button{position:relative}
 </style>
 </head>
 <body>
@@ -573,7 +611,8 @@ html[data-text=large] .biIn{zoom:1.15}
     <button type="button" data-m="30">30m</button><button type="button" data-m="45">45m</button><button type="button" data-m="60">1h</button><button type="button" data-m="90">1.5h</button>
   </div></label>
   <div class="er taskOnly" id="e_se"><label>Starts<input id="e_s" type="time"></label><label>Ends<input id="e_e" type="time"></label></div>
-  <div class="er taskOnly" id="e_mrow"><label>Minutes<input id="e_d" type="number" min="0"></label><label id="e_mwrap">Shortest<input id="e_m" type="number" min="0"></label><label>Fixed at<input id="e_f" type="time"></label></div>
+  <div class="er taskOnly" id="e_mrow"><label>Minutes<input id="e_d" type="number" min="0"></label><label id="e_mwrap">Shortest<input id="e_m" type="number" min="0"></label></div>
+  <label class="fxRow taskOnly" id="e_fxrow"><input type="checkbox" id="e_fx"><span class="fxTxt"><b>Fixed time</b><small>Pins the task to its Start time and it never moves. Leave off and Start is only a preferred time: the task can start later if the tasks before it run long.</small></span></label>
   <div class="days taskOnly" id="e_days"></div>
   <div class="er winOnly"><label>Starts<input id="e_bs" type="time"></label><label>Ends<input id="e_be" type="time"></label></div>
   <label><span id="e_dlab">Details</span><textarea id="e_details" rows="2" placeholder="What this task is, or how to do it"></textarea></label>
@@ -582,10 +621,10 @@ html[data-text=large] .biIn{zoom:1.15}
   <div class="ea"><button id="e_del">Delete</button><button id="e_up">Up</button><button id="e_dn">Down</button><button id="e_x">Cancel</button><button id="e_ok">Save</button></div>
 </div></dialog>
 <dialog id="iconPick"><div class="ef">
-  <input id="ip_q" type="search" placeholder="Search icons (tooth, run, book...)" autocomplete="off">
-  <div id="ip_groups"></div>
-  <label>Custom<input id="e_icon_custom" placeholder="Type a key like 'book', or paste an emoji" maxlength="16"></label>
-  <div class="ea"><button id="ip_x">Cancel</button><button id="ip_ok">Use custom</button></div>
+  <div class="ipTop"><button type="button" id="ip_x" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button><div class="ipSearch"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><input id="ip_q" type="search" placeholder="Search" autocomplete="off"></div></div>
+  <div id="ip_scroll"><div id="ip_groups"></div>
+  <div class="ipGroup" id="ip_custom"><p class="lbl"><i class="gi"></i><span>Custom</span></p><label>Type a key like 'book', or paste an emoji<input id="e_icon_custom" maxlength="16"></label><button type="button" id="ip_ok">Use custom</button></div></div>
+  <div id="ip_tabs" role="tablist" aria-label="Icon categories"></div>
 </div></dialog>
 <div id="toast" role="status" aria-live="polite"><span id="toastMsg"></span><button id="toastBtn"></button></div>
 <div id="dropBar"></div><div id="dragGhost"></div>
@@ -797,7 +836,7 @@ function build(dow){
   const m1 = typeOf('climb1'), M = MODES[m1 || 'none'], iso = isoLocal(new Date(day.date)), dm = m1 || Object.values(day.types || {})[0] || null, OV = store.get('ovr', {});
   const eff = b => applyOvr(b, OV, iso, dow, dm), onDay = b => (!b.days || b.days.includes(dow)) && (!b.from || iso >= b.from) && (!b.modes || (dm && b.modes.includes(dm)));
   const ooF = k => (day.oneoffs || []).filter(x => (x.w || 'climb1') === k).map(x => ({ ...x, md:'oo', post:true }));
-  const fixSort = arr => { const ix = [], fx = []; arr.forEach((b, i) => { if (b.fixed !== undefined && !b.sug){ ix.push(i); fx.push(b); } }); fx.sort((a, b) => a.fixed - b.fixed); const out = arr.slice(); ix.forEach((i, j) => { out[i] = fx[j]; }); return out; };
+  const fixSort = arr => { const ix = [], fx = []; arr.forEach((b, i) => { if ((b.fixed !== undefined || b.at !== undefined) && !b.sug){ ix.push(i); fx.push(b); } }); fx.sort((a, b) => (a.fixed !== undefined ? a.fixed : a.at) - (b.fixed !== undefined ? b.fixed : b.at)); const out = arr.slice(); ix.forEach((i, j) => { out[i] = fx[j]; }); return out; };
   const pre = fixSort(getBlocks('pre').map(eff).filter(Boolean).filter(onDay).concat(ooF('sleep'))).map(b => ({ ...b, use:b.d }));
   let msg = M.msg || '', tone = 'ok';
   if (M.deadline !== null){
@@ -824,7 +863,7 @@ function build(dow){
   for (const b of pre){
     bump();
     const bf = b.p === 'buf';
-    const at0 = (!bf && !b.sug && b.fixed !== undefined) ? b.fixed : t;
+    const at0 = (!bf && !b.sug && b.fixed !== undefined) ? b.fixed : (!bf && !b.sug && b.at !== undefined && b.at > t) ? b.at : t;
     rows.push({ ...b, w:bf ? 'climb1' : 'sleep', md:bf ? m1 : b.md, start:at0, end:at0 + b.use }); t = Math.max(t, at0 + b.use);
   }
   if (M.deadline !== null) t = Math.max(t, M.deadline);
@@ -844,7 +883,7 @@ function build(dow){
     }
     for (const b of list){
       bump();
-      const at = b.fixed !== undefined ? b.fixed : t;
+      const at = b.fixed !== undefined ? b.fixed : (!b.sug && b.at !== undefined && b.at > t) ? b.at : t;
       if (b.fixed !== undefined && !b.sug && t > b.fixed){ tone = 'bad'; msg = 'The tasks before "' + b.t + '" run past its ' + fmt(b.fixed).join(' ') + ' start. Trim them, move it later, or wake earlier.'; }
       let use = b.use !== undefined ? b.use : b.d, capCut = false;
       if (b.fixed === undefined && !b.sug && b.md !== 'oo' && ((at >= CAP.hard && b.p !== 'core') || (at >= CAP.soft && b.p === 'opt'))){ use = 0; capCut = true; }
@@ -1356,6 +1395,7 @@ const ICON_GROUPS = {
   'Travel & errands':['car','bus','plane','pin','bag','box','cart','wallet','dollar','wrench','scissors','wifi','battery']
 };
 Object.assign(ICON_GROUPS, {"Health & care": ["tooth", "pill", "stethoscope", "heartbeat", "first-aid", "bandaids", "thermometer", "syringe", "brain", "eye", "ear", "hand-soap", "bathtub", "toilet", "toilet-paper", "mask", "yoga", "hike", "wheelchair", "baby", "hand-heart", "sneaker", "sunglasses", "scales", "heart-straight", "person", "hand", "hand-palm", "face-mask", "virus", "dna", "eyeglasses", "hand-peace", "hands-praying", "smiley-meh", "smiley-sad", "smiley-wink"], "Study & work": ["notebook", "notepad", "pencil-line", "pen-nib", "highlighter", "books", "book-bookmark", "newspaper", "article", "files", "file-text", "presentation", "chart-line", "chart-pie", "chart-line-up", "calculator", "ruler", "compass", "translate", "puzzle", "magic-wand", "student", "teacher", "chalkboard", "atom", "flask", "test-tube", "microscope", "planet", "code", "terminal", "database", "cpu", "briefcase", "buildings", "bank", "credit-card", "coins", "piggy-bank", "receipt", "handshake", "id-card", "paper-plane", "envelope-open", "phone-call", "video-camera", "timer", "calendar-check", "calendar-plus", "kanban", "tray", "archive", "paperclip", "push-pin", "printer", "signature", "certificate", "medal", "crown", "lightbulb-filament", "binoculars", "tag"], "Money & shopping": ["bag-simple", "basket", "storefront", "money", "currency-euro", "barcode", "shopping-bag", "handbag", "vault"], "Chores & home": ["washing-machine", "armchair", "lamp-pendant", "fan", "door", "house-line", "toolbox", "hammer", "screwdriver", "paint-brush", "paint-roller", "plug", "recycle", "trash-simple", "truck", "mailbox", "spray-bottle", "thermometer-hot", "thermometer-cold", "garage", "fire-extinguisher", "flashlight", "bed-double", "door-open", "lightbulb-plain", "power", "siren"], "Social & fun": ["users-three", "user", "user-circle", "hands-clapping", "hand-waving", "chats", "balloon", "confetti", "thumbs-down", "user-plus", "users-four", "chat-text", "chat-dots", "megaphone"], "Music & media": ["music-note", "guitar", "piano-keys", "mic-stage", "vinyl", "film-slate", "film-strip", "ticket", "image", "video", "play", "radio", "speaker", "headset", "tv-simple", "dice", "cards", "paint-brush-broad"], "Sports & outdoors": ["soccer-ball", "tennis-ball", "baseball", "football", "volleyball", "golf", "boxing-glove", "ski", "swimming-pool", "sailboat", "boat", "tree-palm", "tree-evergreen", "campfire", "snowflake-plain", "mountains-plain", "fish-simple", "bicycle-plain"], "Nature & weather": ["cloud-sun", "cloud-moon", "cloud-lightning", "cloud-snow", "cloud-fog", "rainbow", "flower-tulip", "seedling", "waves", "clover", "cactus", "tornado", "sun-horizon", "thermometer-simple", "flower-lotus"], "Animals": ["dog", "cat", "bird", "horse", "cow", "rabbit", "butterfly", "bug", "bone", "feather"], "Travel & places": ["train", "subway", "tram", "taxi", "motorcycle", "scooter", "airplane-takeoff", "rocket", "suitcase", "map", "navigation", "gas-pump", "traffic-cone", "hospital", "signpost", "flag-banner", "building-office", "castle", "church", "lighthouse", "globe-hemisphere", "park"], "Tech & settings": ["desktop", "tablet", "keyboard", "mouse", "monitor", "bluetooth", "battery-charging", "plug-charging", "robot", "qr-code", "hard-drives", "upload", "download", "gear", "sliders", "toggle", "bell-ringing", "bell-slash", "eye-slash", "lock-open", "shield-check", "fingerprint", "link", "share", "repeat", "shuffle", "arrows-clockwise", "trend-up", "trend-down", "wifi-slash", "speaker-slash", "device-mobile-camera", "moon-do-not-disturb", "flag-plain"], "More food & drink": ["pizza", "hamburger", "bread", "cheese", "fish", "bowl-steam", "orange-slice", "cherries", "grains", "pepper", "popcorn", "ice-cream", "beer-stein", "martini", "wine", "chef-hat", "knife", "avocado", "coffee-bean", "pint-glass", "cooking-pot-lid", "fork"]});
+try{ Object.assign(ICONS, JSON.parse(localStorage.getItem('yotei_fa') || '{}')); }catch{}
 const ICON_TAGS = {"sun": "morning day light bright", "sunrise": "morning dawn", "sunset": "evening dusk", "moon": "night sleep", "shower": "bath wash hygiene", "stretch": "yoga exercise body", "walk": "stroll steps", "run": "jog cardio", "swim": "pool", "bike": "bicycle cycling", "dumbbell": "gym weights workout lift", "heart": "love health", "coffee": "tea cafe drink caffeine", "meal": "eat food dinner lunch breakfast", "bowl": "cereal soup breakfast", "bed": "sleep rest nap", "book": "read study school", "pen": "write journal", "note": "write memo", "clipboard": "plan list", "checklist": "todo tasks", "bulb": "idea think", "target": "goal focus", "laptop": "computer work", "cap": "school graduate study", "camera": "photo", "alarm": "wake clock", "bell": "reminder alert notify", "calendar": "date schedule", "clock": "time", "broom": "clean chore sweep", "shirt": "laundry clothes dress", "trash": "garbage bin", "people": "friends family group", "smile": "happy mood", "chat": "message talk", "mail": "email", "phone": "call mobile", "tv": "television watch", "game": "play video gaming", "music": "song listen", "paw": "pet", "gift": "present birthday", "car": "drive commute", "bus": "transit", "plane": "travel flight", "pin": "location place errand", "bag": "backpack school pack", "box": "package parcel", "cart": "shopping groceries", "wallet": "money pay", "dollar": "money cash finance", "wrench": "fix repair tool", "scissors": "cut haircut", "wifi": "internet online", "battery": "charge power", "tooth": "dental teeth brush floss dentist", "pill": "medicine meds vitamin supplement", "stethoscope": "doctor checkup health", "heartbeat": "pulse cardio health", "first-aid": "medical injury", "hand-soap": "wash hands hygiene", "bathtub": "bath soak", "toilet": "bathroom restroom", "yoga": "tai chi exercise stretch", "hike": "hiking trail outdoors", "baby": "child kid", "sneaker": "shoes run", "pizza": "food dinner", "hamburger": "burger food", "bread": "toast sandwich bakery", "ice-cream": "dessert sweet", "popcorn": "movie snack", "chef-hat": "cook kitchen", "wine": "drink evening", "martini": "cocktail drink", "beer-stein": "drink", "guitar": "practice music instrument", "piano-keys": "piano practice music", "mic-stage": "sing karaoke", "film-slate": "movie film", "ticket": "event show", "dice": "game board", "cards": "game poker", "dog": "pet walk puppy", "cat": "pet kitten", "bird": "pet", "soccer-ball": "football sport", "tennis-ball": "sport", "golf": "sport", "ski": "snow winter sport", "campfire": "camp outdoors", "train": "travel commute", "taxi": "ride cab", "airplane-takeoff": "flight travel airport", "rocket": "launch project", "gas-pump": "fuel petrol", "suitcase": "trip luggage travel", "map": "navigate trip", "hammer": "diy build fix", "toolbox": "repair tools", "paint-brush": "paint art decorate", "paint-roller": "paint decorate", "washing-machine": "laundry clothes", "armchair": "relax sit", "fan": "cool air", "door": "leave home", "plug": "power charge", "recycle": "recycling waste", "mailbox": "post letters", "spray-bottle": "clean disinfect", "truck": "delivery moving", "code": "program coding developer", "calculator": "math numbers", "flask": "science chemistry lab", "atom": "physics science", "microscope": "biology science", "translate": "language learn", "newspaper": "news read", "notebook": "notes study", "notepad": "notes write", "presentation": "slides pitch present", "video-camera": "meeting call video", "bank": "money finance budget", "piggy-bank": "savings money", "briefcase": "work job career", "credit-card": "payment bill", "receipt": "expense", "handshake": "deal meeting", "id-card": "identity document", "paper-plane": "send message email", "timer": "countdown focus", "calendar-check": "done schedule", "kanban": "project board", "archive": "storage", "paperclip": "attach", "push-pin": "pin note", "printer": "print", "signature": "sign", "certificate": "award", "medal": "achievement award", "crown": "win king", "hands-praying": "gratitude prayer thanks", "hands-clapping": "applause celebrate", "hand-waving": "hello greet", "puzzle": "puzzle brain game", "confetti": "party celebrate", "balloon": "party birthday", "user": "person profile", "users-three": "group team friends", "brain": "mind think learn", "eye": "look vision", "ear": "listen hearing", "sunglasses": "sun summer", "scales": "weight balance", "cloud-sun": "weather partly", "cloud-moon": "night weather", "rainbow": "weather", "cactus": "plant desert", "clover": "luck plant", "seedling": "plant grow garden", "waves": "sea ocean beach", "storefront": "shop store", "hospital": "clinic health", "church": "worship", "building-office": "office work", "gear": "settings", "sliders": "settings adjust", "bell-slash": "mute silent", "bell-ringing": "alarm notify", "eye-slash": "hide private", "shield-check": "safe secure", "fingerprint": "security", "qr-code": "scan code", "robot": "ai bot", "monitor": "screen computer", "desktop": "computer", "tablet": "ipad", "keyboard": "typing", "mouse": "computer", "bluetooth": "wireless", "power": "on off", "repeat": "loop habit routine", "shuffle": "random", "download": "save", "upload": "send", "link": "url", "share": "send", "speaker": "volume sound", "headset": "support call", "radio": "broadcast", "video": "film watch", "image": "picture photo", "play": "start watch", "vinyl": "record music", "theater": "drama masks"};
 const COLOR_SWATCHES = ['#f59e0b','#fbbf24','#facc15','#38bdf8','#fb7185','#a78bfa','#6366f1','#22c55e','#f97316','#eef2ff'];
 const WIN_STYLE = {
@@ -1469,6 +1509,7 @@ function applyKindUI(){
   $('#e_howlong').style.display = sug ? 'none' : '';
   $('#e_se').style.display = sug ? 'none' : '';
   $('#e_mrow').style.display = sug ? 'none' : '';
+  $('#e_fxrow').style.display = sug ? 'none' : '';
   $('#e_mwrap').style.display = pri ? '' : 'none';
 }
 function setKind(v){ $('#e_k').value = v; applyKindUI(); }
@@ -1491,9 +1532,10 @@ function openEd(l, id, w, startAt){
   $('#e_d').value = x.d; $('#e_m').value = x.m ?? ''; highlightChip();
   $('#e_icon').value = x.icon || ''; updateIconBtn();
   $('#e_color').value = x.color || ''; CT = 'e'; drawColorRow('e'); setEdAccent();
-  $('#e_f').value = x.fixed !== undefined ? toVal(x.fixed) : '';
-  if (startAt !== undefined && !b){ $('#e_f').value = toVal(startAt); }
-  $('#e_s').value = $('#e_f').value; $('#e_e').value = '';
+  let st = x.fixed !== undefined ? x.fixed : x.at;
+  if (startAt !== undefined && !b) st = startAt;
+  $('#e_fx').checked = x.fixed !== undefined;
+  $('#e_s').value = st !== undefined ? toVal(st) : ''; $('#e_e').value = '';
   syncEnd(); refreshWinLock(); applyKindUI();
   $('#e_days').style.display = l === 'oo' ? 'none' : '';
   $('#e_details').value = x.details || ''; $('#e_p').value = (x.steps || []).join('\n');
@@ -1504,10 +1546,10 @@ function openEd(l, id, w, startAt){
 function moveBlock(d){
   const arr = clone(getBlocks(cur.l)), i = arr.findIndex(x => x.id === cur.id), wk = x => x.w || 'climb1';
   if (i < 0) return;
-  if (arr[i].fixed !== undefined){ edErr('This task has a fixed time, so it is ordered by its Start time. Change the Start time instead.'); return; }
+  if (arr[i].fixed !== undefined || arr[i].at !== undefined){ edErr('This task has a Start time, so it is ordered by that time. Change the Start time instead.'); return; }
   const vis = new Set(schedule().rows.map(r => r.id));
   let j = i + d;
-  while (j >= 0 && j < arr.length && (wk(arr[j]) !== wk(arr[i]) || !vis.has(arr[j].id) || arr[j].fixed !== undefined)) j += d;
+  while (j >= 0 && j < arr.length && (wk(arr[j]) !== wk(arr[i]) || !vis.has(arr[j].id) || arr[j].fixed !== undefined || arr[j].at !== undefined)) j += d;
   if (j < 0 || j >= arr.length){ edErr(d < 0 ? 'It is already first in this window.' : 'It is already last in this window.'); return; }
   needLive();
   [arr[i], arr[j]] = [arr[j], arr[i]];
@@ -1522,23 +1564,90 @@ function syncEnd(){
 }
 function highlightChip(){ const v = $('#e_d').value; document.querySelectorAll('#e_presets button').forEach(b => b.classList.toggle('on', b.dataset.m === v)); }
 function updateIconBtn(){ const v = $('#e_icon').value; $('#e_iconBtn').innerHTML = v ? iconMarkup(v) : '+'; }
+const ICON_CAT = {'Body & movement':'run','Food & drink':'meal','Mind & focus':'bulb','Rest & time':'moon','Home & social':'home','Travel & errands':'bag','Health & care':'heartbeat','Study & work':'books','Money & shopping':'basket','Chores & home':'broom','Social & fun':'confetti','Music & media':'music-note','Sports & outdoors':'soccer-ball','Nature & weather':'cloud-sun','Animals':'dog','Travel & places':'airplane-takeoff','Tech & settings':'desktop','More food & drink':'pizza'};
+function catIcon(g){ const k = ICON_CAT[g] || (ICON_GROUPS[g] || [])[0]; return ICONS[k] || ICONS.star || ''; }
+function ipId(g){ return 'ipg_' + g.toLowerCase().replace(/[^a-z0-9]+/g, '-'); }
+const FA_VER = '6.7.2', FA_URL = n => 'https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@' + FA_VER + '/svgs/solid/' + n + '.svg';
+const FA_GROUPS = {
+  'Bathroom':['shower','toilet','toilet-paper','bath','soap','pump-soap','hands-bubbles','sink','faucet','faucet-drip','tooth','teeth','teeth-open','razor','spray-can-sparkles','brush','hand-sparkles','droplet','bottle-droplet','box-tissue','jug-detergent','plug-circle-bolt','water','broom','bucket'],
+  'Clothes':['shirt','vest','vest-patches','socks','mitten','hat-cowboy','hat-wizard','hat-hard','glasses','user-tie','person-dress','shoe-prints','bag-shopping','gem','ring','crown','mask','head-side-mask','suitcase','umbrella','scissors','tags','tag','bell-concierge','clothes-hanger'],
+  'Home':['house','house-chimney','house-user','couch','bed','lightbulb','fan','door-open','door-closed','key','kitchen-set','blender','mug-hot','utensils','plug','temperature-half','tv','trash','trash-can','box-archive','chair','jar','fire-burner','wind','shop','warehouse','toolbox','hammer','screwdriver-wrench','paint-roller'],
+  'Education':['graduation-cap','book','book-open','book-open-reader','book-bookmark','pencil','pen','pen-nib','ruler','calculator','flask','atom','microscope','school','chalkboard','chalkboard-user','language','earth-americas','brain','paperclip','folder','file-lines','highlighter','marker','compass-drafting','square-root-variable','infinity','dna','magnet','scroll','pen-ruler','user-graduate'],
+  'Tech':['desktop','laptop','mobile-screen','tablet-screen-button','keyboard','computer-mouse','headphones','microphone','camera','video','wifi','bluetooth','battery-full','plug','floppy-disk','hard-drive','server','code','terminal','robot','gamepad','print','qrcode','sim-card','satellite-dish','memory','microchip','laptop-code','database','cloud','cloud-arrow-up','cloud-arrow-down','power-off','satellite'],
+  'Transport':['bicycle','car','bus','train','plane','ship','motorcycle','truck','taxi','van-shuttle','person-biking','person-walking','person-running','rocket','sailboat','gas-pump','road','traffic-light','map-location-dot','route','helicopter','train-subway','tractor','charging-station','car-side','plane-departure','plane-arrival','anchor','compass','map'],
+  'Fitness':['dumbbell','heart-pulse','person-running','person-swimming','person-biking','person-hiking','person-skiing','person-walking','weight-scale','basketball','futbol','volleyball','baseball','football','table-tennis-paddle-ball','golf-ball-tee','hockey-puck','medal','trophy','stopwatch','mountain','fire','bolt','child-reaching','person-praying','spa','heart','shoe-prints','hand-fist','mattress-pillow'],
+  'Medical':['stethoscope','pills','syringe','bandage','kit-medical','thermometer','lungs','eye','ear-listen','hand-holding-heart','hospital','notes-medical','bed-pulse','head-side-virus','virus','capsules','tablets','vial','prescription-bottle','user-doctor','user-nurse','house-medical','briefcase-medical','x-ray','tooth','brain','heart-circle-plus','wheelchair','crutch','eye-dropper','mask-face','staff-snake'],
+  'Food':['utensils','burger','pizza-slice','bowl-rice','bowl-food','mug-hot','mug-saucer','wine-glass','beer-mug-empty','martini-glass','bottle-water','apple-whole','carrot','egg','cookie','cake-candles','ice-cream','bread-slice','cheese','fish','drumstick-bite','bacon','lemon','pepper-hot','candy-cane','cookie-bite','hotdog','shrimp','jar','blender','whiskey-glass','champagne-glasses','wheat-awn','seedling','plate-wheat','cow','kitchen-set','stroopwafel','lemon','pizza-slice'],
+  'Nature':['sun','moon','cloud','cloud-sun','cloud-moon','cloud-rain','cloud-showers-heavy','snowflake','bolt','wind','umbrella-beach','rainbow','tree','leaf','seedling','mountain','mountain-sun','water','fire','temperature-high','temperature-low','star','tornado','hurricane','volcano','smog','droplet','clover','feather','meteor','earth-americas','globe','sun-plant-wilt','tents','campground','fire-flame-curved','spa','vihara'],
+  'Animals':['paw','dog','cat','horse','fish','dove','spider','bug','hippo','frog','crow','kiwi-bird','dragon','cow','otter','bone','feather','worm','locust','mosquito','bugs','shrimp','hippo','fish-fins','horse-head','kiwi-bird','cat','dog'],
+  'Work':['briefcase','building','handshake','chart-line','chart-pie','chart-column','dollar-sign','coins','wallet','credit-card','piggy-bank','receipt','money-bill','sack-dollar','cash-register','calendar-days','clipboard-list','clipboard-check','list-check','bullseye','flag','bell','envelope','phone','comments','comment','paper-plane','address-book','id-card','file-contract','signature','stamp','thumbtack','folder-open','inbox','business-time','user-group','users','award','lightbulb'],
+  'Fun':['music','guitar','drum','film','clapperboard','ticket','gamepad','dice','chess','puzzle-piece','palette','paintbrush','camera-retro','masks-theater','wand-magic-sparkles','gift','cake-candles','champagne-glasses','face-smile','face-laugh','heart','ghost','skull','umbrella-beach','hands-praying','dice-d20','chess-knight','microphone-lines','radio','record-vinyl','compact-disc','volume-high','kite','binoculars','martini-glass-citrus','pizza-slice','star','icons','hat-wizard','robot'],
+  'Time & rest':['bed','moon','bed-pulse','cloud-moon','stopwatch','clock','hourglass','hourglass-half','hourglass-end','hourglass-start','bell','bell-slash','calendar','calendar-check','calendar-day','calendar-week','calendar-days','sun','star','meteor','user-astronaut','shuttle-space','mattress-pillow','couch','mug-hot','spa','hot-tub-person','face-smile-beam','face-tired','face-sleeping'] 
+};
+const FA_CAT = {'Bathroom':'shower','Clothes':'shirt','Home':'house','Education':'graduation-cap','Tech':'desktop','Transport':'bicycle','Fitness':'dumbbell','Medical':'stethoscope','Food':'utensils','Nature':'leaf','Animals':'paw','Work':'briefcase','Fun':'masks-theater','Time & rest':'hourglass-half'};
+function faMask(n){ return '<i class="fa" style="--u:url(' + FA_URL(n) + ')"></i>'; }
+function faTile(n){ const k = 'fa-' + n; return ICONS[k] || (faMask(n) + '<img class="faProbe" src="' + FA_URL(n) + '" alt="" loading="lazy" onerror="this.closest(\'button\').remove()">'); }
+function catMarkup(g){ return FA_CAT[g] ? (ICONS['fa-' + FA_CAT[g]] || faMask(FA_CAT[g])) : catIcon(g); }
 function drawIconPicker(q){
   q = (q || '').trim().toLowerCase();
-  const out = Object.keys(ICON_GROUPS).map(g => {
-    const keys = ICON_GROUPS[g].filter(k => !q || (k.replace(/-/g, ' ') + ' ' + (ICON_TAGS[k] || '') + ' ' + g.toLowerCase()).includes(q));
-    return keys.length ? '<div class="ipGroup"><p class="lbl">' + g + '</p><div class="chips ipRow">' + keys.map(k => '<button type="button" data-i="' + k + '" aria-label="' + k.replace(/-/g, ' ') + '" title="' + k.replace(/-/g, ' ') + '">' + ICONS[k] + '</button>').join('') + '</div></div>' : '';
+  const shown = [], match = (k, g, extra) => !q || (k.replace(/-/g, ' ') + ' ' + (extra || '') + ' ' + g.toLowerCase()).includes(q);
+  let out = Object.keys(ICON_GROUPS).map(g => {
+    const keys = ICON_GROUPS[g].filter(k => ICONS[k] && match(k, g, ICON_TAGS[k]));
+    if (!keys.length) return '';
+    shown.push(g);
+    return '<div class="ipGroup" id="' + ipId(g) + '"><p class="lbl"><i class="gi">' + catIcon(g) + '</i><span>' + g + '</span></p><div class="ipRow">' + keys.map(k => '<button type="button" data-i="' + k + '" aria-label="' + k.replace(/-/g, ' ') + '" title="' + k.replace(/-/g, ' ') + '">' + ICONS[k] + '</button>').join('') + '</div></div>';
+  }).join('');
+  out += Object.keys(FA_GROUPS).map(g => {
+    const names = Array.from(new Set(FA_GROUPS[g])).filter(n => match(n, g));
+    if (!names.length) return '';
+    shown.push(g);
+    return '<div class="ipGroup" id="' + ipId(g) + '"><p class="lbl"><i class="gi">' + catMarkup(g) + '</i><span>' + g + '</span></p><div class="ipRow">' + names.map(n => '<button type="button" data-fa="' + n + '" aria-label="' + n.replace(/-/g, ' ') + '" title="' + n.replace(/-/g, ' ') + '">' + faTile(n) + '</button>').join('') + '</div></div>';
   }).join('');
   $('#ip_groups').innerHTML = out || '<p class="wn">No icon matches that. You can still paste an emoji below.</p>';
+  $('#ip_tabs').innerHTML = shown.map(g => '<button type="button" role="tab" data-g="' + ipId(g) + '" aria-label="' + g + '" title="' + g + '">' + catMarkup(g) + '</button>').join('') + '<button type="button" role="tab" data-g="ip_custom" aria-label="Custom" title="Custom">' + (ICONS.sparkles || '') + '</button>';
+  ipSpy();
 }
+async function pickFa(n){
+  const key = 'fa-' + n;
+  if (!ICONS[key]){
+    try{
+      const r = await fetch(FA_URL(n)); if (!r.ok) throw 0;
+      const t = await r.text(), vb = (t.match(/viewBox="([^"]+)"/) || [])[1], ds = [...t.matchAll(/<path[^>]*\sd="([^"]+)"/g)].map(m => m[1]);
+      if (!vb || !ds.length) throw 0;
+      ICONS[key] = '<svg class="pi" viewBox="' + vb + '">' + ds.map(d => '<path d="' + d + '"/>').join('') + '</svg>';
+      try{ const c = JSON.parse(localStorage.getItem('yotei_fa') || '{}'); c[key] = ICONS[key]; localStorage.setItem('yotei_fa', JSON.stringify(c)); }catch{}
+    }catch{ toast('Could not load that icon. Check your connection and try again.'); return; }
+  }
+  $('#e_icon').value = key; updateIconBtn(); $('#iconPick').close();
+}
+function ipSpy(){
+  const sc = $('#ip_scroll'), tabs = $('#ip_tabs'); if (!sc || !tabs) return;
+  const top = sc.getBoundingClientRect().top + 24; let on = null;
+  tabs.querySelectorAll('button').forEach(b => { const el = document.getElementById(b.dataset.g); if (el && el.getBoundingClientRect().top <= top) on = b; });
+  if (!on) on = tabs.querySelector('button');
+  if (sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 4) on = tabs.querySelector('button:last-child') || on;
+  tabs.querySelectorAll('button').forEach(b => b.classList.toggle('on', b === on));
+  if (on && !tabs.dataset.drag){ const l = on.offsetLeft - (tabs.clientWidth - on.offsetWidth) / 2; if (Math.abs(tabs.scrollLeft - l) > 4) tabs.scrollTo({ left:l, behavior:'smooth' }); }
+}
+$('#ip_scroll').addEventListener('scroll', () => { if (!ipBusy) ipSpy(); }, { passive:true });
+let ipBusy = false;
+$('#ip_tabs').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const el = document.getElementById(b.dataset.g), sc = $('#ip_scroll'); if (!el) return;
+  ipBusy = true; $('#ip_tabs').querySelectorAll('button').forEach(z => z.classList.toggle('on', z === b));
+  sc.scrollTo({ top: sc.scrollTop + el.getBoundingClientRect().top - sc.getBoundingClientRect().top - 4, behavior:'smooth' });
+  setTimeout(() => { ipBusy = false; ipSpy(); }, 450);
+});
 $('#ip_q').addEventListener('input', e => drawIconPicker(e.target.value));
 $('#e_iconBtn').addEventListener('click', () => {
   const v = $('#e_icon').value;
   $('#e_icon_custom').value = (v && !ICONS[v]) ? v : '';
   $('#ip_q').value = ''; drawIconPicker('');
-  $('#iconPick').showModal();
+  $('#iconPick').showModal(); $('#ip_scroll').scrollTop = 0; ipSpy();
 });
 $('#ip_groups').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.fa){ pickFa(b.dataset.fa); return; }
   $('#e_icon').value = b.dataset.i; updateIconBtn(); $('#iconPick').close();
 });
 $('#ip_x').onclick = () => $('#iconPick').close();
@@ -1642,7 +1751,7 @@ $('#ts_dup').onclick = () => {
   $('#e_icon').value = r.icon || ''; updateIconBtn();
   $('#e_color').value = r.color || ''; drawColorRow('e'); setEdAccent();
   $('#e_details').value = r.details || ''; $('#e_p').value = (r.steps || []).join('\n');
-  $('#e_s').value = ''; $('#e_e').value = ''; $('#e_f').value = ''; refreshWinLock(); applyKindUI();
+  $('#e_s').value = ''; $('#e_e').value = ''; $('#e_fx').checked = false; refreshWinLock(); applyKindUI();
 };
 // ============================================================
 // SUBTASK SHEET — opens from the small icon next to a task's
@@ -1700,9 +1809,8 @@ $('#e_presets').addEventListener('click', e => {
 $('#e_d').addEventListener('input', () => { highlightChip(); syncEnd(); });
 $('#e_s').addEventListener('input', () => {
   const s = $('#e_s').value;
-  $('#e_f').value = s;
   if (s){ if ($('#e_k').value === 'sug') setKind('fixedlen'); syncEnd(); syncWinSel(); }
-  else $('#e_e').value = '';
+  else { $('#e_e').value = ''; $('#e_fx').checked = false; }
   refreshWinLock();
 });
 $('#e_e').addEventListener('input', () => {
@@ -1719,12 +1827,12 @@ function syncWinSel(){
 }
 $('#e_k').addEventListener('change', () => {
   const k = $('#e_k').value;
-  if (k === 'sug'){ $('#e_s').value = ''; $('#e_e').value = ''; $('#e_f').value = ''; }
+  if (k === 'sug'){ $('#e_s').value = ''; $('#e_e').value = ''; $('#e_fx').checked = false; }
   if (k !== 'sug' && !(parseInt($('#e_d').value) > 0)){ $('#e_d').value = 20; highlightChip(); }
   if (['core', 'flex', 'opt'].includes(k) && $('#e_m').value === '') $('#e_m').value = $('#e_d').value;
   applyKindUI(); syncEnd(); refreshWinLock();
 });
-$('#e_f').addEventListener('input', () => { $('#e_s').value = $('#e_f').value; if ($('#e_f').value && $('#e_k').value === 'sug') setKind('fixedlen'); syncEnd(); syncWinSel(); refreshWinLock(); });
+$('#e_fx').addEventListener('change', () => { if ($('#e_fx').checked && !$('#e_s').value) edErr('Pick a Start time for a fixed task.'); });
 $('#e_days').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   const i = +b.dataset.i;
@@ -1747,7 +1855,7 @@ $('#e_ok').onclick = () => {
   if (k !== 'sug' && !(parseInt($('#e_d').value) > 0)){ edErr('Set how long it takes, in minutes.'); return; }
   const arr = clone(getBlocks(cur.l)), old0 = arr.find(x => x.id === cur.id), old = effBlock(cur.l, old0);
   const b = { id: old ? old.id : 'u' + Date.now().toString(36), t };
-  if (old){ const FORM = ['id','t','d','m','p','sug','fixed','details','color','icon','steps','days','w']; Object.keys(old).forEach(z => { if (!FORM.includes(z)) b[z] = old[z]; }); }
+  if (old){ const FORM = ['id','t','d','m','p','sug','fixed','at','details','color','icon','steps','days','w']; Object.keys(old).forEach(z => { if (!FORM.includes(z)) b[z] = old[z]; }); }
   if (cur.l === 'oo') b.w = $('#e_w').value || 'climb1'; else if (old && old.w) b.w = old.w; else if (cur.l !== 'pre' && cur.l !== 'night') b.w = cur.w || 'climb1';
   const details = $('#e_details').value.trim(); if (details) b.details = details;
   const color = $('#e_color').value.trim(); if (color) b.color = color;
@@ -1760,11 +1868,13 @@ $('#e_ok').onclick = () => {
     b.d = d;
     if (k === 'open') b.p = 'open';
     else if (k !== 'fixedlen'){ b.p = k; b.m = Math.min(d, isNaN(m) ? d : m); }
-    const f = $('#e_s').value || $('#e_f').value;
+    const f = $('#e_s').value;
+    if ($('#e_fx').checked && !f){ edErr('Pick a Start time for a fixed task, or turn Fixed time off.'); return; }
     if (f){
-      const [h, mi] = f.split(':').map(Number); b.fixed = h*60 + mi;
-      if (cur.l !== 'pre' && cur.l !== 'night') b.w = winFor(b.fixed);
-      else { const need = cur.l === 'pre' ? 'sleep' : 'wind', got = winFor(b.fixed); if (got !== need){ edErr('That time falls in ' + wins()[got].name + ', not ' + wins()[need].name + '. Add it from that window instead.'); return; } }
+      const [h, mi] = f.split(':').map(Number), tm0 = h*60 + mi;
+      if ($('#e_fx').checked) b.fixed = tm0; else b.at = tm0;
+      if (cur.l !== 'pre' && cur.l !== 'night') b.w = winFor(tm0);
+      else { const need = cur.l === 'pre' ? 'sleep' : 'wind', got = winFor(tm0); if (got !== need){ edErr('That time falls in ' + wins()[got].name + ', not ' + wins()[need].name + '. Add it from that window instead.'); return; } }
     }
   }
   if (cur.l === 'oo' && cur.addScope && !old && !cur.fromInbox){
@@ -2633,7 +2743,7 @@ function mvDo0(kind){
   const r = schedule().rows.find(x => x.id === sheetCtx.id); if (!r) return;
   const ds = kind === 'inbox' ? null : mvDate(); if (kind !== 'inbox' && !ds) return;
   const o = { id:'o' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), t:r.t, d:r.d !== undefined ? r.d : r.use };
-  ['m', 'p', 'sug', 'icon', 'color', 'details', 'steps', 'fixed'].forEach(k => { if (r[k] !== undefined) o[k] = r[k]; });
+  ['m', 'p', 'sug', 'icon', 'color', 'details', 'steps', 'fixed', 'at'].forEach(k => { if (r[k] !== undefined) o[k] = r[k]; });
   const tm = $('#mv_t').value;
   if (tm){ const [h, mi] = tm.split(':').map(Number); o.fixed = h * 60 + mi; if (!o.d) o.d = 20; }
   if (ds) o.w = o.fixed !== undefined ? winFor(o.fixed, (planFor(ds) || {}).w ?? defWake()) : (r.w || 'climb1');
@@ -2854,7 +2964,7 @@ function reorderBlock(l, id, beforeId, tl){
   if (l !== tl){ toast('Drop it on a task in the same list.'); return; }
   const _s = grab(), arr = clone(getBlocks(l)), i = arr.findIndex(x => x.id === id), j = arr.findIndex(x => x.id === beforeId), wk = x => x.w || 'climb1';
   if (i < 0 || j < 0 || wk(arr[i]) !== wk(arr[j])){ toast('Drop it on a task in the same window.'); return; }
-  if (arr[i].fixed !== undefined){ toast('This task has a fixed time. Change its Start time in Edit to move it.'); return; }
+  if (arr[i].fixed !== undefined || arr[i].at !== undefined){ toast('This task is ordered by its Start time. Change it in Edit to move it.'); return; }
   needLive(); const [x] = arr.splice(i, 1); arr.splice(arr.findIndex(z => z.id === beforeId), 0, x);
   setBlocks(l, arr); render(); showUndo(l === 'oo' ? 'Reordered' : 'Reordered for all days', _s);
 }
@@ -3061,7 +3171,7 @@ $('#emptyAdd').addEventListener('click', () => { openEd('oo', null, defaultWin()
 $('#hdrTitle').addEventListener('click', () => { if (document.body.dataset.tab === 'home' && viewDate !== todayStr()) goDate(todayStr()); });
 function focusNow(){ if (viewDate !== todayStr()) return; const r = document.querySelector('.tlrow.now'); if (r) r.scrollIntoView({ block:'center' }); }
 
-const APP_VERSION = '2.6.4';
+const APP_VERSION = '2.6.5';
 const FEATURES = [
   'A daily timeline built from your wake time, split into seven energy windows',
   'Morning and Night Routines that shrink (optional, then flexible, then core) to fit',
@@ -3089,6 +3199,10 @@ const LIMITS = [
   'Fonts need one online load before they work offline'
 ];
 const CHANGELOG = [
+  { v:'2.6.5', date:'Oct 2026',
+    added:['Fixed time is now a switch in the task editor, off by default. Start and End are optional and blank on a new task', 'The icon picker is now full-screen, with a scrollable category bar at the bottom and an icon for each category', 'Hundreds more solid icons in new categories (Bathroom, Clothes, Home, Education, Tech, Transport, Fitness, Medical, Food, Nature, Animals, Work, Fun, Time & rest). They load from the internet the first time you pick one and are then saved on this device'],
+    changed:['Without Fixed time, a Start time is a preferred time: the task goes in that part of the day and starts no earlier than that, but can start later if the tasks before it run long', 'The timeline sits closer to the left edge'],
+    fixed:['Every task was becoming fixed as soon as it had a Start time, and clearing it did not stick', 'The Fixed at field ran off the edge of the editor, and it is now removed', 'The rounded top corners of the schedule panel disappeared when scrolling; they now stay under the week strip'] },
   { v:'2.6.4', date:'Oct 2026',
     added:['Editor problems (missing name, no duration, end before start) now show a message right above the Save button'],
     changed:['The Fixed clock time option is gone from Kind, since any task can now have a Start time. Kind now explains what it does and hides the fields that do not apply to it (Shortest only for Core, Flexible and Optional; time fields are hidden for Suggestion)', 'Duplicate opens a new task with the same details and asks which days to add it to', 'The Window picker is locked while a Start time is set, since the time decides the window', 'Changing a task\'s Start time now moves its End time with it and keeps the length', 'A task with a Start time moves into the window that contains that time', 'Tasks with a fixed time are placed in time order, and dragging one to reorder explains that it is fixed'],
@@ -3135,7 +3249,7 @@ const CHANGELOG = [
   const list = a => a.map(x => '<li>' + esc(x) + '</li>').join('');
   const sect = (n, a) => a && a.length ? '<h3>' + n + '</h3><ul>' + list(a) + '</ul>' : '';
   $('#tab-settings').insertAdjacentHTML('beforeend',
-    '<div class="sleep about"><h2>About Yotei <span class="ver">v' + APP_VERSION + '</span></h2><p>Status: stable. Everything below is working.</p><h3 style="font:700 12px Poppins,sans-serif;color:var(--text)">Features</h3><ul>' + list(FEATURES) + '</ul><h3 style="font:700 12px Poppins,sans-serif;color:var(--text)">Good to know</h3><ul>' + list(LIMITS) + '</ul></div>' +
+    '<div class="sleep about"><h2>About Yotei <span class="ver">v' + APP_VERSION + '</span></h2><p>Status: stable. Everything below is working.</p><p class=\"wn\">Icons: Phosphor, and Font Awesome Free (CC BY 4.0, fontawesome.com).</p><h3 style="font:700 12px Poppins,sans-serif;color:var(--text)">Features</h3><ul>' + list(FEATURES) + '</ul><h3 style="font:700 12px Poppins,sans-serif;color:var(--text)">Good to know</h3><ul>' + list(LIMITS) + '</ul></div>' +
     '<div class="sleep about"><h2>Changelog</h2>' + CHANGELOG.map((c, i) =>
       '<details class="clog"' + (i === 0 ? ' open' : '') + '><summary>v' + esc(c.v) + '<span>' + esc(c.date) + '</span></summary>' + sect('Added', c.added) + sect('Changed', c.changed) + sect('Fixed', c.fixed) + '</details>').join('') + '</div>');
 })();
